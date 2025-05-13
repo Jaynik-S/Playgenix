@@ -90,21 +90,12 @@ nav {
     position: relative;
 }
 
-.logo span {
-    color: var(--primary);
-    position: relative;
+.logo img {
+    height: 45px;
+    max-width: 100%;
+    margin: 0;
 }
 
-.logo span::after {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background-color: var(--accent);
-    border-radius: 50%;
-    top: 0;
-    right: -8px;
-}
 
 .nav-links {
     display: flex;
