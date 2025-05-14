@@ -150,7 +150,7 @@ window.addEventListener('scroll', () => {
 
 // Animate elements on scroll
 const animateOnScroll = () => {
-    const elements = document.querySelectorAll('.feature-card, .step, .section-header');
+    const elements = document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits');
     
     elements.forEach(element => {
         const elementPosition = element.getBoundingClientRect().top;
@@ -165,7 +165,7 @@ const animateOnScroll = () => {
 
 // Set initial styles for animation
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.feature-card, .step, .section-header').forEach(element => {
+    document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits').forEach(element => {
         element.style.opacity = '0';
         element.style.transform = 'translateY(20px)';
         element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
@@ -173,6 +173,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Run animation on load and scroll
     animateOnScroll();
+    
+    // Form validation for waitlist page
+    const waitlistForm = document.getElementById('waitlist-form');
+    if (waitlistForm) {
+        const formInputs = waitlistForm.querySelectorAll('input, select');
+        
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--primary)';
+                this.style.boxShadow = 'var(--neon-glow)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    }
 });
 
 window.addEventListener('scroll', animateOnScroll);
