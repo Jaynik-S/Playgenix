@@ -116,27 +116,35 @@ mobileMenuBtn.addEventListener('click', () => {
 });
 
 // Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
-            });
+const setupSmoothScrolling = () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            // Close mobile menu if open
-            if (navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Get header height dynamically to account for different states
+                const headerHeight = document.getElementById('header')?.offsetHeight || 80;
+                
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
             }
-        }
+        });
     });
-});
+};
 
 // Header scroll effect
 const header = document.getElementById('header');
@@ -173,6 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Run animation on load and scroll
     animateOnScroll();
+    
+    // Initialize smooth scrolling
+    setupSmoothScrolling();
     
     // Form validation for waitlist page
     const waitlistForm = document.getElementById('waitlist-form');

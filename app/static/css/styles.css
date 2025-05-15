@@ -46,6 +46,9 @@ body {
     color: var(--light);
     line-height: 1.6;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure minimum height is full viewport */
 }
 
 .container {
@@ -214,6 +217,7 @@ nav {
     background: linear-gradient(135deg, var(--darker) 0%, #1e1b4b 100%);
     position: relative;
     overflow: hidden;
+    flex: 1; /* Make hero section grow to fill available space */
 }
 
 .hero::before {
@@ -677,6 +681,7 @@ footer {
     padding: 1.5rem 0;
     position: relative;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto; /* Push footer to bottom when content doesn't fill viewport */
 }
 
 footer::before {
@@ -890,3 +895,23 @@ footer::before {
         gap: 0.5rem;
     }
 }
+
+/* Contact Page Styles */
+.contact-form-container {
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#message {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: var(--light);
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    min-height: 120px;
+}
+
