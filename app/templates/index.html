@@ -1,8 +1,36 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/icon_logo.png">
+</head>
+<body>
 
-{% block title %}Playgenix - Advanced Video Game Analysis{% endblock %}
+    <!-- Header & Navigation -->
+    <header id="header">
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="/">
+                        <img src="/static/images/hrz_logo.png" alt="Playgenix Logo">
+                    </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="contact">Contact</a></li>
+                </ul>
+                <!-- <button class="btn">Sign In</button> -->
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
 
-{% block content %}
     <!-- Hero Section -->
     <section class="hero">
         <div id="particles-js"></div>
@@ -14,7 +42,7 @@
                         Upload your gameplay videos and get instant, AI-powered feedback with timestamped insights to improve your skills and dominate the competition.
                     </p>
                     <div class="hero-cta">
-                        <a href="/waitlist" class="btn btn-accent">Get Started</a>
+                        <a href="/waitlist" class="btn btn-accent">Join Waitlist</a>
                         <a href="#how-it-works" class="btn btn-outline">How It Works</a>
                     </div>
                 </div>
@@ -81,7 +109,7 @@
                             </svg>
                             Upload Your Gameplay
                         </h3>
-                        <p>Simply upload your gameplay video in any common format (MP4, MOV, AVI). We support videos from all major games including Fortnite, Call of Duty, League of Legends, Valorant, and more.</p>
+                        <p>Upload a video of your gameplay directly to our platform. No technical setup required, just drag and drop your file to get started.</p>
                     </div>
                 </div>
                 <div class="step">
@@ -128,22 +156,64 @@
     <section class="cta">
         <div class="container">
             <h2>Ready to Level Up Your Game?</h2>
-            <p>Join thousands of gamers who have improved their skills with Playgenix's advanced analysis.</p>
+            <p>Be among the first to experience Playgenix's advanced gameplay analysis. Sign up now to get early access and help shape the future of gaming analytics!</p>
 
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-number">50K+</div>
-                    <div class="stat-label">Active Gamers</div>
+                    <div class="stat-number">Launching Soon</div>
+                    <div class="stat-label">Join the Waitlist</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number">200K+</div>
-                    <div class="stat-label">Videos Analyzed</div>
+                    <div class="stat-number">Free Early Access</div>
+                    <div class="stat-label">On Launch</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number">85%</div>
-                    <div class="stat-label">Performance Improvement</div>
+                    <div class="stat-number">Your Feedback</div>
+                    <div class="stat-label">Will Shape Playgenix</div>
                 </div>
             </div>
         </div>
     </section>
-{% endblock %}
+
+    <footer>
+        <div class="container">
+            <div class="footer-wrapper">
+                <p class="copyright">&copy; 2025 Playgenix</p>
+                
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@playgenixai" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M21 7.917v4.034a9.948 9.948 0 0 1 -5 -1.951v4.5a6.5 6.5 0 1 1 -8 -6.326v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917z"></path>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/playgenixai" aria-label="X (Twitter)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4l11.733 16h4.267l-11.733-16z"></path>
+                            <path d="M4 20l6.768-6.768"></path>
+                            <path d="M20 4l-7.955 7.955"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="legal-links">
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>
