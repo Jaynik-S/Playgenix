@@ -16,7 +16,7 @@
                     </p>
                     
                     <div class="waitlist-form-container">
-                        <form id="waitlist-form" class="waitlist-form">
+                        <form id="waitlist-form" class="waitlist-form" method="POST" action="/waitlist">
                             <div class="form-group">
                                 <label for="name">Full Name</label>
                                 <input type="text" id="name" name="name" required>
@@ -79,12 +79,10 @@
     <script>
         // Form submission handler
         document.getElementById('waitlist-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Normally you would submit the form data to a server here
-            
-            // For demo purposes, just show the success message
+            // e.preventDefault();
             this.style.display = 'none';
             document.getElementById('form-success').style.display = 'block';
         });
+        
     </script>
 {% endblock %}
