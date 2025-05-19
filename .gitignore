@@ -1,4 +1,9 @@
 venv
 directory
-__pycache__
+__pycache__/
 .vscode
+.env
+*.pyc
+.vercel
+node_modules/
+.DS_Store

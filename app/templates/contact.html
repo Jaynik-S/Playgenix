@@ -16,7 +16,7 @@
                     </p>
                     
                     <div class="waitlist-form-container contact-form-container">
-                        <form id="contact-form" class="waitlist-form">
+                        <form id="contact-form" class="waitlist-form" method="POST" action="/contact">
                             <div class="form-group">
                                 <label for="name">Full Name</label>
                                 <input type="text" id="name" name="name" required>
@@ -59,44 +59,12 @@
 
 {% block extra_scripts %}
     <script>
-        // Form submission handler
         document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            };
-            
-            // In a real implementation, you would send this data to your server
-            console.log('Form submitted:', formData);
-            
-            // For demo purposes, show the success message
-            this.style.display = 'none';
-            document.getElementById('form-success').style.display = 'block';
-            
-            // In a real implementation, you might use fetch to send the data:
-            /*
-            fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.style.display = 'none';
-                document.getElementById('form-success').style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle error
-            });
-            */
+        // e.preventDefault();
+        this.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
         });
+        
+        
     </script>
 {% endblock %}
