@@ -29,15 +29,12 @@ def waitlist(request: Request):
 
 @app.post("/waitlist", response_class=HTMLResponse)
 def waitlist(request: Request, name: str = Form(...), email: str = Form(...)):
-    print("Received waitlist submission")
-    print(name, email) 
     try:
         response = supabase.table("waitlist").insert({
             "name": name,
             "email": email,
         }).execute()
 
-        print(response) 
         if response.get("status_code") != 200:
             raise Exception(f"Supabase error: {response}")
     except Exception as e:
@@ -47,6 +44,29 @@ def waitlist(request: Request, name: str = Form(...), email: str = Form(...)):
 @app.get("/contact", response_class=HTMLResponse)
 def contact(request: Request):
     return templates.TemplateResponse("contact.html", {"request": request})
+
+@app.post("/contact", response_class=HTMLResponse)
+def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):
+    try:
+        response = supabase.table("contact").insert({
+            "name": name,
+            "email": email,
+            "subject": subject,
+            "message": message,
+        }).execute()
+        if response.get("status_code") != 200:
+            raise Exception(f"Supabase error: {response}")
+    except Exception as e:
+        print(f"Error inserting into Supabase: {e}")
+        return templates.TemplateResponse("contact.html", {"request": request, "error": "Failed to reach out."})
+
+@app.get("/login", response_class=HTMLResponse)
+def login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login", response_class=HTMLResponse)
+def login(request: Request):
+    response = supabase.auth.sign_in_with_oauth({"provider": "google"})
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
