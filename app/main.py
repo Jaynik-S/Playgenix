@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
@@ -64,9 +64,20 @@ def contact(request: Request, name: str = Form(...), email: str = Form(...), sub
 def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-@app.post("/login", response_class=HTMLResponse)
+@app.post("/login")
 def login(request: Request):
-    response = supabase.auth.sign_in_with_oauth({"provider": "google"})
+    response = supabase.auth.sign_in_with_oauth(
+                {
+                    "provider": "google",
+                    "options": {
+                        "redirect_to": "http://127.0.0.1:8000/contact",
+                    }
+                }
+            )
+    redirect_url = response.url
+    if redirect_url:
+        return RedirectResponse(url=redirect_url, status_code=303)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
