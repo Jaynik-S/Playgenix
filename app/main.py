@@ -78,6 +78,10 @@ def login(request: Request):
     if redirect_url:
         return RedirectResponse(url=redirect_url, status_code=303)
 
+@app.get("/upload", response_class=HTMLResponse)
+def upload(request: Request):
+    return templates.TemplateResponse("upload.html", {"request": request})
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

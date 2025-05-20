@@ -915,3 +915,141 @@ footer::before {
     min-height: 120px;
 }
 
+/* Upload Page Styles */
+.upload-container {
+    background-color: rgba(15, 23, 42, 0.7);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    margin-top: 2rem;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.upload-dropzone {
+    border: 2px dashed rgba(139, 92, 246, 0.5);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.upload-dropzone:hover, .upload-dropzone.highlight {
+    border-color: var(--primary);
+    background-color: rgba(139, 92, 246, 0.05);
+    box-shadow: var(--neon-glow);
+}
+
+.upload-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+}
+
+.upload-icon svg {
+    width: 100%;
+    height: 100%;
+    color: var(--primary);
+}
+
+.upload-divider {
+    margin: 1rem 0;
+    color: var(--gray);
+    position: relative;
+}
+
+.upload-divider::before, .upload-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: rgba(139, 92, 246, 0.3);
+}
+
+.upload-divider::before {
+    left: 0;
+}
+
+.upload-divider::after {
+    right: 0;
+}
+
+.upload-file-types {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 1rem;
+}
+
+.upload-preview {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(15, 23, 42, 0.8);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.file-info .file-name {
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 0.25rem;
+}
+
+.file-info .file-size {
+    font-size: 0.875rem;
+    color: var(--gray);
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.btn-remove:hover {
+    color: var(--accent);
+}
+
+.btn-remove svg {
+    width: 20px;
+    height: 20px;
+}
+
+.upload-success {
+    display: none;
+    text-align: center;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: rgba(15, 23, 42, 0.8);
+    border-radius: 4px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #c026d3);
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+#submit-upload {
+    width: 100%;
+}
+
+#submit-upload:disabled {
+    background-color: var(--gray);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
