@@ -11,9 +11,25 @@
                 <li><a href="/#how-it-works">How It Works</a></li>
                 <li><a href="/contact">Contact</a></li>
             </ul>
-            <a href="login">    
-                <button class="btn">Sign In</button>
-            </a>
+            {% if user %}
+                <div class="user-dropdown">
+                    <button class="user-dropdown-btn">
+                        {{ user.name }}
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-content">
+                        <div class="dropdown-item videos-count">
+                            <span>Videos remaining:</span> 
+                            <span class="count">{{ user.videos_remaining }}</span>
+                        </div>
+                        <a href="/logout" class="dropdown-item logout-btn">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="login">    
+                    <button class="btn">Sign In</button>
+                </a>
+            {% endif %}
             <button class="mobile-menu-btn">☰</button>
         </nav>
     </div>
