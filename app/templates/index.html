@@ -24,7 +24,7 @@
                         Upload your gameplay videos and get instant, AI-powered feedback with timestamped insights to improve your skills and dominate the competition.
                     </p>
                     <div class="hero-cta">
-                        <a href="/upload" class="btn btn-accent">Get Started</a>
+                        <a href="{% if user %}/upload{% else %}/login{% endif %}" class="btn btn-accent">Get Started</a>
                         <a href="#how-it-works" class="btn btn-outline">How It Works</a>
                     </div>
                 </div>
