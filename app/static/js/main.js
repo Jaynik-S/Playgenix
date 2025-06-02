@@ -136,3 +136,93 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Smooth scrolling for anchor links
+const setupSmoothScrolling = () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Get header height dynamically to account for different states
+                const headerHeight = document.getElementById('header')?.offsetHeight || 80;
+                
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            }
+        });
+    });
+};
+
+// Header scroll effect
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// Animate elements on scroll
+const animateOnScroll = () => {
+    const elements = document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits');
+    
+    elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (elementPosition < screenPosition) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    });
+};
+
+// Set initial styles for animation
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits').forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    });
+    
+    // Run animation on load and scroll
+    animateOnScroll();
+    
+    // Initialize smooth scrolling
+    setupSmoothScrolling();
+    
+    // Form validation for waitlist page
+    const waitlistForm = document.getElementById('waitlist-form');
+    if (waitlistForm) {
+        const formInputs = waitlistForm.querySelectorAll('input, select');
+        
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--primary)';
+                this.style.boxShadow = 'var(--neon-glow)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    }
+});
+
+window.addEventListener('scroll', animateOnScroll);
