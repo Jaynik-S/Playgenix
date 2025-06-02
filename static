@@ -1,0 +1,2 @@
+# Copy contents from app/static to this directory
+# This ensures Vercel can serve static files correctly
