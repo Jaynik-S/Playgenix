@@ -16,34 +16,29 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-app = FastAPI()
+# Create FastAPI app with a distinct variable name
+api_app = FastAPI()
 
 # Add session middleware
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", "playgenix-secret-key"))
+api_app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", "playgenix-secret-key"))
 
-# Get the directory containing this file, then go up one level to project root
+# Get the directory containing this file
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(script_dir)
 
-# Use absolute paths for templates and static directories
-templates_dir = os.path.join(project_root, "templates")
-static_dir = os.path.join(project_root, "app/static")
+# Use correct path for templates that works with Vercel deployment
+templates = Jinja2Templates(directory="app/templates")
 
 logger.info(f"Current working directory: {os.getcwd()}")
 logger.info(f"Directory contents: {os.listdir('.')}")
-logger.info(f"Templates directory exists: {os.path.exists(templates_dir)}")
-logger.info(f"Static directory exists: {os.path.exists(static_dir)}")
 
-# Mount static files
+# Mount static files - update path to match vercel.json route configuration
 try:
-    app.mount("/app/static", StaticFiles(directory=static_dir), name="static")
-    logger.info(f"Successfully mounted static files from {static_dir}")
+    api_app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    logger.info("Successfully mounted static files")
 except Exception as e:
     logger.error(f"Failed to mount static files: {str(e)}")
     # Don't raise exception - continue without static files
-
-# Initialize templates
-templates = Jinja2Templates(directory=templates_dir)
 
 # Initialize Supabase
 try:
@@ -64,17 +59,17 @@ except Exception as e:
 async def get_current_user(request: Request):
     return request.session.get("user")
 
-@app.get("/", response_class=HTMLResponse)
+@api_app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
 
-@app.get("/waitlist", response_class=HTMLResponse)
+@api_app.get("/waitlist", response_class=HTMLResponse)
 async def waitlist_get(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse("waitlist.html", {"request": request, "user": user})
 
-@app.post("/waitlist", response_class=HTMLResponse)
+@api_app.post("/waitlist", response_class=HTMLResponse)
 async def waitlist_post(request: Request, name: str = Form(...), email: str = Form(...)):
     user = await get_current_user(request)
     try:
@@ -102,12 +97,12 @@ async def waitlist_post(request: Request, name: str = Form(...), email: str = Fo
             "user": user
         })
 
-@app.get("/contact", response_class=HTMLResponse)
+@api_app.get("/contact", response_class=HTMLResponse)
 async def contact_get(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse("contact.html", {"request": request, "user": user})
 
-@app.post("/contact", response_class=HTMLResponse)
+@api_app.post("/contact", response_class=HTMLResponse)
 async def contact_post(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):
     user = await get_current_user(request)
     try:
@@ -137,12 +132,5 @@ async def contact_post(request: Request, name: str = Form(...), email: str = For
             "user": user
         })
 
-# Export the app for Vercel - wrap in ASGI handler
-async def handler_async(scope: Dict[str, Any], receive, send):
-    await app(scope, receive, send)
-
-def handler(scope: Dict[str, Any], receive, send):
-    return asyncio.create_task(handler_async(scope, receive, send))
-
-# Also export app directly for compatibility
-app = app
+# Export the app for Vercel - this is the correct way
+app = api_app
