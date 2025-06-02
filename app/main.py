@@ -87,58 +87,58 @@ async def contact(request: Request, name: str = Form(...), email: str = Form(...
         print(f"Error inserting into Supabase: {e}")
         return templates.TemplateResponse("contact.html", {"request": request, "error": "Failed to reach out.", "user": user})
 
-@app.get("/login", response_class=HTMLResponse)
-async def login(request: Request):
-    user = await get_current_user(request)
-    if user:
-        return RedirectResponse(url="/", status_code=303)
-    return templates.TemplateResponse("login.html", {"request": request, "user": user})
+# @app.get("/login", response_class=HTMLResponse)
+# async def login(request: Request):
+#     user = await get_current_user(request)
+#     if user:
+#         return RedirectResponse(url="/", status_code=303)
+#     return templates.TemplateResponse("login.html", {"request": request, "user": user})
 
-@app.post("/login")
-async def login(request: Request):
-    response = supabase.auth.sign_in_with_oauth(
-                {
-                    "provider": "google",
-                    "options": {
-                        "redirect_to": "http://127.0.0.1:8000/auth/callback",
-                    }
-                }
-            )
-    redirect_url = response.url
-    if redirect_url:
-        return RedirectResponse(url=redirect_url, status_code=303)
+# @app.post("/login")
+# async def login(request: Request):
+#     response = supabase.auth.sign_in_with_oauth(
+#                 {
+#                     "provider": "google",
+#                     "options": {
+#                         "redirect_to": "http://127.0.0.1:8000/auth/callback",
+#                     }
+#                 }
+#             )
+#     redirect_url = response.url
+#     if redirect_url:
+#         return RedirectResponse(url=redirect_url, status_code=303)
 
-@app.get("/auth/callback")
-async def auth_callback(request: Request):
-    code = request.query_params.get("code")
-    if code:
-        session = supabase.auth.exchange_code_for_session({"auth_code": code})
-        user_data = session.user
-        if user_data:
-            # Get user profile from database
-            user_profile = supabase.table("user_profiles").select("*").eq("user_id", user_data.id).execute()
+# @app.get("/auth/callback")
+# async def auth_callback(request: Request):
+#     code = request.query_params.get("code")
+#     if code:
+#         session = supabase.auth.exchange_code_for_session({"auth_code": code})
+#         user_data = session.user
+#         if user_data:
+#             # Get user profile from database
+#             user_profile = supabase.table("user_profiles").select("*").eq("user_id", user_data.id).execute()
             
-            # If profile exists, use it. Otherwise use default values.
-            profile_data = user_profile.data[0] if user_profile.data else {"videos_remaining": 5}
+#             # If profile exists, use it. Otherwise use default values.
+#             profile_data = user_profile.data[0] if user_profile.data else {"videos_remaining": 5}
             
-            # Store user info in session
-            request.session["user"] = {
-                "name": user_data.user_metadata.get("full_name", "User"),
-                "email": user_data.email,
-                "videos_remaining": profile_data.get("videos_remaining", 5)
-            }
+#             # Store user info in session
+#             request.session["user"] = {
+#                 "name": user_data.user_metadata.get("full_name", "User"),
+#                 "email": user_data.email,
+#                 "videos_remaining": profile_data.get("videos_remaining", 5)
+#             }
     
-    return RedirectResponse(url="/", status_code=303)
+#     return RedirectResponse(url="/", status_code=303)
 
-@app.get("/logout")
-async def logout(request: Request):
-    request.session.pop("user", None)
-    return RedirectResponse(url="/", status_code=303)
+# @app.get("/logout")
+# async def logout(request: Request):
+#     request.session.pop("user", None)
+#     return RedirectResponse(url="/", status_code=303)
 
-@app.get("/upload", response_class=HTMLResponse)
-async def upload(request: Request):
-    user = await get_current_user(request)
-    return templates.TemplateResponse("upload.html", {"request": request, "user": user})
+# @app.get("/upload", response_class=HTMLResponse)
+# async def upload(request: Request):
+#     user = await get_current_user(request)
+#     return templates.TemplateResponse("upload.html", {"request": request, "user": user})
 
 @app.post("/contact", response_class=HTMLResponse)
 def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):
