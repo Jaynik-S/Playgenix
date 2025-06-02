@@ -7,6 +7,8 @@ from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 import logging
+import asyncio
+from typing import Dict, Any
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -135,5 +137,12 @@ async def contact_post(request: Request, name: str = Form(...), email: str = For
             "user": user
         })
 
-# Export the app for Vercel
-handler = app
+# Export the app for Vercel - wrap in ASGI handler
+async def handler_async(scope: Dict[str, Any], receive, send):
+    await app(scope, receive, send)
+
+def handler(scope: Dict[str, Any], receive, send):
+    return asyncio.create_task(handler_async(scope, receive, send))
+
+# Also export app directly for compatibility
+app = app
