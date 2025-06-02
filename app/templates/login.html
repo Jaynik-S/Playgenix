@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<!-- Extend header.html -->
+{% include 'components/header.html' %}
+
+    <!-- Login Section -->
+    <section class="hero">
+        <div id="particles-js"></div>
+        <div class="container">
+            <div class="hero-content centered">
+                <div class="hero-text centered">
+                    <h1>Sign In to <span>Playgenix</span></h1>
+                    <p>
+                        Access your personalized game analysis and insights.<br>Sign in with your Google account to continue.
+                    </p>
+                    
+                    <form action="/login" method="POST">
+                        <button type="submit" class="btn" style="background-color: white; color:black;">
+                            <img src="/static/images/google_icon.svg" alt="Google Icon" style="vertical-align: middle; margin: -2px 8px 0 0;" width="22px" height="22px">
+                            Continue with Google
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Extend footer.html -->
+{% include 'components/footer.html' %}
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="/static/js/main.js"></script>
+</html>

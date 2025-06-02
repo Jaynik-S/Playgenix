@@ -115,6 +115,27 @@ mobileMenuBtn.addEventListener('click', () => {
     navLinks.classList.toggle('active');
 });
 
+// User dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const userDropdown = document.querySelector('.user-dropdown');
+    const dropdownBtn = document.querySelector('.user-dropdown-btn');
+    
+    if (dropdownBtn) {
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            if (userDropdown.classList.contains('active')) {
+                userDropdown.classList.remove('active');
+            }
+        });
+    }
+});
+
+
 // Smooth scrolling for anchor links
 const setupSmoothScrolling = () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

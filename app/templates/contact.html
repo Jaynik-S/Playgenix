@@ -1,8 +1,17 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
 
-{% block title %}Contact Us - Playgenix{% endblock %}
+<!-- Extend header.html -->
+{% include 'components/header.html' %}
 
-{% block content %}
     <!-- Contact Section -->
     <section class="hero">
         <div id="particles-js"></div>
@@ -55,16 +64,18 @@
             </div>
         </div>
     </section>
-{% endblock %}
 
-{% block extra_scripts %}
+<!-- Extend footer.html -->
+{% include 'components/footer.html' %}
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/static/js/main.js"></script>
     <script>
         document.getElementById('contact-form').addEventListener('submit', function(e) {
-        // e.preventDefault();
         this.style.display = 'none';
         document.getElementById('form-success').style.display = 'block';
         });
         
         
     </script>
-{% endblock %}
+</html>
