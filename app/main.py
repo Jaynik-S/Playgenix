@@ -155,8 +155,5 @@ def contact(request: Request, name: str = Form(...), email: str = Form(...), sub
         print(f"Error inserting into Supabase: {e}")
         return templates.TemplateResponse("contact.html", {"request": request, "error": "Failed to reach out."})
 
-# Create Mangum handler for Vercel
-handler = Mangum(app)
-
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
