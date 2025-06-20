@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" type="image/png" href="/static/images/icon_logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <!-- Extend header.html -->
@@ -18,14 +19,14 @@
         <div id="particles-js"></div>
         <div class="container">
             <div class="hero-content centered">
-                <div class="hero-text centered">
+                <div class="hero-text centered" data-aos="fade-up">
                     <h1>Get in <span>Touch</span></h1>
                     <p>
                         Have questions or feedback? We'd love to hear from you. Fill out the form below
                         or connect with us on social media.
                     </p>
                     
-                    <div class="waitlist-form-container contact-form-container">
+                    <div class="waitlist-form-container contact-form-container" data-aos="fade-up" data-aos-delay="200">
                         <form id="contact-form" class="waitlist-form" method="POST" action="/contact">
                             <div class="form-group">
                                 <label for="name">Full Name</label>
@@ -70,6 +71,7 @@
 {% include 'components/footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="/static/js/main.js"></script>
     <script>
         document.getElementById('contact-form').addEventListener('submit', function(e) {
@@ -77,6 +79,10 @@
         document.getElementById('form-success').style.display = 'block';
         });
         
-        
+        AOS.init({
+            duration: 800,
+            easing: 'ease',
+            once: true
+        });
     </script>
 </html>

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" type="image/png" href="/static/images/icon_logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <!-- Extend header.html -->
@@ -18,13 +19,13 @@
         <div id="particles-js"></div>
         <div class="container">
             <div class="hero-content centered">
-                <div class="hero-text centered">
+                <div class="hero-text centered" data-aos="fade-up">
                     <h1>Sign In to <span>Playgenix</span></h1>
                     <p>
                         Access your personalized game analysis and insights.<br>Sign in with your Google account to continue.
                     </p>
                     
-                    <form action="/login" method="POST">
+                    <form action="/login" method="POST" data-aos="fade-up" data-aos-delay="200">
                         <button type="submit" class="btn" style="background-color: white; color:black;">
                             <img src="/static/images/google_icon.svg" alt="Google Icon" style="vertical-align: middle; margin: -2px 8px 0 0;" width="22px" height="22px">
                             Continue with Google
@@ -39,5 +40,13 @@
 {% include 'components/footer.html' %}
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script src="/static/js/main.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        easing: 'ease',
+        once: true
+    });
+</script>
 </html>

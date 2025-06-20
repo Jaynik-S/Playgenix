@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" type="image/png" href="/static/images/icon_logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <!-- Extend header.html -->
@@ -19,13 +20,13 @@
         <div id="particles-js"></div>
         <div class="container">
             <div class="hero-content centered">
-                <div class="hero-text centered">
+                <div class="hero-text centered" data-aos="fade-up">
                     <h1>Upload Your <span>Gameplay</span></h1>
                     <p>
                         Upload your gameplay video and get instant AI-powered analysis.<br>Drag and drop your video file or browse to select.
                     </p>
                     
-                    <div class="upload-container">
+                    <div class="upload-container" data-aos="fade-up" data-aos-delay="200">
                         <!-- File Upload Dropzone -->
                         <div class="upload-dropzone" id="upload-dropzone">
                             <div class="upload-icon">
@@ -86,6 +87,7 @@
 {% include 'components/footer.html' %}
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script src="/static/js/main.js"></script>
 <script>
     // Upload functionality
@@ -217,6 +219,12 @@
         // const formData = new FormData(uploadForm);
         // formData.append('video_file', selectedFile);
         // fetch('/upload', { method: 'POST', body: formData });
+    });
+
+    AOS.init({
+        duration: 800,
+        easing: 'ease',
+        once: true
     });
 </script>
 </html>
