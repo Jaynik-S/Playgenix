@@ -105,6 +105,19 @@ nav {
     transform: scale(1.1);
 }
 
+@media (max-width: 768px) {
+    .logo img {
+        height: 30px; /* Reduced from 35px */
+    }
+}
+
+/* Adding a more specific rule for even smaller screens */
+@media (max-width: 480px) {
+    .logo img {
+        height: 26px;
+    }
+}
+
 
 .nav-links {
     display: flex;
@@ -123,6 +136,29 @@ nav {
     transition: color 0.3s;
     padding: 0.5rem 0;
     position: relative;
+}
+
+/* Add mobile-specific styling for nav links */
+@media (max-width: 768px) {
+    .nav-links a {
+        font-size: 0.8rem;
+        padding: 0.4rem 0;
+    }
+    
+    .nav-links li {
+        margin-left: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links a {
+        font-size: 0.7rem;
+        padding: 0.3rem 0;
+    }
+    
+    .nav-links li {
+        margin-left: 1rem;
+    }
 }
 
 .nav-links a::after {
@@ -209,6 +245,67 @@ nav {
     color: var(--light);
     font-size: 1.5rem;
     cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0.5rem;
+}
+
+.mobile-menu-btn:hover {
+    color: var(--primary);
+}
+
+/* Hamburger Menu Icon */
+.hamburger {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+.hamburger span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: var(--light);
+    border-radius: 2px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+}
+
+.hamburger span:nth-child(1) {
+    top: 0px;
+}
+
+.hamburger span:nth-child(2), .hamburger span:nth-child(3) {
+    top: 8px;
+}
+
+.hamburger span:nth-child(4) {
+    top: 16px;
+}
+
+.hamburger.open span:nth-child(1) {
+    top: 8px;
+    width: 0%;
+    left: 50%;
+}
+
+.hamburger.open span:nth-child(2) {
+    transform: rotate(45deg);
+}
+
+.hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
+.hamburger.open span:nth-child(4) {
+    top: 8px;
+    width: 0%;
+    left: 50%;
 }
 
 /* Hero Section */
@@ -630,6 +727,12 @@ nav {
     display: inline-block;
 }
 
+@media (max-width: 768px) {
+    .cta {
+        padding: 4rem 0;
+    }
+}
+
 .cta p {
     font-size: 1.125rem;
     max-width: 700px;
@@ -646,6 +749,7 @@ nav {
     justify-content: center;
     gap: 3rem;
     margin-top: 3rem;
+    flex-wrap: wrap;
 }
 
 .stat {
@@ -655,6 +759,19 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 150px;
+}
+
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+    }
+    
+    .stat {
+        max-width: 100%;
+    }
 }
 
 .stat-number {
@@ -747,14 +864,110 @@ footer::before {
     opacity: 1;
 }
 
+@media (max-width: 991px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+    }
+    
+    .hero h1 {
+        font-size: 3.5rem;
+    }
+    
+    .hero-cta {
+        justify-content: center;
+    }
+    
+    .hero-image {
+        max-width: 80%;
+        margin: 0 auto;
+    }
+    
+    .hero {
+        padding: 8rem 0 4rem;
+    }
+    
+    .game-badges {
+        justify-content: center;
+    }
+}
+
 @media (max-width: 768px) {
+    .hero h1 {
+        font-size: 3rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .container {
+        padding: 0 1.5rem;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+    }
+    
+    .stat {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hero-cta .btn {
+        width: 100%;
+    }
+    
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .section-header p {
+        font-size: 0.95rem;
+    }
+    
+    .cta h2 {
+        font-size: 1.8rem;
+    }
+    
+    .cta p {
+        font-size: 0.95rem;
+    }
+    
     .footer-wrapper {
         flex-direction: column;
         text-align: center;
-        gap: 1rem;
     }
     
-    /* ...existing code... */
+    .social-links {
+        justify-content: center;
+        margin: 1rem 0;
+    }
+    
+    .legal-links {
+        justify-content: center;
+    }
 }
 
 /* Waitlist Page Styles */
