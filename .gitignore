@@ -1,4 +1,5 @@
 venv
+temp
 directory
 __pycache__/
 .vscode

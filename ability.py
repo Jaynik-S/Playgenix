@@ -226,27 +226,68 @@ def get_video_frame_size(video_path):
     video.release()
     return (width, height)
 
+def scale_reference_image(image_path, scale_factor):
+    """
+    Scales a reference image by the given factor and saves a temporary version.
+    Returns the path to the scaled image.
+    """
+    # Create temp directory if it doesn't exist
+    if not os.path.exists("temp"):
+        os.makedirs("temp")
+    
+    # Get original filename without path
+    filename = os.path.basename(image_path)
+    name, ext = os.path.splitext(filename)
+    scaled_path = f"temp/{name}_scaled{ext}"
+    
+    # Load and scale the image
+    img = cv2.imread(image_path)
+    if img is None:
+        raise ValueError(f"Could not read image: {image_path}")
+    
+    new_width = int(img.shape[1] * scale_factor)
+    new_height = int(img.shape[0] * scale_factor)
+    scaled_img = cv2.resize(img, (new_width, new_height))
+    
+    # Save the scaled image
+    cv2.imwrite(scaled_path, scaled_img)
+    print(f"Scaled reference image saved to {scaled_path}")
+    
+    return scaled_path
 
 def main():
-    VIDEO_PATH = "video.mp4"  
-    REFERENCE_IMAGE = "assets/abilities/Stim_Beacon.png"  
+    # VIDEO_PATH = "v1080-4.mp4"
+    # REFERENCE_IMAGE = "assets/abilities/Stim_Beacon.png"  
+    # VIDEO_PATH = "v1080-2.mp4"
+    # REFERENCE_IMAGE = "assets/abilities/Cloudburst.png"  
+    # VIDEO_PATH = "v1080-3.mp4"
+    # REFERENCE_IMAGE = "assets/abilities/Trademark.png"
+    VIDEO_PATH = "v1080-5.mp4"
+    REFERENCE_IMAGE = "assets/abilities/Aftershock.png"
     VISUALIZE = True
     MAX_MATCHES = 1   
     
     frame_width, frame_height = get_video_frame_size(VIDEO_PATH)
     print(f"Video frame size: {frame_width}x{frame_height}")
+    
     # Define crop region (x, y, width, height)
     if frame_width == 2560 and frame_height == 1440:
-        # 1015, 1300, 75, 75 -- FIRST ABILITY
-        # 1165, 1300, 75, 75 -- SECOND ABILITY
-        CROP_REGION = (1015, 1300, 75, 75)  
+        CROP_REGION = (1015, 1300, 75, 75)
+        scaled_reference = REFERENCE_IMAGE
     elif frame_width == 1920 and frame_height == 1080:
-        CROP_REGION = (759, 975, 60, 60)  
+        CROP_REGION = (759, 974, 60, 60)
+        scaled_reference = scale_reference_image(REFERENCE_IMAGE, 0.75)  # 1080p is 75% of 1440p
+    elif frame_width == 1280 and frame_height == 720:
+        CROP_REGION = (506, 650, 40, 40)
+        scaled_reference = scale_reference_image(REFERENCE_IMAGE, 0.5)  # 720p is 50% of 1440p
+    else:
+        print("Unsupported video resolution. Please provide a video with 2560x1440, 1920x1080, or 1280x720 resolution.")
+        return
     
-    print(f"Comparing video frames from {VIDEO_PATH} to {REFERENCE_IMAGE}")
+    print(f"Comparing video frames from {VIDEO_PATH} to {scaled_reference}")
     results = compare_video_frames_to_image(
         VIDEO_PATH, 
-        REFERENCE_IMAGE, 
+        scaled_reference, 
         crop_region=CROP_REGION,
         interval=0.25,  
         visualize=VISUALIZE,
