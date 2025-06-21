@@ -211,19 +211,37 @@ def compare_video_frames_to_image(video_path, reference_image_path, crop_region=
         
     return results
 
+def get_video_frame_size(video_path):
+    """Returns the frame dimensions (width, height) of a video file."""
+    if not os.path.exists(video_path):
+        raise FileNotFoundError(f"Video file not found: {video_path}")
+    
+    video = cv2.VideoCapture(video_path)
+    if not video.isOpened():
+        raise ValueError(f"Could not open video: {video_path}")
+    
+    width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    
+    video.release()
+    return (width, height)
+
 
 def main():
-    
     VIDEO_PATH = "video.mp4"  
-    REFERENCE_IMAGE = "nano.png"  
-    VISUALIZE = False
-    MAX_MATCHES = 3     
+    REFERENCE_IMAGE = "assets/abilities/Stim_Beacon.png"  
+    VISUALIZE = True
+    MAX_MATCHES = 1   
     
+    frame_width, frame_height = get_video_frame_size(VIDEO_PATH)
+    print(f"Video frame size: {frame_width}x{frame_height}")
     # Define crop region (x, y, width, height)
-    # 1015, 1300, 75, 75 -- FIRST ABILITY
-    # 1165, 1300, 75, 75 -- SECOND ABILITY
-    CROP_REGION = (1015, 1300, 75, 75)  
-
+    if frame_width == 2560 and frame_height == 1440:
+        # 1015, 1300, 75, 75 -- FIRST ABILITY
+        # 1165, 1300, 75, 75 -- SECOND ABILITY
+        CROP_REGION = (1015, 1300, 75, 75)  
+    elif frame_width == 1920 and frame_height == 1080:
+        CROP_REGION = (759, 975, 60, 60)  
     
     print(f"Comparing video frames from {VIDEO_PATH} to {REFERENCE_IMAGE}")
     results = compare_video_frames_to_image(
