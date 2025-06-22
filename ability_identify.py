@@ -272,9 +272,9 @@ def scale_reference_image(image_path, scale_factor):
 
 def main():
     VIDEO_PATH = "v7.mp4"
-    ABILITIES_FOLDER = "assets/abilities"
+    ABILITIES_FOLDER = "assets/count"
     VISUALIZE = True
-    MAX_MATCHES = 1   
+    MAX_MATCHES = 7   
     
     frame_width, frame_height = get_video_frame_size(VIDEO_PATH)
     print(f"Video frame size: {frame_width}x{frame_height}")
