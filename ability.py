@@ -144,16 +144,24 @@ def display_frame(frame, title="Frame", wait_time=0):
     key = cv2.waitKey(wait_time)
     return key
 
-def compare_video_frames_to_image(video_path, reference_image_path, crop_region=None, interval=1, visualize=False, max_matches=None):
-    """Extract frames from a video, optionally crop them, and compare to a reference image."""
+def compare_video_frames_to_abilities(video_path, abilities_folder, crop_region=None, interval=1, visualize=False, max_matches=None):
+    """Extract frames from a video, optionally crop them, and compare to all ability images in the folder."""
     frames = extract_frames(video_path, interval)
     results = []
     match_count = 0
     
-    reference_img = cv2.imread(reference_image_path)
+    # Get all PNG files from abilities folder
+    ability_images = []
+    if os.path.exists(abilities_folder):
+        for filename in os.listdir(abilities_folder):
+            if filename.lower().endswith('.png'):
+                ability_images.append(os.path.join(abilities_folder, filename))
     
-    if visualize:
-        display_frame(reference_img, "Reference Image", 1000)
+    if not ability_images:
+        print(f"No PNG files found in {abilities_folder}")
+        return []
+    
+    print(f"Found {len(ability_images)} ability images to compare against")
     
     for i, frame in enumerate(frames):
         timestamp = i * interval
@@ -171,16 +179,23 @@ def compare_video_frames_to_image(video_path, reference_image_path, crop_region=
         else:
             cropped_frame = frame
             
-        
         if visualize:
             display_frame(cropped_frame, f"Cropped Frame at {timestamp}s", 1000)
         
-        is_match = is_same_image(cropped_frame, reference_image_path, THRESHOLD)
-        results.append((i, timestamp, is_match))
+        # Compare against all ability images
+        matched_ability = None
+        for ability_path in ability_images:
+            if is_same_image(cropped_frame, ability_path, THRESHOLD):
+                matched_ability = os.path.basename(ability_path)
+                break
+        
+        is_match = matched_ability is not None
+        results.append((i, timestamp, is_match, matched_ability))
         
         # Check if we've reached the maximum number of matches
         if is_match:
             match_count += 1
+            print(f"Match found at {timestamp}s: {matched_ability}")
             if max_matches is not None and match_count >= max_matches:
                 break
         
@@ -188,14 +203,14 @@ def compare_video_frames_to_image(video_path, reference_image_path, crop_region=
             # Use green for matches, red for non-matches
             result_color = (0, 255, 0) if is_match else (0, 0, 255)
             result_frame = cropped_frame.copy()
-            result_text = "MATCH" if is_match else "NO MATCH"
+            result_text = f"MATCH: {matched_ability}" if is_match else "NO MATCH"
             # Add text showing the result
             cv2.putText(
                 result_frame, 
                 result_text, 
                 (10, 30), 
                 cv2.FONT_HERSHEY_SIMPLEX, 
-                1, 
+                0.7, 
                 result_color, 
                 2
             )
@@ -256,14 +271,8 @@ def scale_reference_image(image_path, scale_factor):
     return scaled_path
 
 def main():
-    # VIDEO_PATH = "v1080-4.mp4"
-    # REFERENCE_IMAGE = "assets/abilities/Stim_Beacon.png"  
-    # VIDEO_PATH = "v1080-2.mp4"
-    # REFERENCE_IMAGE = "assets/abilities/Cloudburst.png"  
-    # VIDEO_PATH = "v1080-3.mp4"
-    # REFERENCE_IMAGE = "assets/abilities/Trademark.png"
-    VIDEO_PATH = "v1080-5.mp4"
-    REFERENCE_IMAGE = "assets/abilities/Aftershock.png"
+    VIDEO_PATH = "v7.mp4"
+    ABILITIES_FOLDER = "assets/abilities"
     VISUALIZE = True
     MAX_MATCHES = 1   
     
@@ -273,21 +282,18 @@ def main():
     # Define crop region (x, y, width, height)
     if frame_width == 2560 and frame_height == 1440:
         CROP_REGION = (1015, 1300, 75, 75)
-        scaled_reference = REFERENCE_IMAGE
     elif frame_width == 1920 and frame_height == 1080:
         CROP_REGION = (759, 974, 60, 60)
-        scaled_reference = scale_reference_image(REFERENCE_IMAGE, 0.75)  # 1080p is 75% of 1440p
     elif frame_width == 1280 and frame_height == 720:
         CROP_REGION = (506, 650, 40, 40)
-        scaled_reference = scale_reference_image(REFERENCE_IMAGE, 0.5)  # 720p is 50% of 1440p
     else:
         print("Unsupported video resolution. Please provide a video with 2560x1440, 1920x1080, or 1280x720 resolution.")
         return
     
-    print(f"Comparing video frames from {VIDEO_PATH} to {scaled_reference}")
-    results = compare_video_frames_to_image(
+    print(f"Comparing video frames from {VIDEO_PATH} to abilities in {ABILITIES_FOLDER}")
+    results = compare_video_frames_to_abilities(
         VIDEO_PATH, 
-        scaled_reference, 
+        ABILITIES_FOLDER, 
         crop_region=CROP_REGION,
         interval=0.25,  
         visualize=VISUALIZE,
@@ -299,8 +305,8 @@ def main():
     
     if matching_frames:
         print("Matches found at timestamps (seconds):")
-        for _, timestamp, _ in matching_frames:
-            print(f"-{timestamp}s")
+        for _, timestamp, is_match, matched_ability in matching_frames:
+            print(f"- {timestamp}s: {matched_ability}")
 
 if __name__ == "__main__":
     main()
