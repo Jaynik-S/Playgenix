@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -7,6 +7,7 @@ import os
 from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
+import cv2
 
 app = FastAPI()
 load_dotenv()
@@ -127,7 +128,6 @@ async def auth_callback(request: Request):
                 "email": user_data.email,
                 "videos_remaining": profile_data.get("videos_remaining", 5)
             }
-    
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/logout")
@@ -139,6 +139,10 @@ async def logout(request: Request):
 async def upload(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse("upload.html", {"request": request, "user": user})
+
+@app.post("/upload")
+async def handle_upload(request: Request, video_file: UploadFile = File(...)):
+    pass
 
 @app.post("/contact", response_class=HTMLResponse)
 def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):

@@ -24,7 +24,8 @@
                         Upload your gameplay video and get instant AI-powered analysis.<br>Drag and drop your video file or browse to select.
                     </p>
                     
-                    <div class="upload-container">
+                    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                      <div class="upload-container">
                         <!-- File Upload Dropzone -->
                         <div class="upload-dropzone" id="upload-dropzone">
                             <div class="upload-icon">
@@ -35,9 +36,9 @@
                             <h3>Drag and Drop files to upload</h3>
                             <div class="upload-divider">or</div>
                             <button type="button" class="btn btn-outline" id="browse-btn">Browse</button>
-                            <input type="file" id="file-input" accept="video/*" style="display: none;">
+                            <input type="file" id="file-input" name="video_file" accept="video/*" style="display: none;">
                             <div class="upload-file-types">
-                                Supported files: MP4, MOV, AVI, MKV (Max 500MB)
+                                Supported files: MP4, MOV, AVI (Max 500MB)
                             </div>
                         </div>
 
@@ -136,9 +137,9 @@
         if (!file) return;
 
         // Validate file type
-        const validTypes = ['video/mp4', 'video/mov', 'video/avi', 'video/x-msvideo', 'video/quicktime', 'video/x-matroska'];
+        const validTypes = ['video/mp4', 'video/mov', 'video/avi'];
         if (!validTypes.includes(file.type)) {
-            alert('Please select a valid video file (MP4, MOV, AVI, MKV)');
+            alert('Please select a valid video file (MP4, MOV, AVI)');
             return;
         }
 
@@ -179,43 +180,5 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    // Form submission
-    uploadForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        if (!selectedFile) {
-            alert('Please select a file to upload');
-            return;
-        }
-
-        // Show progress bar
-        progressBar.style.display = 'block';
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-
-        // Simulate upload progress
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                
-                // Show success message
-                setTimeout(() => {
-                    uploadForm.style.display = 'none';
-                    uploadPreview.style.display = 'none';
-                    progressBar.style.display = 'none';
-                    uploadSuccess.style.display = 'block';
-                }, 500);
-            }
-            progressFill.style.width = progress + '%';
-        }, 200);
-
-        // Here you would normally submit the form data to your server
-        // const formData = new FormData(uploadForm);
-        // formData.append('video_file', selectedFile);
-        // fetch('/upload', { method: 'POST', body: formData });
-    });
 </script>
 </html>
