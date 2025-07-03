@@ -348,30 +348,71 @@ def process_video_for_ability_counts(video_path, reference_folder, output_json, 
     return results
 
 def main():
-    VIDEO_PATH = "v5.mp4"
+    VIDEO_PATH = "v9.mp4"
     REFERENCE_FOLDER = "assets/count"
     OUTPUT_JSON = "temp/ability_counts.json"
-    VISUALIZE = True  # Set to True for debugging
+    VISUALIZE = False  # Set to True for debugging
     
-    try:
-        results = process_video_for_ability_counts(
-            VIDEO_PATH, 
-            REFERENCE_FOLDER, 
-            OUTPUT_JSON, 
-            visualize=VISUALIZE
-        )
-        
-        print(f"\nProcessing complete!")
-        print(f"Analyzed {len(results)} timestamps")
-        
-        # Print summary
-        total_matches = sum(1 for timestamp_data in results.values() 
-                          for match in timestamp_data.values() if match is not None)
-        total_slots = len(results) * 4
-        print(f"Found matches in {total_matches}/{total_slots} slots ({total_matches/total_slots*100:.1f}%)")
-        
-    except Exception as e:
-        print(f"Error: {e}")
+    results = process_video_for_ability_counts(
+        VIDEO_PATH, 
+        REFERENCE_FOLDER, 
+        OUTPUT_JSON, 
+        visualize=VISUALIZE
+    )
+    
+        #V9
+    correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
+            '0:01': ['3-3', '2-2', '0-1', '1-1'],
+            '0:02': ['2-3', '2-2', '0-1', '1-1'],
+            '0:03': ['2-3', '2-2', '0-1', '1-1'],
+            '0:04': ['2-3', '2-2', '0-1', '1-1'],
+            '0:05': ['2-3', '2-2', '0-1', '1-1'],
+            '0:06': ['2-3', '2-2', '1-1', '1-1'],
+            '0:07': ['2-3', '2-2', '1-1', '1-1'],
+            '0:08': ['2-3', '2-2', '1-1', '1-1'],
+            '0:09': ['2-3', '1-2', '1-1', '1-1'],
+            '0:10': ['2-3', '1-2', '1-1', '1-1'],
+            '0:11': ['2-3', '1-2', '1-1', '1-1'],
+            '0:12': ['2-3', '1-2', '1-1', '1-1'],
+            '0:13': ['2-3', '1-2', '0-1', '1-1'],
+            '0:14': ['2-3', '1-2', '0-1', '1-1'],
+            '0:15': ['2-3', '1-2', '0-1', '1-1'],
+            '0:16': ['2-3', '1-2', '0-1', '1-1'],
+            '0:17': ['2-3', '1-2', '0-1', '1-1'],
+            '0:18': ['2-3', '1-2', '0-1', '1-1']}
+    
+    # Compare results with correct answer
+    total_comparisons, correct_matches = 0, 0
+    
+    print("\n=== ACCURACY COMPARISON ===")
+    
+    for timestamp, predicted_slots in results.items():
+        if timestamp in correct_answer:
+            expected_slots = correct_answer[timestamp]
+            
+            # Convert results dictionary to list in slot order
+            predicted_list = [
+                predicted_slots.get('Slot1', 'unknown'),
+                predicted_slots.get('Slot2', 'unknown'),
+                predicted_slots.get('Slot3', 'unknown'),
+                predicted_slots.get('Slot4', 'unknown')
+            ]
+            
+            # Compare each slot
+            for i, (predicted, expected) in enumerate(zip(predicted_list, expected_slots)):
+                total_comparisons += 1
+                if predicted == expected:
+                    correct_matches += 1
+                else:
+                    print(f"❌ {timestamp} Slot{i+1}: Expected '{expected}', Got '{predicted}'")
+    
+    # Calculate accuracy
+    accuracy = (correct_matches / total_comparisons) * 100 if total_comparisons > 0 else 0
+    
+    print(f"\n=== ACCURACY RESULTS ===")
+    print(f"Total comparisons: {total_comparisons}")
+    print(f"Correct matches: {correct_matches}")
+    print(f"Accuracy: {accuracy:.2f}%")
 
 if __name__ == "__main__":
     main()
