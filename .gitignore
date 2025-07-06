@@ -8,3 +8,5 @@ __pycache__/
 .vercel
 node_modules/
 .DS_Store
+data
+data_crop

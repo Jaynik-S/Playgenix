@@ -2,140 +2,9 @@ import cv2
 import os
 from collections import defaultdict
 import pprint
+from PIL import Image
+import imagehash
 
-def match_icon(screenshot, icon_folder, bbox, visualize=False):
-    x, y, w, h = bbox
-    cropped = screenshot[y:y+h, x:x+w]
-    
-    if visualize:
-        cv2.imshow("Screenshot", cropped)
-        cv2.waitKey(0)  # Wait indefinitely until a key is pressed
-        cv2.destroyAllWindows()  # Close the window after key press
-
-    best_score = float('-inf')
-    best_match = None
-
-    for icon_name in os.listdir(icon_folder):
-        icon_path = os.path.join(icon_folder, icon_name)
-        icon = cv2.imread(icon_path)
-
-        if icon is None or icon.shape[:2] != cropped.shape[:2]:
-            icon = cv2.resize(icon, (w, h))
-    
-        res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
-        _, score, _, _ = cv2.minMaxLoc(res)
-        print(f"{icon_path}: {score:.4f}")
-
-        if score > best_score:
-            best_score = score
-            best_match = icon_name
-
-    return best_match
-
-def match_charge(screenshot, charge_folder, bbox, visualize=False):
-    x, y, w, h = bbox
-    cropped = screenshot[y:y+h, x:x+w]
-    
-    if visualize:
-        cv2.imshow("Screenshot", cropped)
-        cv2.waitKey(0)  
-        cv2.destroyAllWindows() 
-
-    best_score = float('-inf')
-    best_match = None
-
-    # Convert to grayscale before histogram equalization
-    if len(cropped.shape) == 3:
-        cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-    cropped = cv2.equalizeHist(cropped)
-    # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    # cropped = clahe.apply(cropped)
-
-
-    for img_name in os.listdir(charge_folder):
-        img_path = os.path.join(charge_folder, img_name)
-        ref_img = cv2.imread(img_path)
-
-        if ref_img is None or ref_img.shape[:2] != cropped.shape[:2]:
-            ref_img = cv2.resize(ref_img, (w, h))
-
-
-
-        # Convert to grayscale before histogram equalization
-        if len(ref_img.shape) == 3:
-            ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
-        ref_img = cv2.equalizeHist(ref_img)
-        # ref_img = clahe.apply(ref_img)
-        
-
-        res = cv2.matchTemplate(cropped, ref_img, cv2.TM_CCOEFF_NORMED)
-        _, score, _, _ = cv2.minMaxLoc(res)
-        print(f"{img_path}: {score:.4f}")
-
-        if score > best_score:
-            best_score = score
-            best_match = img_name
-
-    return best_match
-
-def match_charge2(screenshot, charge_folder, bbox, visualize=False):
-    x, y, w, h = bbox
-    cropped = screenshot[y:y+h, x:x+w]
-
-    if visualize:
-        cv2.imshow("Screenshot", cropped)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    # preprocess crop: gray + equalize
-    if len(cropped.shape) == 3:
-        cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-    cropped = cv2.equalizeHist(cropped)
-
-    # the three methods we'll average
-    methods = [
-        cv2.TM_CCOEFF_NORMED,
-        cv2.TM_CCORR_NORMED,
-        cv2.TM_SQDIFF_NORMED
-    ]
-
-    best_score = float('-inf')
-    best_match = None
-
-    for img_name in os.listdir(charge_folder):
-        img_path = os.path.join(charge_folder, img_name)
-        ref = cv2.imread(img_path)
-
-        if ref is None:
-            continue
-
-        # resize + grayscale + equalize
-        ref = cv2.resize(ref, (w, h))
-        if len(ref.shape) == 3:
-            ref = cv2.cvtColor(ref, cv2.COLOR_BGR2GRAY)
-        ref = cv2.equalizeHist(ref)
-
-        # compute a score for each method
-        scores = []
-        for meth in methods:
-            res = cv2.matchTemplate(cropped, ref, meth)
-            min_val, max_val, _, _ = cv2.minMaxLoc(res)
-            if meth == cv2.TM_SQDIFF_NORMED:
-                # lower = better, so invert
-                sc = 1.0 - min_val
-            else:
-                # higher = better
-                sc = max_val
-            scores.append(sc)
-
-        avg_score = sum(scores) / len(scores)
-        print(f"{img_name} → scores {['{:.3f}'.format(s) for s in scores]} → avg {avg_score:.3f}")
-
-        if avg_score > best_score:
-            best_score = avg_score
-            best_match = img_name
-
-    return best_match
 
 def extract_frames(video_path, interval=1):
     """Extract frames from a video at specified time intervals (in seconds)."""
@@ -169,6 +38,87 @@ def format_timestamp(seconds):
     minutes = int(seconds // 60)
     secs = int(seconds % 60)
     return f"{minutes}:{secs:02d}"
+
+
+#############################
+# ICON
+#############################
+def match_icon(screenshot, icon_folder, bbox, visualize=False):
+    x, y, w, h = bbox
+    cropped = screenshot[y:y+h, x:x+w]
+    
+    if visualize:
+        cv2.imshow("Screenshot", cropped)
+        cv2.waitKey(0)  # Wait indefinitely until a key is pressed
+        cv2.destroyAllWindows()  # Close the window after key press
+
+    best_score = float('-inf')
+    best_match = None
+
+    for icon_name in os.listdir(icon_folder):
+        icon_path = os.path.join(icon_folder, icon_name)
+        icon = cv2.imread(icon_path)
+
+        if icon is None or icon.shape[:2] != cropped.shape[:2]:
+            icon = cv2.resize(icon, (w, h))
+    
+        res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
+        _, score, _, _ = cv2.minMaxLoc(res)
+        print(f"{icon_path}: {score:.4f}")
+
+        if score > best_score:
+            best_score = score
+            best_match = icon_name
+
+    return best_match
+
+#############################
+# CHARGES
+#############################
+def match_charge(screenshot, charge_folder, bbox, visualize=False):
+    x, y, w, h = bbox
+    cropped = screenshot[y:y+h, x:x+w]
+    
+    if visualize:
+        cv2.imshow("Screenshot", cropped)
+        cv2.waitKey(0)  
+        cv2.destroyAllWindows() 
+
+    best_score = float('-inf')
+    best_match = None
+
+    # Convert to grayscale before histogram equalization
+    if len(cropped.shape) == 3:
+        cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+    cropped = cv2.equalizeHist(cropped)
+    # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    # cropped = clahe.apply(cropped)
+
+
+    for img_name in os.listdir(charge_folder):
+        img_path = os.path.join(charge_folder, img_name)
+        ref_img = cv2.imread(img_path)
+
+        if ref_img is None or ref_img.shape[:2] != cropped.shape[:2]:
+            ref_img = cv2.resize(ref_img, (w, h))
+
+        # Convert to grayscale before histogram equalization
+        if len(ref_img.shape) == 3:
+            ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
+        ref_img = cv2.equalizeHist(ref_img)
+        # ref_img = clahe.apply(ref_img)
+        
+
+        res = cv2.matchTemplate(cropped, ref_img, cv2.TM_CCOEFF_NORMED)
+        _, score, _, _ = cv2.minMaxLoc(res)
+        print(f"{img_path}: {score:.4f}")
+
+        if score > best_score:
+            best_score = score
+            best_match = img_name
+
+    return best_match
+
 
 
 if __name__ == "__main__":
@@ -210,7 +160,7 @@ if __name__ == "__main__":
             ability_matches[ability_icon] += 1
         
         for bbox in charge_bboxes:
-            charge_icon = match_charge2(frame, "assets/count", bbox, visualize)
+            charge_icon = match_charge(frame, "assets/transparent", bbox, visualize) #HERE
             slot_matches[timestamp_str].append(charge_icon[0:3])
             print(f"Ability icon matched: {charge_icon[0:3]}")
         
