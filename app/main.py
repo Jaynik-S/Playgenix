@@ -7,6 +7,7 @@ import os
 from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
+from pathlib import Path
 import cv2
 
 app = FastAPI()
@@ -23,6 +24,8 @@ key = os.environ.get("SUPABASE_KEY")
 supabase = create_client(url, key)
 if not supabase:
     raise Exception("Failed to initialize Supabase client.")
+
+UPLOAD_DIR = Path() / 'app' / 'static' / 'uploads'
 
 # Helper function to get user context
 async def get_current_user(request: Request):
@@ -141,8 +144,13 @@ async def upload(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request, "user": user})
 
 @app.post("/upload")
-async def handle_upload(request: Request, video_file: UploadFile = File(...)):
-    pass
+async def upload(request: Request, video_file: UploadFile = File(...)):
+    data = await video_file.read()
+    video_path = UPLOAD_DIR / video_file.filename
+    with open(video_path, "wb") as f:
+        f.write(data)
+    # saved to app/static/uploads/video_file.filename
+    return {"filename:": video_file.filename, "content_type": video_file.content_type}
 
 @app.post("/contact", response_class=HTMLResponse)
 def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):
