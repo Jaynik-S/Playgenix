@@ -12,7 +12,7 @@ for path in image_paths:
     # make a black canvas of 128×32
     new_img = Image.new('RGB', target_size, background_color)
     # center the original crop
-    offset = ((target_size[0] - img.width) // 2,
-              (target_size[1] - img.height) // 2)
+    offset = ((target_size[0] - img.width) // 2, (target_size[1] - img.height) // 2)
     new_img.paste(img, offset)
     new_img.save(path, 'PNG')
+    

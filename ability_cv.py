@@ -4,6 +4,8 @@ from collections import defaultdict
 import pprint
 from PIL import Image
 import imagehash
+from img_preprocess import match_charge_cnn
+import numpy as np
 
 
 def extract_frames(video_path, interval=1):
@@ -122,8 +124,8 @@ def match_charge(screenshot, charge_folder, bbox, visualize=False):
 
 
 if __name__ == "__main__":
-    video_path = "v9.mp4" 
-    visualize = False
+    video_path = "v10.mp4" 
+    visualize = True
     
     cap = cv2.VideoCapture(video_path) 
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -160,14 +162,29 @@ if __name__ == "__main__":
             ability_matches[ability_icon] += 1
         
         for bbox in charge_bboxes:
-            charge_icon = match_charge(frame, "assets/transparent", bbox, visualize) #HERE
+            x, y, w, h = bbox
+            cropped = frame[y:y+h, x:x+w]
+            
+            pil_img = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
+            target_size = (128, 32)
+            new_img = Image.new('RGB', target_size, (0, 0, 0))
+            offset = ((target_size[0] - pil_img.width) // 2, (target_size[1] - pil_img.height) // 2)
+            new_img.paste(pil_img, offset)
+            resized_crop = cv2.cvtColor(np.array(new_img), cv2.COLOR_RGB2BGR)
+            
+            if visualize:
+                cv2.imshow("Resized Crop", resized_crop)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+
+            charge_icon = match_charge_cnn(resized_crop, None, (0, 0, target_size[0], target_size[1]))
             slot_matches[timestamp_str].append(charge_icon[0:3])
             print(f"Ability icon matched: {charge_icon[0:3]}")
         
     max_key = max(ability_matches, key=ability_matches.get)
     print(f'Ability match: {max_key[:len(max_key)-4]}')
     
-    #V9
+    #V10 (5K JETT)
     correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
             '0:01': ['3-3', '2-2', '0-1', '1-1'],
             '0:02': ['2-3', '2-2', '0-1', '1-1'],
