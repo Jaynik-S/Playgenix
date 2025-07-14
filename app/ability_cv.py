@@ -121,11 +121,8 @@ def match_charge(screenshot, charge_folder, bbox, visualize=False):
 
     return best_match
 
-
-
-if __name__ == "__main__":
-    video_path = "v10.mp4" 
-    visualize = True
+def main(file_name: str, visualize: bool = False):
+    video_path = f"app/static/uploads/{file_name}" 
     
     cap = cv2.VideoCapture(video_path) 
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -183,7 +180,8 @@ if __name__ == "__main__":
         
     max_key = max(ability_matches, key=ability_matches.get)
     print(f'Ability match: {max_key[:len(max_key)-4]}')
-    
+
+'''
     #V10 (5K JETT)
     correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
             '0:01': ['3-3', '2-2', '0-1', '1-1'],
@@ -204,21 +202,6 @@ if __name__ == "__main__":
             '0:16': ['2-3', '1-2', '0-1', '1-1'],
             '0:17': ['2-3', '1-2', '0-1', '1-1'],
             '0:18': ['2-3', '1-2', '0-1', '1-1']}
-
-    # differences = {}
-    # for timestamp in slot_matches:
-    #     if timestamp in correct_answer:
-    #         slot_diffs = []
-    #         for i, (predicted, actual) in enumerate(zip(slot_matches[timestamp], correct_answer[timestamp])):
-    #             if predicted != actual:
-    #                 slot_diffs.append(f'{predicted} vs {actual}')
-    #         if slot_diffs:
-    #             differences[timestamp] = slot_diffs
-
-    # print("\nDifferences between predictions and correct answers:")
-    # pprint.pprint(differences)
-    
-    total_comparisons, correct_matches = 0, 0
     
     print("\n=== ACCURACY COMPARISON ===")
     
@@ -241,4 +224,4 @@ if __name__ == "__main__":
     print(f"Total comparisons: {total_comparisons}")
     print(f"Correct matches: {correct_matches}")
     print(f"Accuracy: {accuracy:.2f}%")
-
+'''

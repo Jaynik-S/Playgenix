@@ -8,7 +8,7 @@ from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from pathlib import Path
-import cv2
+from ability_cv import main as process_video
 
 app = FastAPI()
 load_dotenv()
@@ -150,6 +150,7 @@ async def upload(request: Request, video_file: UploadFile = File(...)):
     with open(video_path, "wb") as f:
         f.write(data)
     # saved to app/static/uploads/video_file.filename
+    process_video(video_file.filename, visualize=False)
     return {"filename:": video_file.filename, "content_type": video_file.content_type}
 
 @app.post("/contact", response_class=HTMLResponse)

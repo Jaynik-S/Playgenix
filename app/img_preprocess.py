@@ -2,8 +2,8 @@
 import cv2, numpy as np, tensorflow as tf, json
 
 # 1) Load the best‐performing model & class names once
-model = tf.keras.models.load_model("best_slot_classifier.h5")
-with open("class_names.json") as f:
+model = tf.keras.models.load_model("assets/models/best_slot_classifier.h5")
+with open("assets/models/class_names.json") as f:
     class_names = json.load(f)
 
 # 2) Grab height (H) and width (W) from model.input_shape
