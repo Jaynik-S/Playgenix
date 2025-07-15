@@ -16,8 +16,8 @@ load_dotenv()
 # Add session middleware
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", "playgenix-secret-key"))
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_KEY")
@@ -145,6 +145,7 @@ async def upload(request: Request):
 
 @app.post("/upload")
 async def upload(request: Request, video_file: UploadFile = File(...)):
+    # user = await get_current_user(request)
     data = await video_file.read()
     video_path = UPLOAD_DIR / video_file.filename
     with open(video_path, "wb") as f:
