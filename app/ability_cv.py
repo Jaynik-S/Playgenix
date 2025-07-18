@@ -77,49 +77,49 @@ def match_icon(screenshot, icon_folder, bbox, visualize=False):
 #############################
 # CHARGES
 #############################
-def match_charge(screenshot, charge_folder, bbox, visualize=False):
-    x, y, w, h = bbox
-    cropped = screenshot[y:y+h, x:x+w]
+# def match_charge(screenshot, charge_folder, bbox, visualize=False):
+#     x, y, w, h = bbox
+#     cropped = screenshot[y:y+h, x:x+w]
     
-    if visualize:
-        cv2.imshow("Screenshot", cropped)
-        cv2.waitKey(0)  
-        cv2.destroyAllWindows() 
+#     if visualize:
+#         cv2.imshow("Screenshot", cropped)
+#         cv2.waitKey(0)  
+#         cv2.destroyAllWindows() 
 
-    best_score = float('-inf')
-    best_match = None
+#     best_score = float('-inf')
+#     best_match = None
 
-    # Convert to grayscale before histogram equalization
-    if len(cropped.shape) == 3:
-        cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-    cropped = cv2.equalizeHist(cropped)
-    # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    # cropped = clahe.apply(cropped)
+#     # Convert to grayscale before histogram equalization
+#     if len(cropped.shape) == 3:
+#         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+#     cropped = cv2.equalizeHist(cropped)
+#     # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+#     # cropped = clahe.apply(cropped)
 
 
-    for img_name in os.listdir(charge_folder):
-        img_path = os.path.join(charge_folder, img_name)
-        ref_img = cv2.imread(img_path)
+#     for img_name in os.listdir(charge_folder):
+#         img_path = os.path.join(charge_folder, img_name)
+#         ref_img = cv2.imread(img_path)
 
-        if ref_img is None or ref_img.shape[:2] != cropped.shape[:2]:
-            ref_img = cv2.resize(ref_img, (w, h))
+#         if ref_img is None or ref_img.shape[:2] != cropped.shape[:2]:
+#             ref_img = cv2.resize(ref_img, (w, h))
 
-        # Convert to grayscale before histogram equalization
-        if len(ref_img.shape) == 3:
-            ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
-        ref_img = cv2.equalizeHist(ref_img)
-        # ref_img = clahe.apply(ref_img)
+#         # Convert to grayscale before histogram equalization
+#         if len(ref_img.shape) == 3:
+#             ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
+#         ref_img = cv2.equalizeHist(ref_img)
+#         # ref_img = clahe.apply(ref_img)
         
 
-        res = cv2.matchTemplate(cropped, ref_img, cv2.TM_CCOEFF_NORMED)
-        _, score, _, _ = cv2.minMaxLoc(res)
-        print(f"{img_path}: {score:.4f}")
+#         res = cv2.matchTemplate(cropped, ref_img, cv2.TM_CCOEFF_NORMED)
+#         _, score, _, _ = cv2.minMaxLoc(res)
+#         print(f"{img_path}: {score:.4f}")
 
-        if score > best_score:
-            best_score = score
-            best_match = img_name
+#         if score > best_score:
+#             best_score = score
+#             best_match = img_name
 
-    return best_match
+#     return best_match
 
 def main(file_name: str, visualize: bool = False):
     video_path = f"app/static/uploads/{file_name}" 

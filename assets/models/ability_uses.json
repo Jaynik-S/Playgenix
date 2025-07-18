@@ -1,0 +1,82 @@
+{
+  "Brimstone": {
+    "Abilities List": {
+      "Incendiary": "Launches a grenade that deploys a lingering fire on impact. Use case: deploy on narrow choke points (e.g., B Long on Bind) to block enemy entry or flush out defenders holding tight angles. For ML: look for clusters of defenders grouped near doorways or ramps, then trigger Incendiary to drive them out.",
+      "Stim Beacon": "Deploys a beacon that grants RapidFire buff to all nearby teammates within a small radius. Use case: coordinate with teammates before a site push—drop beacon in default plant spot to increase firing rate during the plant. For ML: detect imminent team push (multiple agents converging), then activate beacon just before utility removal.",
+      "Sky Smoke": "Calls in long-duration smokes at targeted map locations. Use case: block sightlines for enemy snipers (e.g., A Heaven on Split) to allow safe cross or plant. For ML: when encountering enemy gunfire from high angles, predict useful smoke coordinates and deploy.",
+      "Orbital Strike": "After a brief channel, calls in a high-damage laser over a large area for several seconds. Use case: clear entrenched post-plant positions (e.g., default B on Haven) or deny defuse attempts. For ML: detect a bomb plant event, then fire Orbital Strike on the plant site to delay defuse."
+    }
+  },
+  "Sage": {
+    "Abilities List": {
+      "Barrier Orb": "Places a solid wall that can be rotated before deployment. Use case: block rushes through chokepoints (e.g., mid on Haven) or create vertical cover to boost allies. For ML: upon multiple enemies detected rushing a corridor, place wall perpendicular to their path to stall.",
+      "Slow Orb": "Throws an orb that bursts into a slowing field, reducing movement and jump speed and creating noise when enemies move through it. Use case: slow enemy pushes through narrow corridors (e.g., B Link on Icebox) to buy time. For ML: identify high-speed enemy burst movements and deploy Slow Orb ahead of line of sight.",
+      "Healing Orb": "Heals a single ally or self over time. Use case: heal frontline duelists immediately after a firefight (e.g., Jett after defusing). For ML: track teammate health below a threshold and target healing orb for minimal overheal waste.",
+      "Resurrection": "Channels to revive a dead ally at full health. Use case: bring back a crucial teammate (e.g., operator user) when safe cover is available. For ML: detect critical teammate death and safe conditions (no nearby enemies), then initiate resurrection."
+    }
+  },
+  "Sova": {
+    "Abilities List": {
+      "Shock Bolt": "Fires an electrified bolt that explodes upon impact, dealing damage in a small radius. Use case: clear common hiding spots (e.g., default A site boxes) before entry. For ML: detect enemy audio cues or radar presence in confined spaces, then shoot Shock Bolt into that area.",
+      "Recon Bolt": "Fires a bolt that emits sonar pulses, revealing nearby enemies in its line of sight. Use case: gather intel around corners or behind cover (e.g., B Doors on Haven) prior to a team push. For ML: when approaching a site, scan high-traffic positions by predicting bolt trajectories that maximize line-of-sight coverage.",
+      "Owl Drone": "Deploys a remote-controlled drone that tags enemies it passes over. Use case: stealthily scout tight corridors (e.g., A Hall on Split) without risking operator exposure. For ML: when no recent intel for 5 seconds, send drone along main path to tag up to two enemies.",
+      "Hunter’s Fury": "Fires three long-range energy blasts that penetrate walls, dealing damage and revealing enemies. Use case: post-plant denial through walls (e.g., across from A on Bind) or preemptive cross-site damage. For ML: upon bomb plant, align blasts through known defender positions to both damage and reveal."
+    }
+  },
+  "Phoenix": {
+    "Abilities List": {
+      "Blaze": "Creates a wall of flame that blocks vision and damages anyone passing through. Use case: cut off rotations (e.g., CT spawn on Split) or create safe doorway for plant. For ML: detect enemy positioning around entry, then deploy Blaze along likely approach paths.",
+      "Curveball": "Throws a flare orb that curves left or right and blinds all who look at it. Use case: blind defenders holding tight angles (e.g., A Rafters on Ascent) before peeking. For ML: when agent readies peek, cast Curveball timed so blinding activates just before movement begins.",
+      "Hot Hands": "Throws a fireball that explodes after a delay or on impact, healing Phoenix and damaging enemies in the area. Use case: use as self-heal after entry frag or clear corner when low health. For ML: if health drops below 50% in a confined area, throw Hot Hands at feet to heal while flush out hiding enemies.",
+      "Run It Back": "Marks Phoenix’s current location; if killed during ability, or when timer ends, Phoenix respawns at mark with full health. Use case: aggressive site entry or retake to draw utility and attention. For ML: when the team sets up a coordinated retake, activate Run It Back to safely test enemy positions."
+    }
+  },
+  "Jett": {
+    "Abilities List": {
+      "Cloudburst": "Throws a projectile that expands into a brief vision-blocking cloud on impact. Use case: obscure enemy sightlines for repositioning (e.g., screens on Haven). For ML: when about to dash across open area under fire, cast Cloudburst just ahead to block vision.",
+      "Updraft": "Propels Jett upward into the air. Use case: gain vertical advantage to surprise enemies (e.g., catwalk on Bind) or escape. For ML: detect low-cover environment and use Updraft to reach high ground for flank.",
+      "Tailwind": "Dashes Jett in her current movement direction. Use case: quickly close gap on weakened enemy or dodge ultimates. For ML: when enemy Ult channel is detected (e.g., Sova’s Hunter’s Fury), dash perpendicular to avoid damage.",
+      "Blade Storm": "Equips a set of deadly throwing knives that deal headshot-level damage and reset on kills. Use case: eco-round force buy to secure kills with high accuracy. For ML: when economy low and primary weapon unavailable, switch to Blade Storm and target isolated enemies."
+    }
+  },
+  "Raze": {
+    "Abilities List": {
+      "Boom Bot": "Deploys a robot that travels in a straight line, bouncing off walls—and locks onto and chases the nearest enemy, exploding on proximity. Use case: clear close-range corners (e.g., Garage on Split). For ML: when entering unknown room, launch Boom Bot ahead to clear traps or spot defenders.",
+      "Paint Shells": "Throws a cluster grenade that bursts into multiple sub-munitions after a delay, each dealing area damage. Use case: deny defuse or clear plant zone. For ML: detect bomb plant event, then lob Paint Shells onto site to force defenders out of cover.",
+      "Blast Pack": "Throws a satchel that sticks to surfaces; can be detonated to deal damage and boost Raze into air. Use case: mobility for vertical or horizontal repositioning or close-quarters damage. For ML: when low on health and under fire, detonate satchel behind to quickly escape and damage pursuing enemies.",
+      "Showstopper": "Fires a locked-on rocket launcher, dealing massive area damage on impact. Use case: clear entrenched post-plant positions or secure multi-kills in clustered scenarios. For ML: identify group of enemies within a small radius (e.g., tight bomb site), then activate Showstopper to maximize damage."
+    }
+  },
+  "Cypher": {
+    "Abilities List": {
+      "Trapwire": "Places a tripwire between two walls that tethers and reveals enemies who cross it; if not destroyed in time, it stuns and reveals full body. Use case: cover flanks (e.g., B Sofa on Haven) or early warning. For ML: when team lacks flank protection, place Trapwire across likely rotation path.",
+      "Cyber Cage": "Deploys a remote-activated cage that, when triggered, slows enemies and blocks vision. Use case: delay pushes or provide safe cross. For ML: detect approaching enemies via Trapwire, then trigger Cyber Cage to buy time for rotation.",
+      "Spycam": "Places a camera that can fire a tagging dart to reveal enemy location. Use case: long-range surveillance of key chokepoints (e.g., Mid on Bind). For ML: when no recent intel from area, switch to Spycam view and tag any detected moving targets.",
+      "Neural Theft": "Activates on a dead enemy corpse to reveal the location of all living enemies. Use case: after a successful frag, gather full team intel for site assault. For ML: upon kill confirmation, automatically use Neural Theft to update team’s minimap with enemy positions."
+    }
+  },
+  "Omen": {
+    "Abilities List": {
+      "Shrouded Step": "After a short channel, teleports Omen to a nearby marked location. Use case: reposition to unexpected flanking angles (e.g., A Heaven on Split). For ML: when under pressure, predict safe teleport coordinates behind cover.",
+      "Paranoia": "Sends out an orb that travels in a straight line, reducing vision range and deafening anyone it passes through. Use case: blind defenders during site executes (e.g., B Main on Bind). For ML: detect enemy anchoring positions, then fire Paranoia to isolate site entry.",
+      "Dark Cover": "Throws a shadow orb that deploys a sphere of shadow that blocks vision; spheres travel farther by teleporting mid-air. Use case: smoke off deep angles (e.g., Hookah on Haven) from spawn. For ML: for long-range smoke lines, calculate two-phase trajectory to cover key sightlines.",
+      "From the Shadows": "Teleports Omen anywhere on the map; interrupted by damage. Use case: create game-changing flanks or pre-plant distractions. For ML: when enemies are oriented toward bomb site, teleport behind them to sow confusion."
+    }
+  },
+  "Viper": {
+    "Abilities List": {
+      "Snake Bite": "Fires a projectile that explodes into a pool of acid, damaging and applying a debuff that increases damage taken. Use case: deny plant or flush out hold sites (e.g., B Site on Split). For ML: when bomb plant is initiated, lob Snake Bite directly onto plant spot.",
+      "Poison Cloud": "Throws a gas emitter that can be reactivated to create a toxic gas cloud at its location. Use case: block vision and damage enemies pushing through choke (e.g., A Short on Icebox). For ML: identify multiple enemies stacking near choke, then activate emitter to maximize coverage.",
+      "Toxic Screen": "Deploys a long line of gas emitters which can be activated to create a continuous wall of toxic gas. Use case: cut crossfire lines (e.g., B Main to B Back on Haven) to allow safe traversal. For ML: during site executes, raise wall across crossfire gutters to isolate defenders.",
+      "Viper’s Pit": "Erupts a large toxic cloud around Viper that greatly reduces enemy vision and continuously damages those inside. Use case: post-plant zone control—hold bomb site safely inside the cloud. For ML: once bomb is planted, detect confined space and activate Pit to lock down area."
+    }
+  },
+  "Killjoy": {
+    "Abilities List": {
+      "Nanoswarm": "Places a grenade that, upon activation, releases a swarm of nanobots dealing damage over time in a small area. Use case: cover defuse attempts or blind rushes (e.g., Mid Doors on Split). For ML: when bomb is being defused, activate swarm directly on the defuser.",
+      "Alarmbot": "Deploys a bot that hunts down enemies in range, applying a vulnerability debuff on proximity. Use case: early warning and damage boost for free picks. For ML: place Alarmbot near common entry to trigger when enemy crosses threshold.",
+      "Turret": "Deploys a mounted turret that fires at enemies in a cone in front of it, tagging them after a few seconds. Use case: area denial and intel (e.g., B Window on Bind). For ML: when zone lacks surveillance, position turret to cover blind spots.",
+      "Lockdown": "Activates a device that, after a long wind-up, detains all enemies caught in its radius. Use case: secure a full site clear or stop post-plant retake. For ML: upon team executing a site take, deploy Lockdown centrally to catch any hidden defenders."
+    }
+  }
+}

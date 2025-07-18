@@ -1,0 +1,245 @@
+[
+  {
+    "Agent Name": "Brimstone",
+    "Abilities List": {
+      "Stim Beacon": "Deploys a tactical beacon that grants rapid fire rate to all allies within its radius. 30-second cooldown. Useful for coordinated site takes—combines with Breach flashes for entry. Best used mid-round to sustain pushes under enemy fire, or post-plant to deter defuses.",
+      "Incendiary": "Launches a grenade that creates a lingering area-denial fire. 25-second cooldown. Blocks choke points (e.g., B Long on Haven), flushes enemies from retreats, denies defuses. Use in pre-plant setups or to stall rotations.",
+      "Sky Smoke": "Calls in up to three orbital smoke clouds at targeted map locations. 35-second cooldown. Smokes descend instantly and last 14 seconds. Ideal for obscuring vision at bomb sites during executes or for safe rotations. Maintain line-of-sight for placement; coordinate with teammates.",
+      "Orbital Strike": "Ultimate: Designates a large area for a 7-second delayed orbital laser strike, dealing massive damage over 3 seconds. 7-point cost. Devastates defended sites post-plant or punishes common hide spots (e.g., default on A Site Bind). Use intel (Sova, Cypher) to maximize impact."
+    }
+  },
+  {
+    "Agent Name": "Phoenix",
+    "Abilities List": {
+      "Curveball": "Charges and throws a flare that curves left or right, briefly blinding anyone looking at it. 25-second cooldown. Excellent for self-entry—pop flash around corners (e.g., Hookah on Split). Use early-round to take duels; combo with mains for vertical clearance.",
+      "Hot Hands": "Throws a fireball that bursts on impact, creating a healing zone for Phoenix and damaging foes. 30-second cooldown. Use to heal after duels or soften entrenched enemies. Can be tossed under heaven on Haven for post-plant healing.",
+      "Blaze": "Creates a controllable flame wall that blocks vision and damages on contact. 20-second cooldown. Curve through doorways to block rotated pushes or seal flanks. Use mid-round to isolate duels or secure defuse attempts by obscuring lines.",
+      "Run It Back": "Ultimate: Marks current location. If Phoenix dies during this period (or time expires after 10 seconds), he respawns at the mark with full health. 7-point cost. Use for high-risk entry or post-plant commitment. Ideal when team needs a power play to retake or secure site."
+    }
+  },
+  {
+    "Agent Name": "Sage",
+    "Abilities List": {
+      "Barrier Orb": "Cast to place a solid wall you can rotate. 45-second cooldown. Blocks enemy sightlines (e.g., cubby on A Site Bind) or creates high-ground for defenders. Use to stall pushes or elevate teammates for off-angle peeks.",
+      "Slow Orb": "Throws an orb that detonates into a slowing field, reducing movement and jump speed by 35%. 30-second cooldown. Denies fast pushes, slows post-plant retakes. Combine with Cypher traps to lock down sites.",
+      "Healing Orb": "Heals an ally or self over 4 seconds for 100 HP. 20-second cooldown. Critical in prolonging duels—use mid-round after team skirmishes or just before executing site. Keep on cooldown to sustain health bars.",
+      "Resurrection": "Ultimate: Revives a dead teammate with full health. 8-point cost. Game-changing in late rounds—bring back duelists to retake site or clutch. Requires 2.5 seconds channel; ensure cover before use."
+    }
+  },
+  {
+    "Agent Name": "Sova",
+    "Abilities List": {
+      "Shock Bolt": "Fires an explosive bolt that deals area damage on impact. 20-second cooldown. Use to clear common positions (e.g., Default A Bind). Line-of-sight required; adjust charge to reach high ground.",
+      "Recon Bolt": "Launches a bolt that emits sonar pulses, revealing nearby enemies for 6 seconds. 30-second cooldown. Bounce off walls for deep intel (e.g., A Main Split). Coordinate with executes or lurk watches.",
+      "Owl Drone": "Deploys a controllable drone for manual scouting and tagging with a dart. 35-second cooldown. Use pre-round for enemy setup info or mid-round to check tight corners safely.",
+      "Hunter's Fury": "Ultimate: Equipped with a short-cooldown bow firing three long-range energy blasts that damage and reveal enemies. 7-point cost. Fires through walls, ideal to interrupt defuses or flush post-plant defenders. Communicate target zones for efficient use."
+    }
+  },
+  {
+    "Agent Name": "Viper",
+    "Abilities List": {
+      "Snake Bite": "Launches a canister that bursts into a pool of acid, dealing damage over time. 25-second cooldown. Denies planting areas (default zones) or clears corners. Use in combination with Poison Cloud to widen denial.",
+      "Poison Cloud": "Throws a gas emitter canister; re-activate to toggle a large smoke screen that lasts while fuel remains. 35-second cooldown + 1-fuel per second. Blocks sightlines, serves as portable smokes. Use during executes or post-plant to cover defuse.",
+      "Toxic Screen": "Deploys a line of gas emitters that can be re-activated to create a long, continuous wall for 20 seconds. 50-second cooldown + fuel. Splits sites to block rotations (e.g., Heaven to Site). Coordinate with teammates for crossfires.",
+      "Viper's Pit": "Ultimate: Emits a massive chemical cloud in a radius that lasts up to 20 seconds, massively reducing enemy vision and health while inside. 7-point cost. Ideal for post-plant hiding or cutting rotations. Use on spike site after plant to guarantee post-plant control."
+    }
+  },
+  {
+    "Agent Name": "Cypher",
+    "Abilities List": {
+      "Trapwire": "Places a tripwire between two walls. Enemies that cross are tethered and revealed after 1.5 seconds. 30-second cooldown. Excellent for flank watch or locking tight corridors (e.g., Hookah Split). Pair with camera for kills.",
+      "Cyber Cage": "Throws a canister that can be activated to create a zone of vision-blocking smoke and slows. 30-second cooldown. Use for site entries (block CT on Haven C) or to cover defuse. Can combo with Trapwire for denial.",
+      "Spycam": "Deploys a remote camera that Cypher can manually control and fire a dart to reveal enemies. 35-second cooldown. Provides long-distance intel (e.g., B Long Bind). Keep hidden; reposition after each use.",
+      "Neural Theft": "Ultimate: Extracts information from a dead enemy, revealing positions of all living enemies for 6 seconds. 7-point cost. Game-changing for retakes—use after getting a pick to help team execute site or hunt last opponents."
+    }
+  },
+  {
+    "Agent Name": "Reyna",
+    "Abilities List": {
+      "Leer": "Throws an eye orb that nearsights enemies looking at it for 3 seconds. 25-second cooldown. Ideal for solo entry duels—pop before peeking. Combine with flash timing to maximize entry success.",
+      "Devour": "On kill, uses Soul Orb to heal to full health over 1 second. 40-second cooldown. Finisher on critically wounded foes yields instant usage; sustain Warwick-like snowball on frags.",
+      "Dismiss": "On kill, consumes Soul Orb to become intangible/invulnerable for 1.5 seconds. 40-second cooldown. Escape or reposition after aggressive fragging; avoids enemy utility like flashes or grenades.",
+      "Empress": "Ultimate: Enhances firing rate, equip swap speed, and grants infinite charges of Devour/Dismiss for 15 seconds. 7-point cost. Go-to for clutch scenarios—combo with close-range fights to snowball rounds."
+    }
+  },
+  {
+    "Agent Name": "Killjoy",
+    "Abilities List": {
+      "Nanoswarm": "Places a grenade that activates on command, dealing heavy damage over 4 seconds. 25-second cooldown. Hide in corners to deny defuse or delay plant. Use with Alarmbot combo.",
+      "Alarmbot": "Deploys a bot that hunts enemies, applying a vulnerability debuff on hit. 30-second cooldown. Great for flank detection or site reentry intel—pairs with Turret to track targets.",
+      "Turret": "Places an automated turret that fires low-damage bullets in a 180° arc. 45-second cooldown. Zone control on rotated areas (e.g., elbow on Split); reveals hidden pushes.",
+      "Lockdown": "Ultimate: Charges over 13 seconds then emits a radius that detains all enemies caught, rendering them vulnerable. 7-point cost. Best used in post-plant to force defuse attempts or secure sites."
+    }
+  },
+  {
+    "Agent Name": "Breach",
+    "Abilities List": {
+      "Aftershock": "Equips a charge that bursts through walls, dealing heavy damage in a small radius. 35-second cooldown. Clear tight corners (e.g., lamps on Ascent). Requires line-of-sight to cast.",
+      "Flashpoint": "Channels a flash that detonates after travel, blinding all looking enemies. Two charges, 22-second cooldown per charge. Pre-entry flash clears entries and denies vision.",
+      "Fault Line": "Channels seismic charge that triggers a quake after delay, concussing enemies in a large area. Two charges, 38-second cooldown per channel. Clears sites pre-plant or stalls pushes.",
+      "Rolling Thunder": "Ultimate: Fires a long-range seismic wave that knocks up and concusses all enemies in path. 7-point cost. Huge frontline tool for site clears or counter-pushes—coordinate timing with allies."
+    }
+  },
+  {
+    "Agent Name": "Omen",
+    "Abilities List": {
+      "Shrouded Step": "Selects a location within 15 meters; after 1 second, teleports there. 30-second cooldown. Silent repositioning for flanks or quick peeks into common angles (e.g., Elbow on Split).",
+      "Paranoia": "Launches a shadow in a straight line that nearsights all it touches. 30-second cooldown. Great for rushing sites or limiting defenders’ vision during executes.",
+      "Dark Cover": "Throws a stealthed orb that expands into a sphere of shadow. 35-second cooldown. Place high or low to create multi-layered smokes. Stealthed—enemies only see the effect, not the source.",
+      "From the Shadows": "Ultimate: Teleports Omen across map; upon landing, he can cancel to return. 7-point cost. Perfect for deep flanks or site retakes; risky if enemies spot materialization."
+    }
+  },
+  {
+    "Agent Name": "Jett",
+    "Abilities List": {
+      "Cloudburst": "Throws a projectile that expands into a brief vision-blocking cloud on impact or on re-cast. Two charges, 25-second cooldown per charge. Ideal for darting around corners safely.",
+      "Updraft": "Propels Jett high into the air. 35-second cooldown. Access vertical peeks (e.g., Heaven on Bind) or dodge low utility like molotovs.",
+      "Tailwind": "Dash in the movement direction. 25-second cooldown. Escape after duels or reposition for unexpected angles—can dash through smokes.",
+      "Blade Storm": "Ultimate: Equips precision throwing knives that one-shot headshot enemies and replenish on kills. 7-point cost. Excellent for eco rounds, one-versus-two clutch scenarios, and silent entry."
+    }
+  },
+  {
+    "Agent Name": "Raze",
+    "Abilities List": {
+      "Boom Bot": "Deploys a robot that travels in a straight line, bouncing off walls, and locks onto the first enemy in range, exploding on proximity. 25-second cooldown. Clear tight corners or post-plant flanks.",
+      "Paint Shells": "Throws a cluster grenade that bursts into sub-munitions after a short delay. 30-second cooldown. Denies common spots (e.g., A Link on Bind) or forces enemies out of cover.",
+      "Blast Pack": "Places a satchel charge that can be detonated to deal damage and knockback. Two charges, 20-second cooldown per charge. Use for aggressive entry—knock enemies out of position or boost yourself to unexpected heights.",
+      "Showstopper": "Ultimate: Equips a launcher that fires a rocket dealing massive area damage. 7-point cost. Ideal for post-plant denial, clearing held sites, or clutched entry—be mindful of collateral."
+    }
+  },
+  {
+    "Agent Name": "Skye",
+    "Abilities List": {
+      "Regrowth": "Channel to heal allies in range in a flowing wave. 40-second cooldown. Sustain teammates through duels—use pre-plant skirmishes.",
+      "Trailblazer": "Send out a controllable Tasmanian tiger trinket that concusses and deals minor damage. Two charges, 35-second cooldown per charge. Clear corners safely or scout flanks.",
+      "Guiding Light": "Send out a hawk trinket that flashes on re-activation. Two charges, 25-second cooldown per charge. Curve around walls to blind defenders pre-entry.",
+      "Seekers": "Ultimate: Fires three seekers that track the three nearest enemies, nearsighting them on contact. 7-point cost. Great for breaking enemy setups or locating hidden anchors post-plant."
+    }
+  },
+  {
+    "Agent Name": "Yoru",
+    "Abilities List": {
+      "Fakeout": "Deploys an echo that mimics footsteps; can be detonated to create fake audio cues. Two charges, 30-second cooldown per charge. Distract defenders during site splits.",
+      "Blindside": "Lob a flash that bends after a short fuse, blinding enemies in its line of sight. Two charges, 25-second cooldown per charge. Line-of-sight dependent; great for deep flashes inside sites.",
+      "Gatecrash": "Place a tether that, on re-cast, teleports Yoru to its location. One charge, 40-second cooldown. Setup aggressive flanks or surprise entries; tether remains if Yoru dies before teleport.",
+      "Dimensional Drift": "Ultimate: Equip mask and enter a void dimension for 15 seconds, invisible and invulnerable to enemies outside. 7-point cost. Scout sites safely or reposition undetected for post-plant plays."
+    }
+  },
+  {
+    "Agent Name": "Astra",
+    "Abilities List": {
+      "Gravity Well": "From Astral Form, place a star that can be activated to pull enemies toward its center then detonate. 30-second cooldown per star. Combo with smokes for massive crowd control in post-plant.",
+      "Nova Pulse": "Place a star that can be activated to concuss all players in its area after a brief delay. 25-second cooldown per star. Denies pushes or forces retreats from hold spots.",
+      "Nebula / Dissipate": "Place a star that can become a smoke (Nebula) or be temporarily removed to reposition (Dissipate). 35-second cooldown per star. Versatile for cross-site smokes or quick map-wide support.",
+      "Cosmic Divide": "Ultimate: Draw a large wall across the map that blocks bullets and mutes sound for 8 seconds. 7-point cost. Splits fights—use to isolate duels in executes or to protect plants/defuses."
+    }
+  },
+  {
+    "Agent Name": "KAY/O",
+    "Abilities List": {
+      "FRAG/ment": "Toss a fragmentation grenade that bursts into four dangerous fragments after impact. 25-second cooldown. Clear corners or stagger site defenders.",
+      "FLASH/drive": "Throws a flash that explodes mid-air, blinding in all directions. Two charges, 30-second cooldown per charge. Entry flash for vertical and horizontal obscuration.",
+      "ZERO/point": "Equip to throw a suppression blade. Upon detonation, suppresses enemy abilities in its area for 4 seconds. 35-second cooldown. Neutralize defenders’ utility—prime for duelist entry.",
+      "NULL/cmd": "Ultimate: After charging, detonate to emit pulses that suppress all enemies in a large radius. Also grants KAY/O an extra FRAG/ment charge. 7-point cost. Use to initiate site hits or retake heavily fortified positions."
+    }
+  },
+  {
+    "Agent Name": "Chamber",
+    "Abilities List": {
+      "Trademark": "Places a trap that scans for enemies; when triggered, slows those in range. 30-second cooldown. Great for flank watching or defending post-plant positions.",
+      "Headhunter": "Equips a heavy pistol (two-shot headshot) with limited mag; can be re-purchased. 35-second cooldown. Use mid-round to pick off swinging enemies.",
+      "Rendezvous": "Places two teleport anchors. Can teleport between them from anywhere on the map. 40-second cooldown. Fall-back tool—deploy anchors at sites for safe retreats or quick rotation.",
+      "Tour De Force": "Ultimate: Summons a powerful sniper rifle that kills on body shot and creates a slowing field on kill. 7-point cost. Anchor bombsights or clutch long-range duels."
+    }
+  },
+  {
+    "Agent Name": "Neon",
+    "Abilities List": {
+      "Fast Lane": "Channels two parallel lines of lightning that block vision and electrify enemies passing through. 35-second cooldown. Deny long sightlines (e.g., A Long Bind) or cut rotations.",
+      "Relay Bolt": "Fires an energy bolt that bounces once, then flashes in its area. 30-second cooldown. Clear corners or stagger defenders across angles.",
+      "High Gear": "Ultimate-charge ability: Enables high-speed sprint with unlimited slides; collisions stun enemies. 7-point cost. Rapid entry or flank tool—use to surprise rotates or chase down kills.",
+      "Overdrive": "Feeds off High Gear: Fires a continuous electric beam that deals heavy damage. Ends High Gear. 7-point cost. Use after cornering fast targets or finishing off low-HP opponents."
+    }
+  },
+  {
+    "Agent Name": "Fade",
+    "Abilities List": {
+      "Prowler": "Throws a creature that travels in a straight line, near-sighting and concussing enemies it touches. 30-second cooldown. Clear hidden corners or deny post-plant positions.",
+      "Seize": "Launches a projectile that erupts into a zone, pulling and concussing enemies caught within. 25-second cooldown. Great for grouping enemies for team trades.",
+      "Haunt": "Sends out a shadow orb that reveals the location of all enemies in its path briefly. 35-second cooldown. Provide intel before executes or when retaking sites.",
+      "Nightfall": "Ultimate: Releases a wave of dark mist that reduces vision and decays enemies’ health over time. 7-point cost. Ideal for post-plant zone control or denying defuse attempts."
+    }
+  },
+  {
+    "Agent Name": "Harbor",
+    "Abilities List": {
+      "Cascade": "Sends out a drifting wall of water that obstructs vision. 30-second cooldown. Use to block rotations or choke points on executes.",
+      "Cove": "Deploys a sphere of water that extinguishes fire effects and grants damage reduction inside. 25-second cooldown. Counter Brimstone/Viper on post-plant or during executes.",
+      "High Tide": "Channels a massive tide that travels forward, creating a multi-segment wall of water. 40-second cooldown. Divide site or split defender attention on executes.",
+      "Reckoning": "Ultimate: Calls down a crushing tidal wave in a large area, deafening and heavily damaging enemies caught within. 7-point cost. Strong for site clears or punishing rotations."
+    }
+  },
+  {
+    "Agent Name": "Gekko",
+    "Abilities List": {
+      "Mosh Pit": "Throws a canister that hatches into a creature which seeks out and concusses enemies. 30-second cooldown. Use to soften defenders in corners or deter defuse attempts.",
+      "Wingman": "Summons a controllable creature that fires a bullet to damage or tag enemies. 40-second cooldown. Great for remote scouting and finishing low-HP foes.",
+      "Dizzy": "Releases a group of creatures that explode into fragmented concussive blasts. 35-second cooldown. Deny entry or force enemies from cover during site takes.",
+      "Thrash": "Ultimate: Summons a giant creature that charges forward, pushing enemies and dealing damage. 7-point cost. Break through choke points or secure post-plant area denial."
+    }
+  },
+  {
+    "Agent Name": "Deadlock",
+    "Abilities List": {
+      "Fracture": "Throws a device that creates a wall of electrified shards; crossing it deals damage and slows. 30-second cooldown. Deny quick peeks or split defenders’ attention.",
+      "Spinner": "Deploys a remote-controlled spider bot that can tether enemies and stick to walls. 35-second cooldown. Flank watch or anchor point denial.",
+      "Annihilation": "Sets a trap that, when triggered, erupts into a lethal ring of energy. 40-second cooldown. Clear post-plant defuse attempts or punish predictable retakes.",
+      "Purge": "Ultimate: Fires a long-range beam that suppresses all hit enemies for a duration. 7-point cost. Ideal for initiating multi-kill pushes or retakes; combos with team entry tools."
+    }
+  },
+  {
+    "Agent Name": "Iso",
+    "Abilities List": {
+      "Hot Shot": "Equips a single-use pistol that ignites on impact, dealing burn over time. 25-second cooldown. Use to finish wounded opponents or deny defuses.",
+      "Reclaim": "Plants a beacon; after 2 seconds, returns Iso to its beacon location. 40-second cooldown. Escape or reposition unexpectedly in mid-round.",
+      "Trail Blaze": "Deploys a series of incendiary traps along a line; triggers on enemy proximity dealing damage. 30-second cooldown. Secure flanks or block rotations.",
+      "Corrode": "Ultimate: Sends out a corrosive wave that passes through walls, applying burn and vision-blocking fog. 7-point cost. Executes site hits or stalls post-plant."
+    }
+  },
+  {
+    "Agent Name": "Clove",
+    "Abilities List": {
+      "Sapling": "Places a plant that grants healing over time to allies standing within. 30-second cooldown. Use in defensive holds to sustain health during long angles.",
+      "Thorn Shot": "Fires a seeking projectile that bounces once and impales first enemy hit, revealing them. 35-second cooldown. Ideal for intel on tight sites or post-plant reveals.",
+      "Bramble Wall": "Erects a curved barrier of thorns that blocks vision and damages enemies passing through. 40-second cooldown. Deny sightlines and chip health on rotations.",
+      "Entangle": "Ultimate: Summons vines in a large area, rooting and dealing damage to enemies who move. 7-point cost. Perfect for locking down defuse zones or trapping rotating attackers."
+    }
+  },
+  {
+    "Agent Name": "Vyse",
+    "Abilities List": {
+      "Prismatic Grasp": "Shots a bolt that creates a magical tether to an enemy, pulling them toward you if they cross the beam. 30-second cooldown. Punish overextensions or reel lurkers back into your crosshair.",
+      "Phase Mirage": "Casts a short-range teleport forward, leaving behind a stationary clone that lasts 5 seconds. 30-second cooldown. Fake peeks or confuse defenders during site takes.",
+      "Ethereal Mist": "Releases a globe of mist that slows and reduces enemy vision inside. 35-second cooldown. Deny entry or isolate defenders during executes.",
+      "Astral Bind": "Ultimate: Channels for 3 seconds to summon a star that detains and reveals enemies in a large area. 7-point cost. Game-changing for site pushes—coordinate with team to capitalize."
+    }
+  },
+  {
+    "Agent Name": "Tejo",
+    "Abilities List": {
+      "Molten Shard": "Throws a shard that embeds in surfaces and can be re-activated to explode, dealing area damage and applying burn. 30-second cooldown. Deny default plant zones or clear corners.",
+      "Smokestack": "Ejects a stack of volcanic ash. On re-activate, erupts into a tall smoke pillar. Two charges, 30-second cooldown. Use for multi-layered smokes during executes or retakes.",
+      "Lava Flow": "Channels a stream of magma along the ground, creating a damaging path. 40-second cooldown. Block rotations or stall defuse attempts with sustained area-denial.",
+      "Supernova": "Ultimate: Fires a massive orbital burst that covers large area with molten explosions in sequence. 7-point cost. Pinpoint post-plant denial or punish stacked defenders on site."
+    }
+  },
+  {
+    "Agent Name": "Waylay",
+    "Abilities List": {
+      "Prismatic Shard": "Throws a shard that splits into multiple projectiles on impact, tagging enemies and marking them for vision reveal. 25-second cooldown. Good for recon on entry splits.",
+      "Luminous Fog": "Deploys a translucent fog that illuminates enemies inside, reducing their concealment. 30-second cooldown. Use at choke points to catch rotated enemies off-guard.",
+      "Flash Form": "Instantly transform into a beam of light and dash forward, blinding enemies on collision. Two charges, 20-second cooldown per charge. Surprise entry or escape tool.",
+      "Radiant Fury": "Ultimate: Become light, rapidly darting across the battlefield with enhanced speed and reloading, leaving a trail that briefly reveals and slows enemies. 7-point cost. Perfect for high-tempo flanks and clutch plays."
+    }
+  }
+]
