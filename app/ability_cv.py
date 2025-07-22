@@ -124,7 +124,7 @@ def match_icon(screenshot, icon_folder, bbox, visualize=False):
 #############################
 # AGENT DETECTION
 #############################
-def detect_agent(screenshot, bbox, agent_folder, visualize=False, threshold=0.3):
+def detect_agent(screenshot, bbox, ult_bbox, agent_folder, visualize=False, threshold=0.3):
     """Detect which agent (if any) occupies a slot and whether their ultimate is ready."""
     x, y, w, h = bbox
     cropped = screenshot[y:y+h, x:x+w]
@@ -157,49 +157,49 @@ def detect_agent(screenshot, bbox, agent_folder, visualize=False, threshold=0.3)
             best_match = agent_name
 
     print(f"\n=====\nBest match: {best_match} with score {best_score:.4f}")
-    # Determine agent name if above threshold
     if best_score < threshold and (best_match == "Blue.png" and best_match == "Red.png"):
         return None, None
     
     agent = os.path.splitext(best_match)[0]
-
-    # Check for yellow background = ultimate ready
-    hsv = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
-    lower_yellow = np.array([20, 100, 100])
-    upper_yellow = np.array([35, 255, 255])
-    mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-    yellow_ratio = cv2.countNonZero(mask) / (h * w)
-    ult_ready = yellow_ratio > 0.1
-
-    # Visualization debugging
-    if visualize:
-        # reload & resize best icon
-        icon_path = os.path.join(agent_folder, best_match)
-        best_icon = cv2.imread(icon_path)
-        best_icon = cv2.resize(best_icon, (w, h))
-        # prepare mask for display
-        mask_bgr = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-        # stack and annotate
-        debug_vis = np.hstack([cropped, best_icon, mask_bgr])
-        cv2.putText(debug_vis,
-                    f"{agent or 'None'} | Score:{best_score:.2f} | Yellow:{yellow_ratio:.2f}",
-                    (10, 20),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    (255, 255, 255),
-                    1)
-        cv2.imshow("Detect Agent Debug", debug_vis)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    ult_ready = detect_ultimate(screenshot, ult_bbox, visualize)
 
     return agent, ult_ready
 
+def detect_ultimate(screenshot, bbox, visualize=False, threshold=0.1):
+    x, y, w, h = bbox
+    cropped = screenshot[y:y+h, x:x+w]
+    
+    if visualize:
+        cv2.imshow("Ultimate Screenshot", cropped)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    
+    # Convert BGR to HSV for better color detection
+    hsv = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
+    
+    lower_yellow = np.array([20,  25, 190])   
+    upper_yellow = np.array([50,  80, 270])    
+
+    yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+    
+    yellow_pixels = cv2.countNonZero(yellow_mask)
+    total_pixels = cropped.shape[0] * cropped.shape[1]
+    yellow_ratio = yellow_pixels / float(total_pixels)
+
+    if visualize:
+        cv2.imshow("Cropped Ultimate Slot", cropped)
+        cv2.imshow("Yellow Mask", yellow_mask)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        print(f"Yellow ratio: {yellow_ratio:.3f} (threshold {threshold})")
+
+    return yellow_ratio > threshold
 
 def main(file_name: str, visualize: bool = False):
     video_path = f"app/static/uploads/{file_name}"
     
     #temp
-    video_path = "v15.mp4"
+    video_path = "v1440.mp4"
     visualize = True
     
     cap = cv2.VideoCapture(video_path) 
@@ -215,24 +215,30 @@ def main(file_name: str, visualize: bool = False):
     if frame_width == 2560 and frame_height == 1440:
         ability_bbox = (1015, 1300, 75, 75)
         charge_bboxes = [(990, 1383, 126, 25), (1139, 1383, 126, 25), (1289, 1383, 126, 25), (1440, 1383, 126, 25)]
-        #Sage, Reyna, KJ, Brim, Jett
-        team_status = [(591, 37, 60, 60), (678, 37, 60, 60), (768, 37, 60, 60), (856, 37, 60, 60), (944, 37, 60, 60)]  
-        # Raze, Sova, Phoenix, Reyna, Omen
-        enemy_status = [(1560, 37, 60, 60), (1648, 37, 60, 60), (1736, 37, 60, 60), (1824, 37, 60, 60), (1912, 37, 60, 60)] 
+        ###
+        team_status = [(591, 37, 60, 60), (678, 37, 60, 60), (768, 37, 60, 60), (856, 37, 60, 60), (944, 37, 60, 60)]
+        team_ultimate = [(591, 21, 60, 19), (678, 21, 60, 19), (768, 21, 60, 19), (856, 21, 60, 19), (944, 21, 60, 19)]   
+        #
+        enemy_status = [(1560, 37, 60, 60), (1648, 37, 60, 60), (1736, 37, 60, 60), (1824, 37, 60, 60), (1912, 37, 60, 60)]
+        enemy_ultimate = [(1560, 21, 60, 19), (1648, 21, 60, 19), (1736, 21, 60, 19), (1824, 21, 60, 19), (1912, 21, 60, 19)]
     elif frame_width == 1920 and frame_height == 1080:
         ability_bbox = (759, 974, 60, 60)
         charge_bboxes = [(740, 1036, 100, 23), (852, 1036, 100, 23), (965, 1036, 100, 23), (1078, 1036, 100, 23)]
-        # Sage, Reyna, Chamber, Omen, Fade
+        ###
         team_status = [(444, 27, 45, 44), (509, 27, 45, 44), (573, 27, 45, 44), (641, 27, 45, 44), (708, 27, 45, 44)]
-        # Reyna, Fade, Omen, Chamber, Jett
+        team_ultimate = [(444, 16, 45, 14), (509, 16, 45, 14), (573, 16, 45, 14), (641, 16, 45, 14), (708, 16, 45, 14)]
+        #
         enemy_status = [(1169, 27, 45, 44), (1235, 27, 45, 44), (1301, 27, 45, 44), (1368, 27, 45, 44), (1434, 27, 45, 44)]
+        enemy_ultimate = [(1169, 16, 45, 14), (1235, 16, 45, 14), (1301, 16, 45, 14), (1368, 16, 45, 14), (1434, 16, 45, 14)]
     elif frame_width == 1280 and frame_height == 720:
         ability_bbox = (506, 650, 40, 40)
         charge_bboxes = [(496, 691, 60, 14), (571, 691, 60, 14), (646, 691, 60, 14), (722, 691, 60, 14)]
-        # Clove, Jett, Killjoy, Kayo, Reyna
-        team_status = [(295, 18, 30, 30), (338, 18, 30, 30), (383, 18, 30, 30), (427, 18, 30, 30), (471, 18, 30, 30)]
-        # Omen, Killjoy, Phoenix, Jett, Sova    
+        ###
+        team_status = [(295, 18, 30, 30), (338, 18, 30, 30), (383, 18, 30, 30), (427, 18, 30, 30), (471, 18, 30, 30)] 
+        team_ultimate = [(295, 11, 30, 10), (338, 11, 30, 10), (383, 11, 30, 10), (427, 11, 30, 10), (471, 11, 30, 10)]  
+        #
         enemy_status = [(779, 18, 30, 30), (823, 18, 30, 30), (867, 18, 30, 30), (912, 18, 30, 30), (956, 18, 30, 30)]
+        enemy_ultimate = [(779, 11, 30, 10), (823, 11, 30, 10), (867, 11, 30, 10), (912, 11, 30, 10), (956, 11, 30, 10)]
     else:
         print("Unsupported video resolution. Please provide a video with 2560x1440, 1920x1080, or 1280x720 resolution.")
     
@@ -252,7 +258,7 @@ def main(file_name: str, visualize: bool = False):
         #     ability_matches[ability_icon] += 1
 
         ##########################################
-        
+        0
         # for bbox in charge_bboxes:
         #     x, y, w, h = bbox
         #     cropped = frame[y:y+h, x:x+w]
@@ -275,29 +281,31 @@ def main(file_name: str, visualize: bool = False):
         
         ##########################################
         
-        # for bbox in team_status:
-        #     agent, ult_ready = detect_agent(frame, bbox, "assets/agents/normal", visualize)
-        #     if agent:
-        #         print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-        #         team_status_dict[timestamp_str].append((agent, ult_ready))
-        #     else:
-        #         print("No agent detected")
-        #         team_status_dict[timestamp_str].append("___")
-        
-        ##########################################
-                
-        for bbox in enemy_status:
-            agent, ult_ready = detect_agent(frame, bbox, "assets/agents/flipped", visualize)
+        for  i in range(len(team_status)):
+            agent, ult_ready = detect_agent(frame, team_status[i], team_ultimate[i],  "assets/agents/normal", visualize)
             if agent:
                 print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-                enemy_status_dict[timestamp_str].append((agent, ult_ready))
+                team_status_dict[timestamp_str].append((agent, ult_ready))
             else:
                 print("No agent detected")
-                enemy_status_dict[timestamp_str].append("___")
-        
+                team_status_dict[timestamp_str].append("___")
+            
+            # agent, ult_ready = detect_agent(frame, enemy_status[i], enemy_ultimate[i],  "assets/agents/flipped", visualize)
+            # if agent:
+            #     print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
+            #     enemy_status_dict[timestamp_str].append((agent, ult_ready))
+            # else:
+            #     print("No agent detected")
+            #     enemy_status_dict[timestamp_str].append("___")
+
     # max_key = max(ability_matches, key=ability_matches.get)
     # print(f'Ability match: {max_key[:len(max_key)-4]}')
-    pprint.pprint(enemy_status_dict)
+    print("\n=== TEAM STATUS ===")
+    pprint.pprint(team_status_dict)
+    # print("\n=== ENEMY STATUS ===")
+    # pprint.pprint(enemy_status_dict)
+    # print("\n=== SLOT MATCHES ===")
+    # pprint.pprint(slot_matches)
 
 '''
     #V10 (5K JETT)
