@@ -6,6 +6,7 @@ from PIL import Image
 import imagehash
 from img_preprocess import match_charge_cnn
 import numpy as np
+import json
 
 
 def extract_frames(video_path, interval=1):
@@ -180,19 +181,32 @@ def formatted_agents(data):
         print(key)
         for value in values:
             print("  " + ": ".join(map(str, value)))
-            
+
 def formatted_ability(data):
     for key, values in data.items():
         print(key)
         for value in values:
             print("  " + value[0] + ": " + value[1])
 
+def save_to_json(ability, status, slot_matches):
+    agent_path = "assets/models/ability_to_agent.json"
+    with open(agent_path, "r") as f:
+        data = json.load(f)
+    agent = data[ability]
+    
+    ability_path = "assets/models/ability_uses.json"
+    with open(ability_path, "r") as f:
+        data = json.load(f)
+    agent_abilities = data[agent]
+    
+    pprint.pprint(agent_abilities)
+
 
 def main(file_name: str, visualize: bool = False):
     video_path = f"app/static/uploads/{file_name}"
     
     #temp
-    video_path = "v1440-2.mp4"
+    video_path = "videos/v1440.mp4"
     visualize = False
     
     cap = cv2.VideoCapture(video_path) 
@@ -311,8 +325,16 @@ def main(file_name: str, visualize: bool = False):
     print("\n=== SLOT MATCHES ===")
     formatted_ability(slot_matches)
 
+    
+    print("\n\n\n=== JSON SAVING ===")
+    save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches)
 
 
+
+if __name__ == "__main__":
+    main("v11.mp4", False)
+    
+    
 '''
     #V10 (5K JETT)
     correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
@@ -359,6 +381,3 @@ def main(file_name: str, visualize: bool = False):
     print(f"Correct matches: {correct_matches}")
     print(f"Accuracy: {accuracy:.2f}%")
 '''
-
-if __name__ == "__main__":
-    main("v11.mp4", False)
