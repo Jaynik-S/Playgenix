@@ -66,7 +66,7 @@ def match_icon(screenshot, icon_folder, bbox, visualize=False):
     
         res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
         _, score, _, _ = cv2.minMaxLoc(res)
-        print(f"{icon_path}: {score:.4f}")
+        #print(f"{icon_path}: {score:.4f}")
 
         if score > best_score:
             best_score = score
@@ -75,56 +75,9 @@ def match_icon(screenshot, icon_folder, bbox, visualize=False):
     return best_match
 
 #############################
-# CHARGES
-#############################
-# def match_charge(screenshot, charge_folder, bbox, visualize=False):
-#     x, y, w, h = bbox
-#     cropped = screenshot[y:y+h, x:x+w]
-    
-#     if visualize:
-#         cv2.imshow("Screenshot", cropped)
-#         cv2.waitKey(0)  
-#         cv2.destroyAllWindows() 
-
-#     best_score = float('-inf')
-#     best_match = None
-
-#     # Convert to grayscale before histogram equalization
-#     if len(cropped.shape) == 3:
-#         cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-#     cropped = cv2.equalizeHist(cropped)
-#     # clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-#     # cropped = clahe.apply(cropped)
-
-
-#     for img_name in os.listdir(charge_folder):
-#         img_path = os.path.join(charge_folder, img_name)
-#         ref_img = cv2.imread(img_path)
-
-#         if ref_img is None or ref_img.shape[:2] != cropped.shape[:2]:
-#             ref_img = cv2.resize(ref_img, (w, h))
-
-#         # Convert to grayscale before histogram equalization
-#         if len(ref_img.shape) == 3:
-#             ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
-#         ref_img = cv2.equalizeHist(ref_img)
-#         # ref_img = clahe.apply(ref_img)
-        
-
-#         res = cv2.matchTemplate(cropped, ref_img, cv2.TM_CCOEFF_NORMED)
-#         _, score, _, _ = cv2.minMaxLoc(res)
-#         print(f"{img_path}: {score:.4f}")
-
-#         if score > best_score:
-#             best_score = score
-#             best_match = img_name
-
-#     return best_match
-
-#############################
 # AGENT DETECTION
 #############################
-def detect_agent(screenshot, bbox, ult_bbox, agent_folder, visualize=False, threshold=0.3):
+def detect_agent(screenshot, bbox, ult_bbox, agent_folder, visualize=False, threshold=0.15):
     """Detect which agent (if any) occupies a slot and whether their ultimate is ready."""
     x, y, w, h = bbox
     cropped = screenshot[y:y+h, x:x+w]
@@ -150,20 +103,43 @@ def detect_agent(screenshot, bbox, ult_bbox, agent_folder, visualize=False, thre
         res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
         _, score, _, _ = cv2.minMaxLoc(res)
         
-        print(f"{agent_path}: {score:.4f}")
+        #print(f"{agent_path}: {score:.4f}")
         
         if score > best_score:
             best_score = score
             best_match = agent_name
 
-    print(f"\n=====\nBest match: {best_match} with score {best_score:.4f}")
-    if best_score < threshold and (best_match == "Blue.png" and best_match == "Red.png"):
+    print(f"=====\nBest match: {best_match} with score {best_score:.4f}\n=====\n")
+    
+    if is_blank_slot_edges(cropped):
+        print("Slot is blank (solid color detected).")
         return None, None
     
     agent = os.path.splitext(best_match)[0]
     ult_ready = detect_ultimate(screenshot, ult_bbox, visualize)
 
     return agent, ult_ready
+
+
+def is_blank_slot_edges(cropped_image, edge_threshold=0.05):
+    """Check if slot is blank using edge detection."""
+    # Convert to grayscale
+    gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+    # Detect edges
+    edges = cv2.Canny(blurred, 50, 150)
+    
+    # Calculate edge density
+    total_pixels = edges.shape[0] * edges.shape[1]
+    edge_pixels = cv2.countNonZero(edges)
+    edge_ratio = edge_pixels / total_pixels
+    
+    # If very few edges, likely a solid color
+    return edge_ratio < edge_threshold
+
 
 def detect_ultimate(screenshot, bbox, visualize=False, threshold=0.1):
     x, y, w, h = bbox
@@ -177,8 +153,8 @@ def detect_ultimate(screenshot, bbox, visualize=False, threshold=0.1):
     # Convert BGR to HSV for better color detection
     hsv = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
     
-    lower_yellow = np.array([20,  25, 190])   
-    upper_yellow = np.array([50,  80, 270])    
+    lower_yellow = np.array([25,  40, 140])   # [25,  10, 70]
+    upper_yellow = np.array([100, 120, 220])    # [120, 120, 210]
 
     yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
     
@@ -191,16 +167,33 @@ def detect_ultimate(screenshot, bbox, visualize=False, threshold=0.1):
         cv2.imshow("Yellow Mask", yellow_mask)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        print(f"Yellow ratio: {yellow_ratio:.3f} (threshold {threshold})")
+        print(f"{yellow_ratio > threshold}: Ratio: {yellow_ratio:.2f}")
 
     return yellow_ratio > threshold
+
+#############################
+# FORMATTED DISPLAY
+#############################
+
+def formatted_agents(data):
+    for key, values in data.items():
+        print(key)
+        for value in values:
+            print("  " + ": ".join(map(str, value)))
+            
+def formatted_ability(data):
+    for key, values in data.items():
+        print(key)
+        for value in values:
+            print("  " + value[0] + ": " + value[1])
+
 
 def main(file_name: str, visualize: bool = False):
     video_path = f"app/static/uploads/{file_name}"
     
     #temp
-    video_path = "v1440.mp4"
-    visualize = True
+    video_path = "v1440-2.mp4"
+    visualize = False
     
     cap = cv2.VideoCapture(video_path) 
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -216,11 +209,11 @@ def main(file_name: str, visualize: bool = False):
         ability_bbox = (1015, 1300, 75, 75)
         charge_bboxes = [(990, 1383, 126, 25), (1139, 1383, 126, 25), (1289, 1383, 126, 25), (1440, 1383, 126, 25)]
         ###
-        team_status = [(591, 37, 60, 60), (678, 37, 60, 60), (768, 37, 60, 60), (856, 37, 60, 60), (944, 37, 60, 60)]
-        team_ultimate = [(591, 21, 60, 19), (678, 21, 60, 19), (768, 21, 60, 19), (856, 21, 60, 19), (944, 21, 60, 19)]   
+        team_status = [(592, 39, 55, 55), (680, 39, 55, 55), (770, 39, 55, 55), (856, 39, 55, 55), (945, 39, 55, 55)]
+        team_ultimate = [(592, 22, 60, 19), (680, 22, 60, 19), (770, 22, 60, 19), (856, 22, 60, 19), (945, 22, 60, 19)]   
         #
-        enemy_status = [(1560, 37, 60, 60), (1648, 37, 60, 60), (1736, 37, 60, 60), (1824, 37, 60, 60), (1912, 37, 60, 60)]
-        enemy_ultimate = [(1560, 21, 60, 19), (1648, 21, 60, 19), (1736, 21, 60, 19), (1824, 21, 60, 19), (1912, 21, 60, 19)]
+        enemy_status = [(1562, 39, 55, 55), (1650, 39, 55, 55), (1735, 39, 55, 55), (1825, 39, 55, 55), (1913, 39, 55, 55)]
+        enemy_ultimate = [(1562, 22, 60, 19), (1650, 22, 60, 19), (1735, 22, 60, 19), (1825, 22, 60, 19), (1913, 22, 60, 19)]
     elif frame_width == 1920 and frame_height == 1080:
         ability_bbox = (759, 974, 60, 60)
         charge_bboxes = [(740, 1036, 100, 23), (852, 1036, 100, 23), (965, 1036, 100, 23), (1078, 1036, 100, 23)]
@@ -252,60 +245,73 @@ def main(file_name: str, visualize: bool = False):
         timestamp_str = format_timestamp(i)
         print(f"Processing frame at {timestamp_str}\n")
 
-        # if max(ability_matches.values(), default=0) < 3: 
-        #     ability_icon = match_icon(frame, "assets/abilities", ability_bbox, visualize)
-        #     print(f"Ability icon matched: {ability_icon}")
-        #     ability_matches[ability_icon] += 1
+        if max(ability_matches.values(), default=0) < 3: 
+            ability_icon = match_icon(frame, "assets/abilities", ability_bbox, visualize)
+            print(f"Ability icon matched: {ability_icon}")
+            ability_matches[ability_icon] += 1
 
         ##########################################
-        0
-        # for bbox in charge_bboxes:
-        #     x, y, w, h = bbox
-        #     cropped = frame[y:y+h, x:x+w]
-            
-        #     pil_img = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
-        #     target_size = (128, 32)
-        #     new_img = Image.new('RGB', target_size, (0, 0, 0))
-        #     offset = ((target_size[0] - pil_img.width) // 2, (target_size[1] - pil_img.height) // 2)
-        #     new_img.paste(pil_img, offset)
-        #     resized_crop = cv2.cvtColor(np.array(new_img), cv2.COLOR_RGB2BGR)
-            
-        #     if visualize:
-        #         cv2.imshow("Resized Crop", resized_crop)
-        #         cv2.waitKey(0)
-        #         cv2.destroyAllWindows()
 
-        #     charge_icon = match_charge_cnn(resized_crop, None, (0, 0, target_size[0], target_size[1]))
-        #     slot_matches[timestamp_str].append(charge_icon[0:3])
-        #     print(f"Ability icon matched: {charge_icon[0:3]}")
+        for i in range(len(charge_bboxes)):
+            x, y, w, h = charge_bboxes[i]
+            cropped = frame[y:y+h, x:x+w]
+            
+            pil_img = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
+            target_size = (128, 32)
+            new_img = Image.new('RGB', target_size, (0, 0, 0))
+            offset = ((target_size[0] - pil_img.width) // 2, (target_size[1] - pil_img.height) // 2)
+            new_img.paste(pil_img, offset)
+            resized_crop = cv2.cvtColor(np.array(new_img), cv2.COLOR_RGB2BGR)
+            
+            if visualize:
+                cv2.imshow("Resized Crop", resized_crop)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+
+            charge_icon = match_charge_cnn(resized_crop, None, (0, 0, target_size[0], target_size[1]))
+            slot_matches[timestamp_str].append((f"Ability {i+1}", charge_icon[0:3]))
+            print(f"Ability icon matched: {charge_icon[0:3]}")
         
         ##########################################
         
-        for  i in range(len(team_status)):
+        for i in range(len(team_status)):
             agent, ult_ready = detect_agent(frame, team_status[i], team_ultimate[i],  "assets/agents/normal", visualize)
-            if agent:
-                print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-                team_status_dict[timestamp_str].append((agent, ult_ready))
-            else:
-                print("No agent detected")
-                team_status_dict[timestamp_str].append("___")
+            print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
+            team_status_dict[timestamp_str].append((agent, ult_ready))
             
-            # agent, ult_ready = detect_agent(frame, enemy_status[i], enemy_ultimate[i],  "assets/agents/flipped", visualize)
-            # if agent:
-            #     print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-            #     enemy_status_dict[timestamp_str].append((agent, ult_ready))
-            # else:
-            #     print("No agent detected")
-            #     enemy_status_dict[timestamp_str].append("___")
+            agent, ult_ready = detect_agent(frame, enemy_status[i], enemy_ultimate[i],  "assets/agents/flipped", visualize)
+            print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
+            enemy_status_dict[timestamp_str].append((agent, ult_ready))
 
-    # max_key = max(ability_matches, key=ability_matches.get)
-    # print(f'Ability match: {max_key[:len(max_key)-4]}')
-    print("\n=== TEAM STATUS ===")
-    pprint.pprint(team_status_dict)
+    #######
+    # Combine status
+    #######    
+    combined_status = {}
+    for timestamp in team_status_dict.keys():
+        combined_status[timestamp] = {
+            'team': team_status_dict[timestamp],
+            'enemy': enemy_status_dict[timestamp] if timestamp in enemy_status_dict else []
+        }
+    
+    #######
+    # Outputs
+    #######
+    max_key = max(ability_matches, key=ability_matches.get)
+    print(f'Ability match: {max_key[:len(max_key)-4]}')
+    
+    print("\n=== COMBINED STATUS ===")
+    for timestamp, status in combined_status.items():
+        print(f"{timestamp}:")
+        print(f"  Team : {status['team']}\n  Enemy: {status['enemy']}")
+    # print("\n=== TEAM STATUS ===")
+    # formatted_agents(team_status_dict)
     # print("\n=== ENEMY STATUS ===")
-    # pprint.pprint(enemy_status_dict)
-    # print("\n=== SLOT MATCHES ===")
-    # pprint.pprint(slot_matches)
+    # formatted_agents(enemy_status_dict)
+    
+    print("\n=== SLOT MATCHES ===")
+    formatted_ability(slot_matches)
+
+
 
 '''
     #V10 (5K JETT)
@@ -331,6 +337,8 @@ def main(file_name: str, visualize: bool = False):
     
     print("\n=== ACCURACY COMPARISON ===")
     
+    total_comparisons, correct_matches = 0, 0
+    
     for timestamp, predicted_slots in slot_matches.items():
         if timestamp in correct_answer:
             expected_slots = correct_answer[timestamp]
@@ -338,7 +346,7 @@ def main(file_name: str, visualize: bool = False):
             # Compare each slot
             for i, (predicted, expected) in enumerate(zip(predicted_slots, expected_slots)):
                 total_comparisons += 1
-                if predicted == expected:
+                if predicted[-1] == expected:
                     correct_matches += 1
                 else:
                     print(f"❌ {timestamp} Slot{i+1}: Expected '{expected}', Got '{predicted}'")
