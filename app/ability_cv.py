@@ -8,6 +8,19 @@ from img_preprocess import match_charge_cnn
 import numpy as np
 import json
 
+# GLOBAL
+BASE_W, BASE_H = 1920, 1080
+BASE_BOXES = {
+    "ability_bbox": (759, 974, 60, 60),
+    "charge_bboxes": [(740, 1036, 100, 23), (852, 1036, 100, 23), (965, 1036, 100, 23), (1078, 1036, 100, 23)],
+    "clock_bbox": (930, 27, 65, 44),
+    "spike_bbox": (918, 11, 85, 85),
+    "team_status": [(444, 27, 45, 44), (509, 27, 45, 44), (573, 27, 45, 44), (641, 27, 45, 44), (708, 27, 45, 44)],
+    "team_ultimate": [(444, 16, 45, 14), (509, 16, 45, 14), (573, 16, 45, 14), (641, 16, 45, 14), (708, 16, 45, 14)],
+    "enemy_status": [(1169, 27, 45, 44), (1235, 27, 45, 44), (1301, 27, 45, 44), (1368, 27, 45, 44), (1434, 27, 45, 44)],
+    "enemy_ultimate": [(1169, 16, 45, 14), (1235, 16, 45, 14), (1301, 16, 45, 14), (1368, 16, 45, 14), (1434, 16, 45, 14)],
+}
+
 
 def extract_frames(video_path, interval=1):
     """Extract frames from a video at specified time intervals (in seconds)."""
@@ -187,7 +200,25 @@ def spike_check(screenshot, bbox, visualize=False):
     return score >= 0.2
 
 #############################
-# FORMATTED DISPLAY
+# HELPER FUNCTIONS
+#############################
+
+def _scale_box(box, sx, sy):
+    x, y, w, h = box
+    return (int(round(x * sx)), int(round(y * sy)), int(round(w * sx)), int(round(h * sy)))
+
+def scale_boxes(frame_w, frame_h):
+    sx, sy = frame_w / BASE_W, frame_h / BASE_H
+    out = {}
+    for k, v in BASE_BOXES.items():
+        if isinstance(v, list):
+            out[k] = [_scale_box(b, sx, sy) for b in v]
+        else:
+            out[k] = _scale_box(v, sx, sy)
+    return out
+
+#############################
+# FORMATTING OUTPUT
 #############################
 
 def formatted_agents(data):
@@ -199,8 +230,9 @@ def formatted_agents(data):
 def formatted_ability(data):
     for key, values in data.items():
         print(key)
-        # for value in values:
-        #     print("  " + value[0] + ": " + value[1])
+        for value in values:
+            #print("  " + value[0] + ": " + value[1])
+            print(value[1])
 
 def time_capture(screenshot, bbox, visualize=False):
     x, y, w, h = bbox 
@@ -275,43 +307,16 @@ def main(file_name: str, visualize: bool = False):
         exit()
     
     print(f"\n\nVideo resolution: {frame_width}x{frame_height}")
-    if frame_width == 2560 and frame_height == 1440:
-        ability_bbox = (1015, 1300, 75, 75)
-        charge_bboxes = [(990, 1383, 126, 25), (1139, 1383, 126, 25), (1289, 1383, 126, 25), (1440, 1383, 126, 25)]
-        clock_bbox = (1235, 39, 95, 55)
-        spike_bbox = (1227, 17, 108, 108)
-        ###
-        team_status = [(592, 39, 55, 55), (680, 39, 55, 55), (770, 39, 55, 55), (856, 39, 55, 55), (945, 39, 55, 55)]
-        team_ultimate = [(592, 22, 60, 19), (680, 22, 60, 19), (770, 22, 60, 19), (856, 22, 60, 19), (945, 22, 60, 19)]   
-        #
-        enemy_status = [(1562, 39, 55, 55), (1650, 39, 55, 55), (1735, 39, 55, 55), (1825, 39, 55, 55), (1913, 39, 55, 55)]
-        enemy_ultimate = [(1562, 22, 60, 19), (1650, 22, 60, 19), (1735, 22, 60, 19), (1825, 22, 60, 19), (1913, 22, 60, 19)]
-    elif frame_width == 1920 and frame_height == 1080:
-        ability_bbox = (759, 974, 60, 60)
-        charge_bboxes = [(740, 1036, 100, 23), (852, 1036, 100, 23), (965, 1036, 100, 23), (1078, 1036, 100, 23)]
-        clock_bbox = (930, 27, 65, 44)
-        spike_bbox = (918, 11, 85, 85)
-        ###
-        team_status = [(444, 27, 45, 44), (509, 27, 45, 44), (573, 27, 45, 44), (641, 27, 45, 44), (708, 27, 45, 44)]
-        team_ultimate = [(444, 16, 45, 14), (509, 16, 45, 14), (573, 16, 45, 14), (641, 16, 45, 14), (708, 16, 45, 14)]
-        #
-        enemy_status = [(1169, 27, 45, 44), (1235, 27, 45, 44), (1301, 27, 45, 44), (1368, 27, 45, 44), (1434, 27, 45, 44)]
-        enemy_ultimate = [(1169, 16, 45, 14), (1235, 16, 45, 14), (1301, 16, 45, 14), (1368, 16, 45, 14), (1434, 16, 45, 14)]
-    elif frame_width == 1280 and frame_height == 720:
-        ability_bbox = (506, 650, 40, 40)
-        charge_bboxes = [(496, 691, 60, 14), (571, 691, 60, 14), (646, 691, 60, 14), (722, 691, 60, 14)]
-        clock_bbox = (619, 18, 45, 30)
-        spike_bbox = (611, 5, 60, 60)
-        ###
-        team_status = [(295, 18, 30, 30), (338, 18, 30, 30), (383, 18, 30, 30), (427, 18, 30, 30), (471, 18, 30, 30)] 
-        team_ultimate = [(295, 11, 30, 10), (338, 11, 30, 10), (383, 11, 30, 10), (427, 11, 30, 10), (471, 11, 30, 10)]  
-        #
-        enemy_status = [(779, 18, 30, 30), (823, 18, 30, 30), (867, 18, 30, 30), (912, 18, 30, 30), (956, 18, 30, 30)]
-        enemy_ultimate = [(779, 11, 30, 10), (823, 11, 30, 10), (867, 11, 30, 10), (912, 11, 30, 10), (956, 11, 30, 10)]
-    else:
-        print("Unsupported video resolution. Please provide a video with 2560x1440, 1920x1080, or 1280x720 resolution.")
+    boxes = scale_boxes(frame_width, frame_height)
+    ability_bbox   = boxes["ability_bbox"]
+    charge_bboxes  = boxes["charge_bboxes"]
+    clock_bbox     = boxes["clock_bbox"]
+    spike_bbox     = boxes["spike_bbox"]
+    team_status    = boxes["team_status"]
+    team_ultimate  = boxes["team_ultimate"]
+    enemy_status   = boxes["enemy_status"]
+    enemy_ultimate = boxes["enemy_ultimate"]
     
-
     ability_matches = defaultdict(int)
     slot_matches = defaultdict(list)
     team_status_dict = defaultdict(dict)
@@ -327,7 +332,11 @@ def main(file_name: str, visualize: bool = False):
     else:   
         m, s, index = "0", "0", -1
         while not (len(m) == 1 and len(s) == 2):
-            index += 1
+            if index + 1 < len(frames):
+                index += 1
+            else:
+                initial_time = "0:0"
+                break
             initial_time = time_capture(frames[index], clock_bbox, visualize)
             split = initial_time.split(':')        
             if len(split) != 2: continue
@@ -408,58 +417,43 @@ def main(file_name: str, visualize: bool = False):
     # print("=== ENEMY STATUS ===")
     # formatted_agents(enemy_status_dict)
     
-    # print("=== SLOT MATCHES ===")
-    # formatted_ability(slot_matches)
+    print("=== SLOT MATCHES ===")
+    formatted_ability(slot_matches)
 
-    
-    print("=== JSON SAVING ===")
-    save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
-
-
-if __name__ == "__main__":
-    video_paths = ["1080-4", "1440"]
-    for video in video_paths:
-        main(f"videos/v{video}.mp4", False)
-    
-
-
-'''
     #V10 (5K JETT)
     correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
-            '0:01': ['3-3', '2-2', '0-1', '1-1'],
-            '0:02': ['2-3', '2-2', '0-1', '1-1'],
-            '0:03': ['2-3', '2-2', '0-1', '1-1'],
-            '0:04': ['2-3', '2-2', '0-1', '1-1'],
-            '0:05': ['2-3', '2-2', '0-1', '1-1'],
-            '0:06': ['2-3', '2-2', '1-1', '1-1'],
-            '0:07': ['2-3', '2-2', '1-1', '1-1'],
-            '0:08': ['2-3', '2-2', '1-1', '1-1'],
-            '0:09': ['2-3', '1-2', '1-1', '1-1'],
-            '0:10': ['2-3', '1-2', '1-1', '1-1'],
-            '0:11': ['2-3', '1-2', '1-1', '1-1'],
-            '0:12': ['2-3', '1-2', '1-1', '1-1'],
-            '0:13': ['2-3', '1-2', '0-1', '1-1'],
-            '0:14': ['2-3', '1-2', '0-1', '1-1'],
-            '0:15': ['2-3', '1-2', '0-1', '1-1'],
-            '0:16': ['2-3', '1-2', '0-1', '1-1'],
-            '0:17': ['2-3', '1-2', '0-1', '1-1'],
-            '0:18': ['2-3', '1-2', '0-1', '1-1']}
+            75: ['3-3', '2-2', '0-1', '1-1'],
+            74: ['2-3', '2-2', '0-1', '1-1'],
+            73: ['2-3', '2-2', '0-1', '1-1'],
+            72: ['2-3', '2-2', '0-1', '1-1'],
+            71: ['2-3', '2-2', '0-1', '1-1'],
+            70: ['2-3', '2-2', '1-1', '1-1'],
+            69: ['2-3', '2-2', '1-1', '1-1'],
+            68: ['2-3', '2-2', '1-1', '1-1'],
+            67: ['2-3', '1-2', '1-1', '1-1'],
+            66: ['2-3', '1-2', '1-1', '1-1'],
+            65: ['2-3', '1-2', '1-1', '1-1'],
+            64: ['2-3', '1-2', '1-1', '1-1'],
+            63: ['2-3', '1-2', '0-1', '1-1'],
+            62: ['2-3', '1-2', '0-1', '1-1'],
+            61: ['2-3', '1-2', '0-1', '1-1'],
+            60: ['2-3', '1-2', '0-1', '1-1'],
+            59: ['2-3', '1-2', '0-1', '1-1'],
+            58: ['2-3', '1-2', '0-1', '1-1'],
+            57: ['2-3', '1-2', '0-1', '1-1']}
     
     print("\n=== ACCURACY COMPARISON ===")
     
     total_comparisons, correct_matches = 0, 0
     
     for timestamp, predicted_slots in slot_matches.items():
-        if timestamp in correct_answer:
             expected_slots = correct_answer[timestamp]
-            
-            # Compare each slot
-            for i, (predicted, expected) in enumerate(zip(predicted_slots, expected_slots)):
+            for predicted, expected in zip(predicted_slots, expected_slots):
                 total_comparisons += 1
                 if predicted[-1] == expected:
                     correct_matches += 1
                 else:
-                    print(f"❌ {timestamp} Slot{i+1}: Expected '{expected}', Got '{predicted}'")
+                    print(f"❌ {timestamp} Expected '{expected}', Got '{predicted}'")
     
     # Calculate accuracy
     accuracy = (correct_matches / total_comparisons) * 100 if total_comparisons > 0 else 0
@@ -468,4 +462,19 @@ if __name__ == "__main__":
     print(f"Total comparisons: {total_comparisons}")
     print(f"Correct matches: {correct_matches}")
     print(f"Accuracy: {accuracy:.2f}%")
+
+    
+    # print("=== JSON SAVING ===")
+    # save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
+
+
+if __name__ == "__main__":
+    video_paths = ["1440-2"]
+    for video in video_paths:
+        main(f"videos/v{video}.mp4", False)
+    
+
+
+'''
+
 '''
