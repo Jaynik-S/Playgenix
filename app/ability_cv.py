@@ -326,6 +326,7 @@ def main(file_name: str, visualize: bool = False):
 
     frames = extract_frames(video_path, interval=1)
     
+###    
     spike_planted = spike_check(frames[0], spike_bbox, visualize)
     if spike_planted:
         timestamp_str = 0
@@ -342,6 +343,19 @@ def main(file_name: str, visualize: bool = False):
             if len(split) != 2: continue
             m, s = split
         timestamp_str = format_init_time(initial_time, index) + 1
+###
+
+    # After reading frames = extract_frames(...):
+    fps_cap = cv2.VideoCapture(video_path).get(cv2.CAP_PROP_FPS)
+    fail_guard = 0
+    m, s, index = "0", "0", -1
+    while not (len(m) == 1 and len(s) == 2) and fail_guard < 15:
+        index += 1; fail_guard += 1
+        initial_time = time_capture(frames[index], clock_bbox, visualize)
+        split = initial_time.split(':')
+        if len(split) == 2: m, s = split
+    timestamp_str = format_init_time(initial_time, index) + 1 if fail_guard < 15 else int(len(frames))
+
 
     print("STARTING FRAME PROCESSING")
     for i, frame in enumerate(frames):
@@ -387,11 +401,11 @@ def main(file_name: str, visualize: bool = False):
         for i in range(len(team_status)):
             agent, ult_ready = detect_agent(frame, team_status[i], team_ultimate[i],  "assets/agents/normal", visualize)
             print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-            team_status_dict[timestamp_str][agent] = ult_ready
+            team_status_dict[timestamp_str][agent] = bool(ult_ready)
             
             agent, ult_ready = detect_agent(frame, enemy_status[i], enemy_ultimate[i],  "assets/agents/flipped", visualize)
             print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
-            enemy_status_dict[timestamp_str][agent] = ult_ready #.append((agent, ult_ready))
+            enemy_status_dict[timestamp_str][agent] = bool(ult_ready)
 
     #######
     # Combine status
@@ -419,7 +433,19 @@ def main(file_name: str, visualize: bool = False):
     
     print("=== SLOT MATCHES ===")
     formatted_ability(slot_matches)
+    
+    # print("=== JSON SAVING ===")
+    # save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
 
+
+if __name__ == "__main__":
+    video_paths = ["1440-2"]
+    for video in video_paths:
+        main(f"videos/v{video}.mp4", False)
+    
+
+
+'''
     #V10 (5K JETT)
     correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
             75: ['3-3', '2-2', '0-1', '1-1'],
@@ -462,19 +488,4 @@ def main(file_name: str, visualize: bool = False):
     print(f"Total comparisons: {total_comparisons}")
     print(f"Correct matches: {correct_matches}")
     print(f"Accuracy: {accuracy:.2f}%")
-
-    
-    # print("=== JSON SAVING ===")
-    # save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
-
-
-if __name__ == "__main__":
-    video_paths = ["1440-2"]
-    for video in video_paths:
-        main(f"videos/v{video}.mp4", False)
-    
-
-
-'''
-
 '''
