@@ -1,0 +1,82 @@
+{
+    "83": {
+        "team": {
+            "Clove": false,
+            "Jett": false,
+            "Killjoy": false,
+            "KAYO": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Killjoy": false,
+            "Phoenix": false,
+            "Jett": false,
+            "Sova": false
+        }
+    },
+    "82": {
+        "team": {
+            "Clove": false,
+            "Jett": false,
+            "Killjoy": false,
+            "KAYO": true,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Killjoy": false,
+            "Phoenix": false,
+            "Jett": true,
+            "Viper": false
+        }
+    },
+    "81": {
+        "team": {
+            "Clove": false,
+            "Jett": false,
+            "Killjoy": false,
+            "KAYO": true,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Killjoy": false,
+            "Phoenix": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "80": {
+        "team": {
+            "Clove": false,
+            "Jett": false,
+            "Killjoy": false,
+            "KAYO": true,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Killjoy": false,
+            "Phoenix": false,
+            "Jett": true,
+            "null": false
+        }
+    },
+    "79": {
+        "team": {
+            "Clove": false,
+            "Jett": false,
+            "Killjoy": false,
+            "KAYO": true,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Killjoy": false,
+            "Phoenix": false,
+            "Jett": true,
+            "Viper": false
+        }
+    }
+}

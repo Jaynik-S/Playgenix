@@ -1,7 +1,6 @@
 import cv2
 import os
 from collections import defaultdict
-import pprint
 from PIL import Image
 import pytesseract
 from img_preprocess import match_charge_cnn
@@ -182,22 +181,25 @@ def detect_ultimate(screenshot, bbox, visualize=False, threshold=0.1):
 def spike_check(screenshot, bbox, visualize=False):
     x, y, w, h = bbox
     cropped = screenshot[y:y+h, x:x+w]
+
+    return False    
     
-    if visualize:
-        cv2.imshow("Screenshot", cropped)
-        cv2.waitKey(0)  
-        cv2.destroyAllWindows()  
+    #TODO: Get spike static png
+    # if visualize:
+    #     cv2.imshow("Screenshot", cropped)
+    #     cv2.waitKey(0)  
+    #     cv2.destroyAllWindows()  
     
-    icon = cv2.imread("assets/Spike.png")
+    # # icon = cv2.imread("assets/Spike.png")
     
     # h, w = cropped.shape[:2]
     # if icon.shape[:2] != (h, w):
     #     icon = cv2.resize(icon, (w, h))
     
-    res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
-    _, score, _, _ = cv2.minMaxLoc(res) 
+    # res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
+    # _, score, _, _ = cv2.minMaxLoc(res) 
     
-    return score >= 0.2
+    # return score >= 0.2
 
 #############################
 # HELPER FUNCTIONS
@@ -264,12 +266,12 @@ def format_init_time(initial_time, inc):
     return seconds
 
 def save_to_json(ability, status, slot_matches, file_name):
-    agent_path = f"app/json_data/ability_to_agent.json"
+    agent_path = f"assets/json_data/ability_to_agent.json"
     with open(agent_path, "r") as f:
         data = json.load(f)
     agent = data[ability]
     
-    ability_path = f"app/json_data/agent_to_ability.json"
+    ability_path = f"assets/json_data/agent_to_ability.json"
     with open(ability_path, "r") as f:
         data = json.load(f)
     agent_abilities = data[agent]
@@ -278,7 +280,7 @@ def save_to_json(ability, status, slot_matches, file_name):
     for timestamp, entries in slot_matches.items():
         converted[timestamp] = {agent_abilities[slot_key]: charge for slot_key, charge in entries}
 
-    session_dir = os.path.join("app", "json_data", "session")
+    session_dir = os.path.join("app", "session_data")
     base_name = os.path.splitext(os.path.basename(file_name))[0]
     print(f"\n\n\nBASENAME:, {base_name}\n\n\n")
     
@@ -345,16 +347,16 @@ def main(file_name: str, visualize: bool = False):
         timestamp_str = format_init_time(initial_time, index) + 1
 ###
 
-    # After reading frames = extract_frames(...):
-    fps_cap = cv2.VideoCapture(video_path).get(cv2.CAP_PROP_FPS)
-    fail_guard = 0
-    m, s, index = "0", "0", -1
-    while not (len(m) == 1 and len(s) == 2) and fail_guard < 15:
-        index += 1; fail_guard += 1
-        initial_time = time_capture(frames[index], clock_bbox, visualize)
-        split = initial_time.split(':')
-        if len(split) == 2: m, s = split
-    timestamp_str = format_init_time(initial_time, index) + 1 if fail_guard < 15 else int(len(frames))
+    # # After reading frames = extract_frames(...):
+    # fps_cap = cv2.VideoCapture(video_path).get(cv2.CAP_PROP_FPS)
+    # fail_guard = 0
+    # m, s, index = "0", "0", -1
+    # while not (len(m) == 1 and len(s) == 2) and fail_guard < 15:
+    #     index += 1; fail_guard += 1
+    #     initial_time = time_capture(frames[index], clock_bbox, visualize)
+    #     split = initial_time.split(':')
+    #     if len(split) == 2: m, s = split
+    # timestamp_str = format_init_time(initial_time, index) + 1 if fail_guard < 15 else int(len(frames))
 
 
     print("STARTING FRAME PROCESSING")
@@ -421,25 +423,25 @@ def main(file_name: str, visualize: bool = False):
     #######
     # Outputs
     #######
-    # print(f'Ability match: {max_key[:len(max_key)-4]}')
-    # print("=== COMBINED STATUS ===")
-    # for timestamp, status in combined_status.items():
-    #     print(f"{timestamp}:")
-    #     print(f"  Team : {status['team']}\n  Enemy: {status['enemy']}")
-    # print("=== TEAM STATUS ===")
-    # formatted_agents(team_status_dict)
-    # print("=== ENEMY STATUS ===")
-    # formatted_agents(enemy_status_dict)
+    print(f'Ability match: {max_key[:len(max_key)-4]}')
+    print("=== COMBINED STATUS ===")
+    for timestamp, status in combined_status.items():
+        print(f"{timestamp}:")
+        print(f"  Team : {status['team']}\n  Enemy: {status['enemy']}")
+    print("=== TEAM STATUS ===")
+    formatted_agents(team_status_dict)
+    print("=== ENEMY STATUS ===")
+    formatted_agents(enemy_status_dict)
     
     print("=== SLOT MATCHES ===")
     formatted_ability(slot_matches)
     
-    # print("=== JSON SAVING ===")
-    # save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
+    print("=== JSON SAVING ===")
+    save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
 
 
 if __name__ == "__main__":
-    video_paths = ["1440-2"]
+    video_paths = ["720"]
     for video in video_paths:
         main(f"videos/v{video}.mp4", False)
     

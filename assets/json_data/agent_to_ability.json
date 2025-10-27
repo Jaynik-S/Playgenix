@@ -1,0 +1,164 @@
+{
+    "Brimstone": {
+        "Ability #1": "Incendiary",
+        "Ability #2": "Stim Beacon",
+        "Ability #3": "Sky Smoke",
+        "Ability #4": "Orbital Strike"
+    },
+    "Viper": {
+        "Ability #1": "Snake Bite",
+        "Ability #2": "Poison Cloud",
+        "Ability #3": "Toxic Screen",
+        "Ability #4": "Viper's Pit"
+    },
+    "Omen": {
+        "Ability #1": "Shrouded Step",
+        "Ability #2": "Paranoia",
+        "Ability #3": "Dark Cover",
+        "Ability #4": "From the Shadows"
+    },
+    "Killjoy": {
+        "Ability #1": "Nanoswarm",
+        "Ability #2": "Alarmbot",
+        "Ability #3": "Turret",
+        "Ability #4": "Lockdown"
+    },
+    "Cypher": {
+        "Ability #1": "Trapwire",
+        "Ability #2": "Cyber Cage",
+        "Ability #3": "Spycam",
+        "Ability #4": "Neural Theft"
+    },
+    "Sova": {
+        "Ability #1": "Shock Bolt",
+        "Ability #2": "Owl Drone",
+        "Ability #3": "Recon Bolt",
+        "Ability #4": "Hunter's Fury"
+    },
+    "Sage": {
+        "Ability #1": "Barrier Orb",
+        "Ability #2": "Slow Orb",
+        "Ability #3": "Healing Orb",
+        "Ability #4": "Resurrection"
+    },
+    "Phoenix": {
+        "Ability #1": "Blaze",
+        "Ability #2": "Curveball",
+        "Ability #3": "Hot Hands",
+        "Ability #4": "Run it Back"
+    },
+    "Jett": {
+        "Ability #1": "Cloudburst",
+        "Ability #2": "Updraft",
+        "Ability #3": "Tailwind",
+        "Ability #4": "Blade Storm"
+    },
+    "Reyna": {
+        "Ability #1": "Leer",
+        "Ability #2": "Devour",
+        "Ability #3": "Dismiss",
+        "Ability #4": "Empress"
+    },
+    "Raze": {
+        "Ability #1": "Boom Bot",
+        "Ability #2": "Blast Pack",
+        "Ability #3": "Paint Shells",
+        "Ability #4": "Showstopper"
+    },
+    "Breach": {
+        "Ability #1": "Aftershock",
+        "Ability #2": "Flashpoint",
+        "Ability #3": "Fault Line",
+        "Ability #4": "Rolling Thunder"
+    },
+    "Skye": {
+        "Ability #1": "Regrowth",
+        "Ability #2": "Trailblazer",
+        "Ability #3": "Guiding Light",
+        "Ability #4": "Seekers"
+    },
+    "Yoru": {
+        "Ability #1": "Fakeout",
+        "Ability #2": "Blindside",
+        "Ability #3": "Gatecrash",
+        "Ability #4": "Dimensional Drift"
+    },
+    "Astra": {
+        "Ability #1": "Gravity Well",
+        "Ability #2": "Nova Pulse",
+        "Ability #3": "Nebula",
+        "Ability #4": "Cosmic Divide"
+    },
+    "KAYO": {
+        "Ability #1": "FRAG/ment",
+        "Ability #2": "FLASH/drive",
+        "Ability #3": "ZERO/point",
+        "Ability #4": "NULL/cmd"
+    },
+    "Chamber": {
+        "Ability #1": "Trademark",
+        "Ability #2": "Headhunter",
+        "Ability #3": "Rendezvous",
+        "Ability #4": "Tour De Force"
+    },
+    "Neon": {
+        "Ability #1": "Fast Lane",
+        "Ability #2": "Relay Bolt",
+        "Ability #3": "High Gear",
+        "Ability #4": "Overdrive"
+    },
+    "Fade": {
+        "Ability #1": "Prowler",
+        "Ability #2": "Seize",
+        "Ability #3": "Haunt",
+        "Ability #4": "Nightfall"
+    },
+    "Harbor": {
+        "Ability #1": "Cove",
+        "Ability #2": "Cascade",
+        "Ability #3": "High Tide",
+        "Ability #4": "Reckoning"
+    },
+    "Gekko": {
+        "Ability #1": "Mosh Pit",
+        "Ability #2": "Wingman",
+        "Ability #3": "Dizzy",
+        "Ability #4": "Thrash"
+    },
+    "Deadlock": {
+        "Ability #1": "GravNet",
+        "Ability #2": "Sonic Sensor",
+        "Ability #3": "Barrier Mesh",
+        "Ability #4": "Annihilation"
+    },
+    "Iso": {
+        "Ability #1": "Undercut",
+        "Ability #2": "Double Tap",
+        "Ability #3": "Contingency",
+        "Ability #4": "Kill Contract"
+    },
+    "Clove": {
+        "Ability #1": "Meddle",
+        "Ability #2": "Ruse",
+        "Ability #3": "Pick-Me-Up",
+        "Ability #4": "Not Dead Yet"
+    },
+    "Vyse": {
+        "Ability #1": "Razorvine",
+        "Ability #2": "Shear",
+        "Ability #3": "Arc Rose",
+        "Ability #4": "Steel Garden"
+    },
+    "Tejo": {
+        "Ability #1": "Stealth Drone",
+        "Ability #2": "Special Delivery",
+        "Ability #3": "Guided Salvo",
+        "Ability #4": "Armageddon"
+    },
+    "Waylay": {
+        "Ability #1": "Saturate",
+        "Ability #2": "Lightspeed",
+        "Ability #3": "Refract",
+        "Ability #4": "Convergent Paths"
+    }
+}
