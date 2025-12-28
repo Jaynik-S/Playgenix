@@ -56,7 +56,7 @@
             "Reyna": false
         },
         "enemy": {
-            "Omen": true,
+            "Omen": false,
             "Killjoy": false,
             "Phoenix": false,
             "Jett": true,
