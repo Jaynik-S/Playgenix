@@ -318,8 +318,19 @@ def save_to_json(ability, status, slot_matches, file_name):
 
     output_path = os.path.join(session_dir, f"{base_name}_game_status.json")
     with open(output_path, "w") as f:
-        json.dump(status, f, indent=4)
+        json.dump(_clean_null_agents(status), f, indent=4)
     print(f"Status saved to {output_path}")
+
+def _clean_null_agents(status):
+    cleaned = {}
+    for timestamp, snapshot in status.items():
+        team = snapshot.get("team", {})
+        enemy = snapshot.get("enemy", {})
+        cleaned[timestamp] = {
+            "team": {k: v for k, v in team.items() if k not in (None, "null")},
+            "enemy": {k: v for k, v in enemy.items() if k not in (None, "null")},
+        }
+    return cleaned
 
 #############################
 # MAIN METHOD
