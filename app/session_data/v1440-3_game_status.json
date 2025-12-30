@@ -1,0 +1,154 @@
+{
+    "43": {
+        "team": {
+            "null": false,
+            "Sova": false,
+            "Reyna": true
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "42": {
+        "team": {
+            "null": false,
+            "Sova": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "41": {
+        "team": {
+            "null": false,
+            "Sova": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Waylay": false,
+            "null": false
+        }
+    },
+    "40": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "39": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "38": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "Skye": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "37": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "Skye": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "36": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "35": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "Skye": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "34": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "33": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "Skye": false,
+            "Jett": false,
+            "null": false
+        }
+    },
+    "32": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "KAYO": false,
+            "null": false
+        }
+    },
+    "31": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "null": false
+        }
+    },
+    "30": {
+        "team": {
+            "null": false,
+            "Sova": false
+        },
+        "enemy": {
+            "null": false
+        }
+    }
+}

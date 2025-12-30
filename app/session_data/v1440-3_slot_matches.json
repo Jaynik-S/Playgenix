@@ -1,0 +1,86 @@
+{
+    "43": {
+        "GravNet": "2-2",
+        "Sonic Sensor": "0-2",
+        "Barrier Mesh": "0-1",
+        "Annihilation": "0-2"
+    },
+    "42": {
+        "GravNet": "1-2",
+        "Sonic Sensor": "0-2",
+        "Barrier Mesh": "0-1",
+        "Annihilation": "1-1"
+    },
+    "41": {
+        "GravNet": "1-2",
+        "Sonic Sensor": "0-2",
+        "Barrier Mesh": "1-2",
+        "Annihilation": "0-2"
+    },
+    "40": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "2-3"
+    },
+    "39": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "0-1"
+    },
+    "38": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "1-1"
+    },
+    "37": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "2-3"
+    },
+    "36": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-2",
+        "Annihilation": "1-1"
+    },
+    "35": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "2-3"
+    },
+    "34": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "0-2",
+        "Barrier Mesh": "1-2",
+        "Annihilation": "0-1"
+    },
+    "33": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "2-3"
+    },
+    "32": {
+        "GravNet": "1-1",
+        "Sonic Sensor": "2-2",
+        "Barrier Mesh": "1-1",
+        "Annihilation": "0-1"
+    },
+    "31": {
+        "GravNet": "1-2",
+        "Sonic Sensor": "1-2",
+        "Barrier Mesh": "0-1",
+        "Annihilation": "1-1"
+    },
+    "30": {
+        "GravNet": "0-1",
+        "Sonic Sensor": "0-2",
+        "Barrier Mesh": "0-1",
+        "Annihilation": "0-1"
+    }
+}

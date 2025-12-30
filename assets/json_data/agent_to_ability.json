@@ -43,8 +43,8 @@
     },
     "Phoenix": {
         "Ability #1": "Blaze",
-        "Ability #2": "Curveball",
-        "Ability #3": "Hot Hands",
+        "Ability #2": "Hot Hands",
+        "Ability #3": "Curveball",
         "Ability #4": "Run it Back"
     },
     "Jett": {
@@ -114,9 +114,9 @@
         "Ability #4": "Nightfall"
     },
     "Harbor": {
-        "Ability #1": "Cove",
-        "Ability #2": "Cascade",
-        "Ability #3": "High Tide",
+        "Ability #1": "Storm Surge",
+        "Ability #2": "High Tide",
+        "Ability #3": "Cove",
         "Ability #4": "Reckoning"
     },
     "Gekko": {
@@ -132,15 +132,15 @@
         "Ability #4": "Annihilation"
     },
     "Iso": {
-        "Ability #1": "Undercut",
-        "Ability #2": "Double Tap",
-        "Ability #3": "Contingency",
+        "Ability #1": "Contingency",
+        "Ability #2": "Undercut",
+        "Ability #3": "Double Tap",
         "Ability #4": "Kill Contract"
     },
     "Clove": {
-        "Ability #1": "Meddle",
-        "Ability #2": "Ruse",
-        "Ability #3": "Pick-Me-Up",
+        "Ability #1": "Pick Me Up",
+        "Ability #2": "Meddle",
+        "Ability #3": "Ruse",
         "Ability #4": "Not Dead Yet"
     },
     "Vyse": {
@@ -148,6 +148,12 @@
         "Ability #2": "Shear",
         "Ability #3": "Arc Rose",
         "Ability #4": "Steel Garden"
+    },
+    "Veto": {
+        "Ability #1": "Crosscut",
+        "Ability #2": "Chokehold",
+        "Ability #3": "Interceptor",
+        "Ability #4": "Evolution"
     },
     "Tejo": {
         "Ability #1": "Stealth Drone",

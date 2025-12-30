@@ -1,0 +1,104 @@
+{
+    "90": {
+        "team": {
+            "null": false,
+            "Clove": false,
+            "KAYO": false,
+            "Brimstone": false,
+            "Sage": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Jett": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "89": {
+        "team": {
+            "null": false,
+            "Clove": false,
+            "KAYO": false,
+            "Brimstone": false,
+            "Sage": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Jett": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "88": {
+        "team": {
+            "null": false,
+            "Fade": false,
+            "KAYO": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Deadlock": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "87": {
+        "team": {
+            "null": false,
+            "Fade": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Vyse": false,
+            "Jett": true,
+            "null": false
+        }
+    },
+    "86": {
+        "team": {
+            "null": false,
+            "Fade": false,
+            "Brimstone": false,
+            "Iso": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Vyse": false,
+            "Deadlock": false,
+            "Viper": false,
+            "null": false
+        }
+    },
+    "85": {
+        "team": {
+            "null": false,
+            "Killjoy": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Vyse": false,
+            "Deadlock": true,
+            "null": false
+        }
+    },
+    "84": {
+        "team": {
+            "null": false,
+            "Neon": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Vyse": true,
+            "Iso": false,
+            "null": false
+        }
+    }
+}

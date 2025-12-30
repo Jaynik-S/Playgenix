@@ -1,0 +1,69 @@
+{
+    "-1": {
+        "team": {
+            "Jett": false,
+            "Skye": false,
+            "Killjoy": false,
+            "Reyna": true
+        },
+        "enemy": {
+            "Iso": false,
+            "Omen": false,
+            "Gekko": true,
+            "null": false
+        }
+    },
+    "-2": {
+        "team": {
+            "Jett": false,
+            "Skye": false,
+            "KAYO": false,
+            "Harbor": false,
+            "Reyna": true
+        },
+        "enemy": {
+            "Iso": false,
+            "Gekko": false,
+            "null": false
+        }
+    },
+    "-3": {
+        "team": {
+            "null": false,
+            "Jett": false,
+            "Tejo": false,
+            "KAYO": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "Iso": false,
+            "Deadlock": false,
+            "null": false
+        }
+    },
+    "-4": {
+        "team": {
+            "null": false,
+            "Jett": false,
+            "KAYO": false,
+            "Reyna": true
+        },
+        "enemy": {
+            "Iso": false,
+            "null": false
+        }
+    },
+    "-5": {
+        "team": {
+            "null": false,
+            "Fade": false,
+            "Skye": false,
+            "KAYO": false,
+            "Reyna": true
+        },
+        "enemy": {
+            "KAYO": false,
+            "null": false
+        }
+    }
+}

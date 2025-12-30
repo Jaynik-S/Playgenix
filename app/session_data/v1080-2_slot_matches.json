@@ -1,0 +1,20 @@
+{
+    "99": {
+        "Leer": "2-2",
+        "Devour": "1-1",
+        "Dismiss": "1-1",
+        "Empress": "1-1"
+    },
+    "98": {
+        "Leer": "1-1",
+        "Devour": "1-1",
+        "Dismiss": "1-1",
+        "Empress": "0-1"
+    },
+    "97": {
+        "Leer": "2-2",
+        "Devour": "1-1",
+        "Dismiss": "2-2",
+        "Empress": "1-1"
+    }
+}

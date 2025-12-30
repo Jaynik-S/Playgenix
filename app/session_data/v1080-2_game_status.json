@@ -1,0 +1,50 @@
+{
+    "99": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Cypher": true,
+            "Omen": false,
+            "Fade": false
+        },
+        "enemy": {
+            "Viper": false,
+            "Neon": false,
+            "Omen": false,
+            "Iso": false,
+            "Jett": false
+        }
+    },
+    "98": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Fade": true,
+            "Omen": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Reyna": false,
+            "KAYO": false,
+            "Omen": false,
+            "Vyse": false,
+            "null": false
+        }
+    },
+    "97": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Fade": false,
+            "Omen": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Reyna": false,
+            "KAYO": false,
+            "Omen": false,
+            "Cypher": false,
+            "null": false
+        }
+    }
+}

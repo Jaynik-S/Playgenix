@@ -217,8 +217,21 @@ def scale_boxes(frame_w, frame_h):
     return out
 
 #############################
-# TIMESTAMPING
+# FORMATTING OUTPUT
 #############################
+
+def formatted_agents(data):
+    for key, values in data.items():
+        print(key)
+        # for value in values:
+        #     print("  " + ": ".join(map(str, value)))
+
+def formatted_ability(data):
+    for key, values in data.items():
+        print(key)
+        for value in values:
+            #print("  " + value[0] + ": " + value[1])
+            print(value[1])
 
 def time_capture(screenshot, bbox, visualize=False):
     x, y, w, h = bbox 
@@ -249,49 +262,6 @@ def format_init_time(initial_time, inc):
     seconds += minutes * 60 + inc
     return seconds
 
-def initialize_timestamp(visualize, clock_bbox, frames, spike_planted):
-    if spike_planted:
-        return 0
-    else:   
-        m, s, index = "0", "0", -1
-        while not (len(m) == 1 and len(s) == 2):
-            if index + 1 < len(frames):
-                index += 1
-            else:
-                initial_time = "0:0"
-                break
-            initial_time = time_capture(frames[index], clock_bbox, visualize)
-            split = initial_time.split(':')        
-            if len(split) != 2: continue
-            m, s = split
-        return format_init_time(initial_time, index) + 1
-
-
-#############################
-# FORMATTING OUTPUT
-#############################
-
-def formatted_agents(data):
-    for key, values in data.items():
-        print(key)
-        # for value in values:
-        #     print("  " + ": ".join(map(str, value)))
-
-def formatted_ability(data):
-    for key, values in data.items():
-        print(key)
-        for value in values:
-            #print("  " + value[0] + ": " + value[1])
-            print(value[1])
-
-def show_video_frames(frames):
-    cv2.namedWindow("Frame", cv2.WINDOW_NORMAL)
-    for frame in frames:
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(0):
-            continue
-    cv2.destroyWindow("Frame")
-
 def save_to_json(ability, status, slot_matches, file_name):
     agent_path = f"assets/json_data/ability_to_agent.json"
     with open(agent_path, "r") as f:
@@ -321,9 +291,6 @@ def save_to_json(ability, status, slot_matches, file_name):
         json.dump(status, f, indent=4)
     print(f"Status saved to {output_path}")
 
-#############################
-# MAIN METHOD
-#############################
 
 def main(file_name: str, visualize: bool = False):
     #video_path = f"app/static/uploads/{file_name}"
@@ -353,15 +320,49 @@ def main(file_name: str, visualize: bool = False):
     slot_matches = defaultdict(list)
     team_status_dict = defaultdict(dict)
     enemy_status_dict = defaultdict(dict)
+    timestamp_str = 0
+    spike_planted = False
 
     frames = extract_frames(video_path, interval=1)
 
-    if visualize:
-        show_video_frames(frames)
+    cv2.namedWindow("Frame", cv2.WINDOW_NORMAL)
+    for frame in frames:
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(0):
+            continue
+    cv2.destroyWindow("Frame")
 
 ###    
     spike_planted = spike_check(frames[0], spike_bbox, visualize)
-    timestamp_str = initialize_timestamp(visualize, clock_bbox, frames, spike_planted)
+    if spike_planted:
+        timestamp_str = 0
+    else:   
+        m, s, index = "0", "0", -1
+        while not (len(m) == 1 and len(s) == 2):
+            if index + 1 < len(frames):
+                index += 1
+            else:
+                initial_time = "0:0"
+                break
+            initial_time = time_capture(frames[index], clock_bbox, visualize)
+            split = initial_time.split(':')        
+            if len(split) != 2: continue
+            m, s = split
+        timestamp_str = format_init_time(initial_time, index) + 1
+###
+
+    # # After reading frames = extract_frames(...):
+    # fps_cap = cv2.VideoCapture(video_path).get(cv2.CAP_PROP_FPS)
+    # fail_guard = 0
+    # m, s, index = "0", "0", -1
+    # while not (len(m) == 1 and len(s) == 2) and fail_guard < 15:
+    #     index += 1; fail_guard += 1
+    #     initial_time = time_capture(frames[index], clock_bbox, visualize)
+    #     split = initial_time.split(':')
+    #     if len(split) == 2: m, s = split
+    # timestamp_str = format_init_time(initial_time, index) + 1 if fail_guard < 15 else int(len(frames))
+
+'''
     print("STARTING FRAME PROCESSING")
     for i, frame in enumerate(frames):
         timestamp_str -= 1
@@ -431,7 +432,6 @@ def main(file_name: str, visualize: bool = False):
     for timestamp, status in combined_status.items():
         print(f"{timestamp}:")
         print(f"  Team : {status['team']}\n  Enemy: {status['enemy']}")
-    
     print("=== TEAM STATUS ===")
     formatted_agents(team_status_dict)
     print("=== ENEMY STATUS ===")
@@ -442,10 +442,56 @@ def main(file_name: str, visualize: bool = False):
      
     print("=== JSON SAVING ===")
     save_to_json(max_key[:len(max_key)-4], combined_status, slot_matches, file_name)
-
+'''
 
 if __name__ == "__main__":
-    video_paths = ["1440"]
+    video_paths = ["720"]
     for video in video_paths:
         main(f"videos/v{video}.mp4", False)
     
+
+
+'''
+    #V10 (5K JETT)
+    correct_answer =  {'0:00': ['3-3', '2-2', '0-1', '1-1'],
+            75: ['3-3', '2-2', '0-1', '1-1'],
+            74: ['2-3', '2-2', '0-1', '1-1'],
+            73: ['2-3', '2-2', '0-1', '1-1'],
+            72: ['2-3', '2-2', '0-1', '1-1'],
+            71: ['2-3', '2-2', '0-1', '1-1'],
+            70: ['2-3', '2-2', '1-1', '1-1'],
+            69: ['2-3', '2-2', '1-1', '1-1'],
+            68: ['2-3', '2-2', '1-1', '1-1'],
+            67: ['2-3', '1-2', '1-1', '1-1'],
+            66: ['2-3', '1-2', '1-1', '1-1'],
+            65: ['2-3', '1-2', '1-1', '1-1'],
+            64: ['2-3', '1-2', '1-1', '1-1'],
+            63: ['2-3', '1-2', '0-1', '1-1'],
+            62: ['2-3', '1-2', '0-1', '1-1'],
+            61: ['2-3', '1-2', '0-1', '1-1'],
+            60: ['2-3', '1-2', '0-1', '1-1'],
+            59: ['2-3', '1-2', '0-1', '1-1'],
+            58: ['2-3', '1-2', '0-1', '1-1'],
+            57: ['2-3', '1-2', '0-1', '1-1']}
+    
+    print("\n=== ACCURACY COMPARISON ===")
+    
+    total_comparisons, correct_matches = 0, 0
+    
+    for timestamp, predicted_slots in slot_matches.items():
+            expected_slots = correct_answer[timestamp]
+            for predicted, expected in zip(predicted_slots, expected_slots):
+                total_comparisons += 1
+                if predicted[-1] == expected:
+                    correct_matches += 1
+                else:
+                    print(f"❌ {timestamp} Expected '{expected}', Got '{predicted}'")
+    
+    # Calculate accuracy
+    accuracy = (correct_matches / total_comparisons) * 100 if total_comparisons > 0 else 0
+    
+    print(f"\n=== ACCURACY RESULTS ===")
+    print(f"Total comparisons: {total_comparisons}")
+    print(f"Correct matches: {correct_matches}")
+    print(f"Accuracy: {accuracy:.2f}%")
+'''

@@ -1,0 +1,160 @@
+{
+    "82": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Sova": false,
+            "Phoenix": true,
+            "Reyna": true,
+            "Omen": true,
+            "Killjoy": false
+        }
+    },
+    "81": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Sova": false,
+            "Phoenix": true,
+            "Reyna": true,
+            "Omen": true,
+            "Killjoy": false
+        }
+    },
+    "80": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Sova": false,
+            "Phoenix": true,
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "79": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Sova": false,
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "78": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "77": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "76": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "75": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Reyna": true,
+            "Omen": true,
+            "null": false
+        }
+    },
+    "74": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Omen": true,
+            "null": false
+        }
+    },
+    "73": {
+        "team": {
+            "null": false,
+            "Sage": false,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Omen": true,
+            "null": false
+        }
+    },
+    "-1": {
+        "team": {
+            "null": false,
+            "Sage": true,
+            "Reyna": false,
+            "Omen": false,
+            "Skye": false
+        },
+        "enemy": {
+            "Omen": true,
+            "null": false
+        }
+    }
+}
