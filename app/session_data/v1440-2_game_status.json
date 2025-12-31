@@ -91,8 +91,7 @@
             "Raze": false,
             "Sova": false,
             "Reyna": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "69": {
@@ -106,8 +105,7 @@
         "enemy": {
             "Raze": false,
             "Sova": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "68": {
@@ -121,8 +119,7 @@
         "enemy": {
             "Reyna": false,
             "Sova": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "67": {
@@ -136,8 +133,7 @@
         "enemy": {
             "Raze": false,
             "Sova": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "66": {
@@ -151,8 +147,7 @@
         "enemy": {
             "Raze": true,
             "Sova": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "65": {
@@ -166,8 +161,7 @@
         "enemy": {
             "Raze": false,
             "Sova": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "64": {
@@ -180,8 +174,7 @@
         },
         "enemy": {
             "Raze": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "63": {
@@ -194,8 +187,7 @@
         },
         "enemy": {
             "Raze": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "62": {
@@ -208,8 +200,7 @@
         },
         "enemy": {
             "Raze": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "61": {
@@ -222,8 +213,7 @@
         },
         "enemy": {
             "Raze": false,
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "60": {
@@ -235,8 +225,7 @@
             "Jett": true
         },
         "enemy": {
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "59": {
@@ -248,8 +237,7 @@
             "Jett": true
         },
         "enemy": {
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "58": {
@@ -261,8 +249,7 @@
             "Jett": true
         },
         "enemy": {
-            "Omen": false,
-            "null": false
+            "Omen": false
         }
     },
     "57": {
@@ -273,8 +260,6 @@
             "Deadlock": true,
             "Jett": true
         },
-        "enemy": {
-            "null": false
-        }
+        "enemy": {}
     }
 }

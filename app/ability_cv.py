@@ -20,6 +20,100 @@ BASE_BOXES = {
 }
 
 
+def _resize_with_interp(image, size):
+    target_w, target_h = size
+    if target_w <= 0 or target_h <= 0:
+        return image
+    h, w = image.shape[:2]
+    if target_w < w or target_h < h:
+        interp = cv2.INTER_AREA
+    else:
+        interp = cv2.INTER_CUBIC
+    return cv2.resize(image, (target_w, target_h), interpolation=interp)
+
+
+def _normalize_icon_bgr(image):
+    lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+    l_channel, a_channel, b_channel = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4))
+    l_channel = clahe.apply(l_channel)
+    lab = cv2.merge((l_channel, a_channel, b_channel))
+    return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+
+
+def _edge_map(image):
+    if image.ndim == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+    return cv2.Canny(blurred, 50, 150)
+
+
+def _multi_scale_match(image, template, scales):
+    best = float("-inf")
+    image_h, image_w = image.shape[:2]
+    template_h, template_w = template.shape[:2]
+
+    for scale in scales:
+        scaled_w = int(round(template_w * scale))
+        scaled_h = int(round(template_h * scale))
+        if scaled_w < 2 or scaled_h < 2:
+            continue
+        if scaled_w > image_w or scaled_h > image_h:
+            continue
+        resized = _resize_with_interp(template, (scaled_w, scaled_h))
+        res = cv2.matchTemplate(image, resized, cv2.TM_CCOEFF_NORMED)
+        _, score, _, _ = cv2.minMaxLoc(res)
+        if score > best:
+            best = score
+
+    return best
+
+
+def _dump_debug_image(debug_dir, name, image):
+    if not debug_dir:
+        return
+    os.makedirs(debug_dir, exist_ok=True)
+    cv2.imwrite(os.path.join(debug_dir, name), image)
+
+
+def preprocess_charge_crop(crop, target_size=(128, 32), debug_dump_dir=None, debug_tag=None):
+    target_w, target_h = target_size
+    if crop.size == 0:
+        return np.zeros((target_h, target_w, 3), dtype=np.uint8)
+
+    lab = cv2.cvtColor(crop, cv2.COLOR_BGR2LAB)
+    l_channel, a_channel, b_channel = cv2.split(lab)
+    l_channel = cv2.fastNlMeansDenoising(l_channel, None, 7, 7, 21)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4))
+    l_channel = clahe.apply(l_channel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    l_channel = cv2.morphologyEx(l_channel, cv2.MORPH_OPEN, kernel)
+    l_channel = cv2.morphologyEx(l_channel, cv2.MORPH_CLOSE, kernel)
+    lab = cv2.merge((l_channel, a_channel, b_channel))
+    cleaned = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+
+    crop_h, crop_w = cleaned.shape[:2]
+    scale = min(target_w / max(crop_w, 1), target_h / max(crop_h, 1))
+    resized_w = max(1, int(round(crop_w * scale)))
+    resized_h = max(1, int(round(crop_h * scale)))
+    resized = _resize_with_interp(cleaned, (resized_w, resized_h))
+
+    canvas = np.zeros((target_h, target_w, 3), dtype=resized.dtype)
+    offset_x = (target_w - resized_w) // 2
+    offset_y = (target_h - resized_h) // 2
+    canvas[offset_y:offset_y + resized_h, offset_x:offset_x + resized_w] = resized
+
+    if debug_dump_dir:
+        tag = debug_tag or "charge"
+        charge_dir = os.path.join(debug_dump_dir, "charges")
+        _dump_debug_image(charge_dir, f"charge_raw_{tag}.png", crop)
+        _dump_debug_image(charge_dir, f"charge_pre_{tag}.png", canvas)
+
+    return canvas
+
+
 def extract_frames(video_path, interval=1):
     """Extract frames from a video at specified time intervals (in seconds)."""
     if not os.path.exists(video_path):
@@ -51,14 +145,39 @@ def extract_frames(video_path, interval=1):
 #############################
 # ICON
 #############################
-def match_icon(screenshot, icon_folder, bbox, visualize=False):
+def match_icon(
+    screenshot,
+    icon_folder,
+    bbox,
+    visualize=False,
+    use_edges=False,
+    scales=None,
+    debug_dump_dir=None,
+    debug_tag=None,
+):
     x, y, w, h = bbox
     cropped = screenshot[y:y+h, x:x+w]
+    if cropped.size == 0:
+        return None
     
     if visualize:
         cv2.imshow("Screenshot", cropped)
         cv2.waitKey(0)  # Wait indefinitely until a key is pressed
         cv2.destroyAllWindows()  # Close the window after key press
+
+    if scales is None:
+        scales = (0.85, 0.95, 1.0, 1.1)
+
+    cropped_norm = _normalize_icon_bgr(cropped)
+    cropped_edges = _edge_map(cropped_norm) if use_edges else None
+
+    if debug_dump_dir:
+        tag = debug_tag or "icon"
+        icon_dir = os.path.join(debug_dump_dir, "icons")
+        _dump_debug_image(icon_dir, f"icon_raw_{tag}.png", cropped)
+        _dump_debug_image(icon_dir, f"icon_norm_{tag}.png", cropped_norm)
+        if use_edges:
+            _dump_debug_image(icon_dir, f"icon_edge_{tag}.png", cropped_edges)
 
     best_score = float('-inf')
     best_match = None
@@ -66,12 +185,21 @@ def match_icon(screenshot, icon_folder, bbox, visualize=False):
     for icon_name in os.listdir(icon_folder):
         icon_path = os.path.join(icon_folder, icon_name)
         icon = cv2.imread(icon_path)
+        if icon is None:
+            continue
 
-        if icon is None or icon.shape[:2] != cropped.shape[:2]:
-            icon = cv2.resize(icon, (w, h))
-    
-        res = cv2.matchTemplate(cropped, icon, cv2.TM_CCOEFF_NORMED)
-        _, score, _, _ = cv2.minMaxLoc(res)
+        icon_h, icon_w = icon.shape[:2]
+        scale_fit = min(w / max(icon_w, 1), h / max(icon_h, 1))
+        scale_factors = [scale_fit * scale for scale in scales]
+
+        icon_norm = _normalize_icon_bgr(icon)
+        score = max(
+            _multi_scale_match(cropped_norm, icon_norm, scale_factors),
+            _multi_scale_match(cropped, icon, scale_factors),
+        )
+        if use_edges:
+            icon_edges = _edge_map(icon_norm)
+            score = max(score, _multi_scale_match(cropped_edges, icon_edges, scale_factors))
         #print(f"{icon_path}: {score:.4f}")
 
         if score > best_score:
@@ -335,7 +463,7 @@ def _clean_null_agents(status):
 # MAIN METHOD
 #############################
 
-def main(file_name: str, visualize: bool = False):
+def main(file_name: str, visualize: bool = False, debug_dump_dir=None, use_edge_matching=True):
     #video_path = f"app/static/uploads/{file_name}"
     video_path = file_name
     
@@ -373,7 +501,7 @@ def main(file_name: str, visualize: bool = False):
     spike_planted = spike_check(frames[0], spike_bbox, visualize)
     timestamp_str = initialize_timestamp(visualize, clock_bbox, frames, spike_planted)
     print("STARTING FRAME PROCESSING")
-    for i, frame in enumerate(frames):
+    for frame_idx, frame in enumerate(frames):
         timestamp_str -= 1
         print(f"\n{timestamp_str}\n")
 
@@ -384,23 +512,32 @@ def main(file_name: str, visualize: bool = False):
 
         ##########################################
         
-        if max(ability_matches.values(), default=0) < 3: 
-            ability_icon = match_icon(frame, "assets/abilities", ability_bbox, visualize)
+        if max(ability_matches.values(), default=0) < 3:
+            ability_icon = match_icon(
+                frame,
+                "assets/abilities",
+                ability_bbox,
+                visualize,
+                use_edges=use_edge_matching,
+                debug_dump_dir=debug_dump_dir,
+                debug_tag=f"{timestamp_str}_f{frame_idx}",
+            )
             print(f"Ability icon matched: {ability_icon}")
             ability_matches[ability_icon] += 1
 
         ##########################################
 
-        for i in range(len(charge_bboxes)):
-            x, y, w, h = charge_bboxes[i]
+        for slot_idx in range(len(charge_bboxes)):
+            x, y, w, h = charge_bboxes[slot_idx]
             cropped = frame[y:y+h, x:x+w]
-            
-            pil_img = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
+
             target_size = (128, 32)
-            new_img = Image.new('RGB', target_size, (0, 0, 0))
-            offset = ((target_size[0] - pil_img.width) // 2, (target_size[1] - pil_img.height) // 2)
-            new_img.paste(pil_img, offset)
-            resized_crop = cv2.cvtColor(np.array(new_img), cv2.COLOR_RGB2BGR)
+            resized_crop = preprocess_charge_crop(
+                cropped,
+                target_size=target_size,
+                debug_dump_dir=debug_dump_dir,
+                debug_tag=f"{timestamp_str}_f{frame_idx}_slot{slot_idx + 1}",
+            )
             
             if visualize:
                 cv2.imshow("Resized Crop", resized_crop)
@@ -408,17 +545,17 @@ def main(file_name: str, visualize: bool = False):
                 cv2.destroyAllWindows()
 
             charge_icon = match_charge_cnn(resized_crop, None, (0, 0, target_size[0], target_size[1]))
-            slot_matches[timestamp_str].append((f"Ability #{i+1}", charge_icon[0:3]))
+            slot_matches[timestamp_str].append((f"Ability #{slot_idx + 1}", charge_icon[0:3]))
             print(f"Ability icon matched: {charge_icon[0:3]}")
         
         ##########################################
         
-        for i in range(len(team_status)):
-            agent, ult_ready = detect_agent(frame, team_status[i], team_ultimate[i],  "assets/agents/normal", visualize)
+        for slot_idx in range(len(team_status)):
+            agent, ult_ready = detect_agent(frame, team_status[slot_idx], team_ultimate[slot_idx],  "assets/agents/normal", visualize)
             print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
             team_status_dict[timestamp_str][agent] = bool(ult_ready)
             
-            agent, ult_ready = detect_agent(frame, enemy_status[i], enemy_ultimate[i],  "assets/agents/flipped", visualize)
+            agent, ult_ready = detect_agent(frame, enemy_status[slot_idx], enemy_ultimate[slot_idx],  "assets/agents/flipped", visualize)
             print(f"Agent detected: {agent}, Ultimate ready: {ult_ready}")
             enemy_status_dict[timestamp_str][agent] = bool(ult_ready)
 
@@ -455,7 +592,8 @@ def main(file_name: str, visualize: bool = False):
 
 
 if __name__ == "__main__":
-    video_paths = ["1440"]
+    video_paths = ["v720", "v720-2", "v1080", "v1440", "v1080-2", "v1440-2", "v1080-3", "v1440-3"]
+    #video_paths = ["1440"]
     for video in video_paths:
-        main(f"videos/v{video}.mp4", False)
+        main(f"videos/{video}.mp4", False)
     

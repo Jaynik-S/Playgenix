@@ -1,7 +1,6 @@
 {
     "87": {
         "team": {
-            "null": false,
             "Skye": false,
             "Sage": false,
             "Reyna": true,
@@ -33,7 +32,6 @@
     },
     "85": {
         "team": {
-            "null": false,
             "Skye": false,
             "Sage": false,
             "Reyna": false,
@@ -49,39 +47,32 @@
     },
     "84": {
         "team": {
-            "null": false,
             "Skye": false,
             "Omen": false
         },
         "enemy": {
             "Sage": true,
             "Reyna": true,
-            "Viper": true,
-            "null": false
+            "Viper": true
         }
     },
     "83": {
         "team": {
-            "null": false,
             "Fade": true,
             "Omen": true
         },
         "enemy": {
             "Sage": false,
             "Reyna": false,
-            "Breach": false,
-            "null": false
+            "Breach": false
         }
     },
     "82": {
-        "team": {
-            "null": false
-        },
+        "team": {},
         "enemy": {
             "Sage": false,
             "Reyna": false,
-            "Breach": false,
-            "null": false
+            "Breach": false
         }
     }
 }

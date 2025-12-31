@@ -9,8 +9,7 @@
         "enemy": {
             "Iso": false,
             "Omen": false,
-            "Gekko": true,
-            "null": false
+            "Gekko": true
         }
     },
     "-2": {
@@ -23,13 +22,11 @@
         },
         "enemy": {
             "Iso": false,
-            "Gekko": false,
-            "null": false
+            "Gekko": false
         }
     },
     "-3": {
         "team": {
-            "null": false,
             "Jett": false,
             "Tejo": false,
             "KAYO": false,
@@ -37,33 +34,28 @@
         },
         "enemy": {
             "Iso": false,
-            "Deadlock": false,
-            "null": false
+            "Deadlock": false
         }
     },
     "-4": {
         "team": {
-            "null": false,
             "Jett": false,
             "KAYO": false,
             "Reyna": true
         },
         "enemy": {
-            "Iso": false,
-            "null": false
+            "Iso": false
         }
     },
     "-5": {
         "team": {
-            "null": false,
             "Fade": false,
             "Skye": false,
             "KAYO": false,
             "Reyna": true
         },
         "enemy": {
-            "KAYO": false,
-            "null": false
+            "KAYO": false
         }
     }
 }

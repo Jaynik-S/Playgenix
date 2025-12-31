@@ -43,8 +43,7 @@
             "Omen": true,
             "Killjoy": false,
             "Phoenix": false,
-            "Jett": false,
-            "null": false
+            "Jett": false
         }
     },
     "80": {
@@ -59,24 +58,7 @@
             "Omen": false,
             "Killjoy": false,
             "Phoenix": false,
-            "Jett": true,
-            "null": false
-        }
-    },
-    "79": {
-        "team": {
-            "Clove": false,
-            "Jett": false,
-            "Killjoy": false,
-            "KAYO": true,
-            "Reyna": false
-        },
-        "enemy": {
-            "Omen": false,
-            "Killjoy": false,
-            "Phoenix": false,
-            "Jett": true,
-            "Viper": false
+            "Jett": true
         }
     }
 }

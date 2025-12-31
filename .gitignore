@@ -1,3 +1,4 @@
+.env
 venv
 .venv
 temp
@@ -16,4 +17,3 @@ todo
 app/json_data/session/*
 videos/
 *.mp4
-

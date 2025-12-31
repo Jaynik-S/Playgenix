@@ -1,7 +1,6 @@
 {
     "90": {
         "team": {
-            "null": false,
             "Clove": false,
             "KAYO": false,
             "Brimstone": false,
@@ -17,7 +16,6 @@
     },
     "89": {
         "team": {
-            "null": false,
             "Clove": false,
             "KAYO": false,
             "Brimstone": false,
@@ -33,7 +31,6 @@
     },
     "88": {
         "team": {
-            "null": false,
             "Fade": false,
             "KAYO": false,
             "Reyna": false
@@ -48,7 +45,6 @@
     },
     "87": {
         "team": {
-            "null": false,
             "Fade": false,
             "Reyna": false,
             "Vyse": false
@@ -56,13 +52,11 @@
         "enemy": {
             "Omen": false,
             "Vyse": false,
-            "Jett": true,
-            "null": false
+            "Jett": true
         }
     },
     "86": {
         "team": {
-            "null": false,
             "Fade": false,
             "Brimstone": false,
             "Iso": false
@@ -71,34 +65,29 @@
             "Omen": false,
             "Vyse": false,
             "Deadlock": false,
-            "Viper": false,
-            "null": false
+            "Viper": false
         }
     },
     "85": {
         "team": {
-            "null": false,
             "Killjoy": false,
             "Reyna": false,
             "Vyse": false
         },
         "enemy": {
             "Vyse": false,
-            "Deadlock": true,
-            "null": false
+            "Deadlock": true
         }
     },
     "84": {
         "team": {
-            "null": false,
             "Neon": false,
             "Reyna": false,
             "Vyse": false
         },
         "enemy": {
             "Vyse": true,
-            "Iso": false,
-            "null": false
+            "Iso": false
         }
     }
 }

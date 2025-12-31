@@ -27,8 +27,7 @@
             "Reyna": false,
             "KAYO": false,
             "Omen": false,
-            "Vyse": false,
-            "null": false
+            "Vyse": false
         }
     },
     "97": {
@@ -43,8 +42,7 @@
             "Reyna": false,
             "KAYO": false,
             "Omen": false,
-            "Cypher": false,
-            "null": false
+            "Cypher": false
         }
     }
 }

@@ -1,38 +1,38 @@
 {
     "87": {
-        "Cloudburst": "2-2",
-        "Updraft": "1-1",
-        "Tailwind": "0-2",
-        "Blade Storm": "0-1"
+        "Shrouded Step": "2-2",
+        "Paranoia": "1-1",
+        "Dark Cover": "0-2",
+        "From the Shadows": "0-3"
     },
     "86": {
-        "Cloudburst": "2-2",
-        "Updraft": "1-1",
-        "Tailwind": "0-2",
-        "Blade Storm": "0-1"
+        "Shrouded Step": "1-2",
+        "Paranoia": "1-1",
+        "Dark Cover": "0-1",
+        "From the Shadows": "0-1"
     },
     "85": {
-        "Cloudburst": "2-2",
-        "Updraft": "1-1",
-        "Tailwind": "0-1",
-        "Blade Storm": "0-1"
+        "Shrouded Step": "1-2",
+        "Paranoia": "1-1",
+        "Dark Cover": "0-2",
+        "From the Shadows": "0-1"
     },
     "84": {
-        "Cloudburst": "2-2",
-        "Updraft": "1-1",
-        "Tailwind": "0-2",
-        "Blade Storm": "0-1"
+        "Shrouded Step": "1-2",
+        "Paranoia": "1-1",
+        "Dark Cover": "0-2",
+        "From the Shadows": "2-3"
     },
     "83": {
-        "Cloudburst": "2-2",
-        "Updraft": "1-1",
-        "Tailwind": "0-2",
-        "Blade Storm": "0-1"
+        "Shrouded Step": "2-2",
+        "Paranoia": "1-1",
+        "Dark Cover": "0-2",
+        "From the Shadows": "1-1"
     },
     "82": {
-        "Cloudburst": "0-1",
-        "Updraft": "0-1",
-        "Tailwind": "0-1",
-        "Blade Storm": "2-2"
+        "Shrouded Step": "0-1",
+        "Paranoia": "0-1",
+        "Dark Cover": "0-1",
+        "From the Shadows": "0-1"
     }
 }

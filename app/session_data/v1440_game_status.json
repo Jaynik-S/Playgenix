@@ -1,7 +1,6 @@
 {
     "82": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -17,7 +16,6 @@
     },
     "81": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -33,7 +31,6 @@
     },
     "80": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -43,13 +40,11 @@
             "Sova": false,
             "Phoenix": true,
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "79": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -58,13 +53,11 @@
         "enemy": {
             "Sova": false,
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "78": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -72,13 +65,11 @@
         },
         "enemy": {
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "77": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -86,13 +77,11 @@
         },
         "enemy": {
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "76": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -100,13 +89,11 @@
         },
         "enemy": {
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "75": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
@@ -114,47 +101,40 @@
         },
         "enemy": {
             "Reyna": true,
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "74": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
             "Skye": false
         },
         "enemy": {
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "73": {
         "team": {
-            "null": false,
             "Sage": false,
             "Reyna": false,
             "Omen": false,
             "Skye": false
         },
         "enemy": {
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     },
     "-1": {
         "team": {
-            "null": false,
             "Sage": true,
             "Reyna": false,
             "Omen": false,
             "Skye": false
         },
         "enemy": {
-            "Omen": true,
-            "null": false
+            "Omen": true
         }
     }
 }
