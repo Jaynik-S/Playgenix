@@ -1,7 +1,6 @@
 import cv2
 import os
 from collections import defaultdict
-from PIL import Image
 import pytesseract
 from img_preprocess import match_charge_cnn
 import numpy as np

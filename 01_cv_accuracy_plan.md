@@ -2,68 +2,257 @@
 
 Scope: Improve VALORANT HUD-based extraction accuracy in the current pipeline (`app/ability_cv.py`, `app/img_preprocess.py`, `model_setup/img_train.py`) while keeping each step independently implementable, testable, and shippable.
 
+Accuracy-driven priority note: Current metrics show `slot_matches.ability_name_accuracy` (46%) and `slot_matches.ability_count_accuracy` (31%) dominate overall error. Timestamp accuracy is already 100%, so it is excluded from priority work. Steps are re-ranked to front-load fixes that directly improve ability name and ability count detection.
+
 ## Steps
 
-1. Step 1 — Add confidences + “unknown” instead of forcing a label
-2. Step 2 — Enforce team uniqueness constraint (agent slots)
-3. Step 3 — Task-specific ROI preprocessing (template match + ult color)
-4. Step 4 — Add alive/dead explicitly (separate from ult-ready)
-5. Step 5 — Temporal smoothing + state constraints
-6. Step 6 — Make charge decoding ability-aware (constrain impossible classes)
-7. Step 7 — Fix training split + augmentations (reduce leakage, mimic video)
-8. Step 8 — Make clock OCR stable (confidence + monotonic countdown)
-9. Step 9 — Sampling upgrade (pick sharpest frame per second)
+1. Step 1 - Task-specific ROI preprocessing (template match + charge crops)
+2. Step 2 - Add confidences + "unknown" instead of forcing a label
+3. Step 3 - Temporal smoothing + state constraints
+4. Step 4 - Make charge decoding ability-aware (constrain impossible classes)
+5. Step 5 - Fix training split + augmentations (reduce leakage, mimic video)
+6. Step 6 - Sampling upgrade (pick sharpest frame per second)
+7. Step 7 - Enforce team uniqueness constraint (agent slots)
+8. Step 8 - Add alive/dead explicitly (separate from ult-ready)
+9. Step 9 - Make clock OCR stable (confidence + monotonic countdown)
 
-## Step 1 — Add confidences + “unknown” instead of forcing a label
+## Step 1 - Task-specific ROI preprocessing (template match + charge crops)
 
 ### Objective
-Expose per-detection confidence (and optionally a runner-up margin) so downstream logic can reject low-quality reads and reduce flicker. “Better” looks like fewer incorrect label flips and explicit `unknown` outputs rather than wrong labels.
+Increase `ability_name_accuracy` and `ability_count_accuracy` by making both template matching and CNN inputs robust to scale variance, color shifts, cooldown overlays, partial occlusion, and compression artifacts. Better looks like higher match margins and cleaner charge glyphs before classification.
 
 ### Where to implement (files + functions)
-- `app/ability_cv.py`: `match_icon()`, `detect_agent()`, `detect_ultimate()`, main loop inside `main()` where outputs are assembled.
-- `app/img_preprocess.py`: `match_charge_cnn()` (return top-k probabilities or at least `p_max`).
-- To locate: search for `cv2.matchTemplate`, `model.predict`, and the places where JSON dicts are built (`combined_status`, `converted`).
+- `app/ability_cv.py`: `match_icon()` (ability name), charge crop path in `main()` before calling `match_charge_cnn()`.
+- `app/img_preprocess.py`: add optional preprocessing entrypoints for CNN inputs (or accept preprocessed crops).
+- To locate: search for `cropped = screenshot[y:y+h, x:x+w]` (ability icon and charge crops).
 
 ### Inputs / Outputs
-- Inputs: ROI crops (agent slot, ult bar, ability icon, charge crop) from each sampled frame.
-- Outputs:
-  - For each detection type, return `(label, confidence[, margin])`.
-  - JSON outputs should include confidences, either by extending current values or by adding parallel `*_confidence` fields.
-    - Example (one option): `team: { agent_name: { "ult_ready": bool, "ult_conf": float, "agent_conf": float } }`.
+- Inputs: raw BGR ROI crops for ability icons and charge count strips.
+- Outputs: preprocessed crops and/or feature images used by template matching and CNN inference; no schema change, but improved confidence and accuracy downstream.
 
 ### Implementation checklist
-- [ ] Define a small, shared “detection result” shape (tuple or dict) for all detectors: `label`, `confidence`, `margin`.
-- [ ] Update `match_icon()` to return best score and (optionally) second-best score margin.
-- [ ] Update `detect_agent()` to return agent label + score(s) and gate low-confidence results to `unknown`.
-- [ ] Update `detect_ultimate()` to return a probability-like confidence (e.g., normalized yellow ratio) alongside the boolean.
-- [ ] Update `match_charge_cnn()` to optionally return `{"label": str, "p_max": float, "topk": [...]}` (requires reading softmax output).
-- [ ] Add thresholds in one place (constants/config): `MIN_TM_SCORE`, `MIN_TM_MARGIN`, `MIN_CNN_PMAX`, `MIN_ULT_RATIO`.
-- [ ] Update JSON assembly to persist confidence values for every timestamp.
-- [ ] Add a per-timestamp debug log option (guarded by a flag) that prints low-confidence detections.
-- [ ] Ensure `unknown`/`None` keys never become JSON keys (avoid `"null": false` artifacts).
+- [ ] Diagnose template matching failures (scale variance from HUD scale, brightness/gamma shifts, cooldown overlays, partial occlusion, compression blur) using a small ROI debug dataset.
+- [ ] Add a template pyramid (multi-scale matching) in `match_icon()` to handle 720p/1080p and HUD scale variance.
+- [ ] Normalize color for ability icon matching: convert to HSV or LAB, equalize luminance (CLAHE), and match on normalized channels.
+- [ ] Add an edge-based template path (Canny or Sobel) to reduce impact of color shifts and overlays.
+- [ ] Optional upgrade: add an embedding matcher (e.g., MobileNet or small CNN features) and use cosine similarity to re-rank top-N template matches.
+- [ ] For charge crops: apply denoise + contrast normalization; resize with a consistent interpolation method (e.g., `INTER_AREA` down, `INTER_CUBIC` up).
+- [ ] Apply a light morphological open/close to remove compression speckles on charge glyphs before CNN inference.
+- [ ] Add a debug flag to save preprocessed crops for manual inspection and for building a misclassification set.
 
 ### Acceptance criteria
-- Low-confidence detections are emitted as `unknown` (not a wrong label) for at least agent and ability icon matching.
-- Adds confidence output for: agent label, ult-ready, and charge class (`p_max`).
-- On 2–3 sample clips, reduces “impossible flips” (label changes that revert within 1–2 seconds) by ≥30% vs baseline.
+- `slot_matches.ability_name_accuracy` improves by ~20-30% relative on the test set (template matching benefit).
+- `slot_matches.ability_count_accuracy` improves by ~10-20% relative due to cleaner charge crops.
+- Template matching margin (best - second best score) increases on average across sampled frames.
 
 ### Test plan
-- Unit: add a small test that `match_icon()` returns `(label, score)` and that `unknown` triggers when score below threshold.
-- Golden-video: run extraction on a short clip twice; confirm deterministic outputs and record flip counts.
-- Metrics/logging: write a script to compute per-signal flip rate and `% unknown` over time.
+- Unit: verify preprocessing functions preserve shape/dtype and do not crash on empty crops.
+- Golden-video: compare ability name accuracy and charge count accuracy before/after preprocessing.
+- Metrics: log template match score distributions and CNN `p_max` distributions pre/post.
 
 ### Risks / gotchas
-- Thresholds can be resolution/encoding dependent; keep them configurable per run.
-- Adding confidences may require a JSON schema bump; version outputs or add new keys instead of breaking old readers.
-- Template matching scores can be misleading under brightness shifts; margins help more than raw score.
+- Aggressive normalization can remove discriminative color cues; keep a fallback to raw RGB matching.
+- Multi-scale matching increases compute; restrict to 2-3 scales or precompute scaled templates.
+- Over-sharpening can distort charge glyphs; tune denoise/sharpen strength conservatively.
 
-### “Prompt to implement this step”
-Implement Step 1 (confidences + unknown gating). Update `app/ability_cv.py` (`match_icon`, `detect_agent`, `detect_ultimate`, JSON assembly) and `app/img_preprocess.py` (`match_charge_cnn`) to return confidences and output `unknown` when below thresholds. Update the saved JSON in `app/session_data/` to include confidence fields. Add a small script/test to compute flip rate and confirm it drops on a sample clip.
+### "Prompt to implement this step"
+Implement Step 1 (ROI preprocessing). Update `app/ability_cv.py` to add multi-scale + color-normalized template matching in `match_icon()` and to preprocess charge crops before `match_charge_cnn()`. Add optional edge-based matching and a debug dump for preprocessed ROIs. Verify `slot_matches.ability_name_accuracy` and `slot_matches.ability_count_accuracy` improve on the test set.
 
-## Step 2 — Enforce team uniqueness constraint (agent slots)
+## Step 2 - Add confidences + "unknown" instead of forcing a label
 
 ### Objective
-Reduce agent misclassification in the 5-slot HUD by enforcing the constraint that each team has unique agents. “Better” looks like fewer duplicates and fewer `null/unknown` oscillations when multiple templates are similar.
+Reduce false positives for ability names and counts by explicitly modeling confidence and suppressing low-confidence outputs. Better looks like fewer wrong labels and a higher ratio of "unknown" when evidence is weak.
+
+### Where to implement (files + functions)
+- `app/ability_cv.py`: `match_icon()` (ability name), `main()` loop where slot matches are appended.
+- `app/img_preprocess.py`: `match_charge_cnn()` should return class probabilities and top-k.
+- To locate: search for `cv2.matchTemplate`, `model.predict`, and where `slot_matches[timestamp_str].append(...)` occurs.
+
+### Inputs / Outputs
+- Inputs: template matching scores and CNN probabilities.
+- Outputs: `(label, confidence, margin)` for ability name; `(label, p_max, topk)` for ability count. Persist confidence in output JSON.
+
+### Implementation checklist
+- [ ] Diagnose template matching false positives caused by similar icons (e.g., overlapping silhouettes) and cooldown overlays.
+- [ ] Return top-2 template scores from `match_icon()` and compute a margin; gate output to `unknown` if score/margin below threshold.
+- [ ] Add per-agent template sets or per-ability template variants (normal vs cooldown) and use confidence to choose.
+- [ ] In `match_charge_cnn()`, return `p_max` and top-k labels; add temperature scaling or simple calibration if `p_max` is overconfident.
+- [ ] Add a fallback rule: if `p_max` is below threshold, keep last stable count for that ability (or mark unknown).
+- [ ] Store confidence for both ability name and count in JSON (or parallel fields) for downstream smoothing.
+
+### Acceptance criteria
+- `slot_matches.ability_name_accuracy` improves by ~10-20% relative due to reduced false positives.
+- `slot_matches.ability_count_accuracy` improves by ~10-15% relative from confidence gating and fallback.
+- The percentage of `unknown` outputs is bounded (target <20% on stable HUD sections).
+
+### Test plan
+- Unit: ensure low-confidence template matches produce `unknown`.
+- Golden-video: measure accuracy vs unknown rate tradeoff and choose thresholds.
+- Metrics: track confusion matrix for ability names and counts with and without confidence gating.
+
+### Risks / gotchas
+- Overly strict thresholds can reduce recall too far; tune with ROC-style curves.
+- CNN probabilities may be poorly calibrated; verify `p_max` against true correctness.
+
+### "Prompt to implement this step"
+Implement Step 2 (confidence gating). Update `match_icon()` in `app/ability_cv.py` to return top-2 scores and gate low-margin matches to `unknown`. Update `match_charge_cnn()` in `app/img_preprocess.py` to return `p_max` and top-k; add a low-confidence fallback to last stable count. Persist confidence fields and re-measure `ability_name_accuracy` and `ability_count_accuracy`.
+
+## Step 3 - Temporal smoothing + state constraints
+
+### Objective
+Improve stability for ability name and ability count outputs by enforcing temporal consistency and plausible transitions. Better looks like fewer 1-2 frame glitches and smoother count trajectories.
+
+### Where to implement (files + functions)
+- `app/ability_cv.py`: main loop in `main()` after raw detections and before writing JSON.
+- `app/img_preprocess.py`: ensure `match_charge_cnn()` returns `p_max`/top-k so smoothing can be confidence-weighted.
+- To locate: search for `slot_matches[timestamp_str]` and any per-frame state assembly.
+
+### Inputs / Outputs
+- Inputs: per-timestamp ability name predictions + confidences; per-timestamp ability count predictions + probabilities.
+- Outputs: smoothed ability name and count sequences with optional anomaly flags.
+
+### Implementation checklist
+- [ ] Diagnose flicker sources: HUD animation, compression flicker, cooldown overlays causing transient template mismatches.
+- [ ] Apply majority vote / hysteresis for ability name labels across a 3-5 frame window.
+- [ ] Apply count smoothing with constraints (counts should not increase unexpectedly unless a refill occurs).
+- [ ] Add debouncing: require N consecutive frames before accepting a new ability name or count.
+- [ ] Add a "plausible transition" table for counts (e.g., 2->0 is plausible only if enough time passed).
+- [ ] Propagate confidence through smoothing (min/mean confidence of the accepted window) using `p_max` from `img_preprocess.py`.
+
+### Acceptance criteria
+- `slot_matches.ability_name_accuracy` improves by ~10-15% relative from reduced flicker.
+- `slot_matches.ability_count_accuracy` improves by ~15-25% relative from smoothed counts.
+- Flip rate (label changes per minute) drops by at least 30% on sample clips.
+
+### Test plan
+- Unit: verify debouncing logic on synthetic time series.
+- Golden-video: compare pre/post flicker rate and count jump rate.
+- Metrics: report accuracy and stability over multiple clips with different bitrate settings.
+
+### Risks / gotchas
+- Over-smoothing can hide real rapid events; keep window sizes configurable.
+- Countdown timestamps decrease; ensure smoothing operates on ordered time series, not raw JSON key order.
+
+### "Prompt to implement this step"
+Implement Step 3 (temporal smoothing). Add majority/hysteresis smoothing for ability name and count signals in `app/ability_cv.py`, with debouncing and plausible transition constraints. Persist smoothed outputs and compare `ability_name_accuracy`, `ability_count_accuracy`, and flip rate before/after.
+
+## Step 4 - Make charge decoding ability-aware (constrain impossible classes)
+
+### Objective
+Improve `ability_count_accuracy` by rejecting impossible CNN outputs using ability-specific max charges and fallback logic. Better looks like no invalid counts and fewer misreads from similar classes.
+
+### Where to implement (files + functions)
+- `app/img_preprocess.py`: `match_charge_cnn()` should expose softmax probabilities (not only argmax).
+- `app/ability_cv.py`: apply constraints after mapping `Ability #n` to actual ability name.
+- To locate: search for `agent_to_ability.json` usage and charge string assembly.
+
+### Inputs / Outputs
+- Inputs: CNN probabilities, ability name, and ability max charges mapping.
+- Outputs: constrained charge label + confidence; optionally both raw and constrained labels for debugging.
+
+### Implementation checklist
+- [ ] Diagnose CNN errors: confusion between visually similar counts (e.g., `1-2` vs `2-2`), low-res aliasing, missing negatives.
+- [ ] Add `ability_max_charges.json` keyed by canonical ability name.
+- [ ] Implement `constrain_charge_prediction(ability_name, topk_preds)` to filter out invalid classes.
+- [ ] Add fallback: if all valid classes are low confidence, keep last stable count or mark unknown.
+- [ ] Log constraint overrides and analyze if they reduce known confusions.
+- [ ] Tie back to `img_preprocess.py` by returning calibrated `p_max` for filtering.
+
+### Acceptance criteria
+- `slot_matches.ability_count_accuracy` improves by ~10-20% relative on the test set.
+- Zero outputs violate `max_charges` constraints.
+- Override rate is reasonable (<25% of frames) and correlates with previously misclassified cases.
+
+### Test plan
+- Unit: constraint function rejects invalid labels and selects best valid alternative.
+- Golden-video: compare accuracy and invalid-label rate before/after constraints.
+
+### Risks / gotchas
+- Ability max charges change with patches; keep mapping versioned and easy to update.
+- Naming mismatches across JSON and templates can break constraints; canonicalize IDs first.
+
+### "Prompt to implement this step"
+Implement Step 4 (ability-aware constraints). Update `app/img_preprocess.py` to return top-k with probabilities. Add `ability_max_charges.json` and apply constraints in `app/ability_cv.py` after ability name mapping. Add fallback to last stable count when confidence is low and verify `ability_count_accuracy` improves.
+
+## Step 5 - Fix training split + augmentations (reduce leakage, mimic video)
+
+### Objective
+Improve `ability_count_accuracy` by retraining the CNN with proper splits and realistic augmentations to handle font variation, UI animation, low resolution, and compression. Better looks like stronger validation accuracy and fewer confusions in production clips.
+
+### Where to implement (files + functions)
+- `model_setup/img_train.py`: dataset creation, augmentations, training loop.
+- `app/img_preprocess.py`: ensure model and class names remain compatible after retraining.
+- To locate: search for `image_dataset_from_directory` and augmentation layers.
+
+### Inputs / Outputs
+- Inputs: charge crop dataset grouped by video/source.
+- Outputs: updated `assets/models/best_slot_classifier.h5` and `assets/models/class_names.json`.
+
+### Implementation checklist
+- [ ] Diagnose CNN failure modes: class imbalance, font/aliasing variation, animated HUD backgrounds, and lack of "hard negative" crops.
+- [ ] Split train/val by video, not by frame, to avoid leakage.
+- [ ] Rebalance classes or use class weights / focal loss to handle rare counts.
+- [ ] Add realistic augmentations: JPEG compression, motion blur, downscale-then-upscale, gamma shifts, slight ROI jitter.
+- [ ] Consider a lighter architecture with explicit digit features (e.g., small CNN + global average pool) and compare to MobileNetV2.
+- [ ] Calibrate confidence (temperature scaling) and export calibration params used by `img_preprocess.py`.
+- [ ] Include "negative" examples: crops with overlays, partial occlusion, or corrupted frames.
+
+### Acceptance criteria
+- `slot_matches.ability_count_accuracy` improves by ~20-30% relative on the test set.
+- Confusion matrix shows reduced swaps among the top-3 confused classes.
+- The exported model remains compatible with `app/img_preprocess.py` input size and labels.
+
+### Test plan
+- Training: run `model_setup/img_train.py` and evaluate with `model_setup/img_test.py`.
+- Inference: run end-to-end extraction and compare count accuracy vs baseline.
+
+### Risks / gotchas
+- Aggressive augmentation can hurt if it deviates from actual capture artifacts; tune gradually.
+- Changing class names or ordering can silently break inference; keep class_names.json in sync.
+
+### "Prompt to implement this step"
+Implement Step 5 (CNN retraining). Update `model_setup/img_train.py` to split by video, add realistic augmentations, handle class imbalance, and optionally test a smaller CNN. Export updated models and update `app/img_preprocess.py` to load the new artifacts. Verify `ability_count_accuracy` improves on the test set.
+
+## Step 6 - Sampling upgrade (pick sharpest frame per second)
+
+### Objective
+Improve both template matching and CNN accuracy by sampling the sharpest frame around each second, reducing motion blur and transitional HUD frames. Better looks like clearer ability icons and charge glyphs.
+
+### Where to implement (files + functions)
+- `app/ability_cv.py`: `extract_frames()` or a new "burst sampling" function; main loop in `main()`.
+- To locate: search for `extract_frames(video_path, interval=1)` and `frame_count % frame_interval == 0`.
+
+### Inputs / Outputs
+- Inputs: video stream frames.
+- Outputs: a list of sampled frames per second selected by a sharpness metric (variance of Laplacian).
+
+### Implementation checklist
+- [ ] Diagnose blur-related failures for both template matching and CNN (e.g., low `p_max`, low match margins).
+- [ ] Sample a small window of frames around each 1-second tick and compute sharpness for each.
+- [ ] Select the sharpest frame; optionally keep a runner-up for debugging.
+- [ ] Log sharpness and detection confidence (template match margin and `p_max` from `img_preprocess.py`) to correlate improvements.
+- [ ] Keep sampling deterministic and bounded (small window size).
+
+### Acceptance criteria
+- `slot_matches.ability_name_accuracy` improves by ~5-10% relative on motion-heavy clips.
+- `slot_matches.ability_count_accuracy` improves by ~10-15% relative on motion-heavy clips.
+- Average template match margin and CNN `p_max` increase vs baseline sampling.
+
+### Test plan
+- Unit: validate sharpness ranking on synthetic blurred vs sharp frames.
+- Golden-video: compare accuracy and confidence metrics pre/post sampling upgrade.
+
+### Risks / gotchas
+- Increased decode cost; keep window size small (3-5 frames).
+- The sharpest frame might still be mid-animation; pair with smoothing (Step 3).
+
+### "Prompt to implement this step"
+Implement Step 6 (sharpest-frame sampling). Update `app/ability_cv.py` to sample a small frame burst per second and select the sharpest frame via variance of Laplacian. Verify `ability_name_accuracy` and `ability_count_accuracy` improve on motion-heavy clips and that confidence metrics increase.
+
+## Step 7 - Enforce team uniqueness constraint (agent slots)
+
+### Objective
+Reduce agent misclassification in the 5-slot HUD by enforcing the constraint that each team has unique agents. Better looks like fewer duplicates and fewer `unknown` oscillations when multiple templates are similar.
 
 ### Where to implement (files + functions)
 - `app/ability_cv.py`: `detect_agent()` (return top-k candidates), main loop where `team_status_dict` / `enemy_status_dict` are populated.
@@ -79,7 +268,7 @@ Reduce agent misclassification in the 5-slot HUD by enforcing the constraint tha
   - input: list length=5, each element is list of `(agent, score)` candidates.
   - output: list length=5 unique agents (or `unknown`) maximizing total score.
 - [ ] Start with a simple greedy resolver (highest score first) and upgrade to Hungarian assignment if needed.
-- [ ] Preserve `unknown` when all candidates are below threshold (don’t force a unique-but-wrong assignment).
+- [ ] Preserve `unknown` when all candidates are below threshold (do not force a unique-but-wrong assignment).
 - [ ] Ensure resolver operates separately for `team` and `enemy` and per timestamp.
 - [ ] Add debug output for duplicate resolution decisions (only when `visualize` or `debug` flag set).
 - [ ] Add a metric: `% timestamps with duplicates before/after`.
@@ -94,54 +283,16 @@ Reduce agent misclassification in the 5-slot HUD by enforcing the constraint tha
 - Golden-video: compare duplicate-rate metric before/after on a short clip.
 
 ### Risks / gotchas
-- If the underlying detector is very noisy, uniqueness constraints can “spread” errors to other slots; keep `unknown` as a valid outcome.
-- Agents with similar portraits may still confuse template matching; Step 3 preprocessing helps.
+- If the underlying detector is very noisy, uniqueness constraints can "spread" errors to other slots; keep `unknown` as a valid outcome.
+- Agents with similar portraits may still confuse template matching; Step 1 preprocessing helps.
 
-### “Prompt to implement this step”
-Implement Step 2 (unique agent assignment). Update `app/ability_cv.py` so `detect_agent()` returns top-k candidates. Add a resolver that enforces unique agents across the 5 slots for each team at each timestamp, preferring high scores and allowing `unknown`. Update JSON outputs and add a small metric script that reports duplicate rate before/after.
+### "Prompt to implement this step"
+Implement Step 7 (unique agent assignment). Update `app/ability_cv.py` so `detect_agent()` returns top-k candidates. Add a resolver that enforces unique agents across the 5 slots for each team at each timestamp, preferring high scores and allowing `unknown`. Update JSON outputs and add a small metric script that reports duplicate rate before/after.
 
-## Step 3 — Task-specific ROI preprocessing (template match + ult color)
-
-### Objective
-Improve robustness to compression, gamma shifts, and HUD animation by preprocessing ROIs differently per task (icons vs colors). “Better” looks like higher template-match margins and fewer ult-ready false positives/negatives.
-
-### Where to implement (files + functions)
-- `app/ability_cv.py`: inside `match_icon()`, `detect_agent()`, `detect_ultimate()`.
-- To locate: search for ROI crop lines like `cropped = screenshot[y:y+h, x:x+w]`.
-
-### Inputs / Outputs
-- Inputs: raw BGR ROI crops.
-- Outputs: preprocessed crops (or feature images) used for matching; no required output schema change, but confidence improvements should be measurable.
-
-### Implementation checklist
-- [ ] Add preprocessing helpers:
-  - [ ] `prep_for_template(crop_bgr) -> img`: grayscale → CLAHE → (optional) blur → Canny edges or normalized gray.
-  - [ ] `prep_for_color_ratio(crop_bgr) -> mask`: HSV mask + morphology + inner ROI mask.
-- [ ] Convert template matching to use preprocessed representations consistently for both `crop` and `template`.
-- [ ] For ult detection, restrict measurement to a central sub-rectangle (ignore borders).
-- [ ] Calibrate HSV thresholds by sampling a few frames and logging yellow ratio distribution.
-- [ ] Add an optional “debug save” mode to write preprocessed ROIs to disk for inspection.
-- [ ] Add/adjust thresholds after preprocessing (scores will shift).
-
-### Acceptance criteria
-- Template matching score margin (best-second) increases on average vs baseline on a sample set of frames.
-- Ult-ready flicker (true↔false toggles within 2 seconds) reduced by ≥25% on sample clips.
-
-### Test plan
-- Unit: ensure preprocessing functions preserve expected shapes/dtypes and don’t crash on empty/invalid crops.
-- Golden-video: run extraction with debug logging of score margins and ult ratios; compare distributions pre/post change.
-
-### Risks / gotchas
-- Edge-based matching can fail if HUD uses low-contrast art; keep a fallback to normalized grayscale if needed.
-- CLAHE parameters can over-amplify compression blocks; tune clip limit conservatively.
-
-### “Prompt to implement this step”
-Implement Step 3 (ROI preprocessing). In `app/ability_cv.py`, add task-specific preprocessing helpers and use them in `match_icon`, `detect_agent`, and `detect_ultimate` (edge/normalized matching for icons; masked HSV ratio for ult). Add debug outputs to inspect preprocessed crops and verify improved match margins and reduced ult flicker on a sample clip.
-
-## Step 4 — Add alive/dead explicitly (separate from ult-ready)
+## Step 8 - Add alive/dead explicitly (separate from ult-ready)
 
 ### Objective
-Extract whether each agent slot is alive/dead as its own signal instead of conflating status with ult readiness. “Better” looks like a reliable `alive` boolean per agent per timestamp, enabling coaching rules that depend on numbers advantage.
+Extract whether each agent slot is alive/dead as its own signal instead of conflating status with ult readiness. Better looks like a reliable `alive` boolean per agent per timestamp, enabling coaching rules that depend on numbers advantage.
 
 ### Where to implement (files + functions)
 - `app/ability_cv.py`: agent-slot processing loop inside `main()`, plus a new detector function (e.g., `detect_alive_dead()`).
@@ -156,7 +307,7 @@ Extract whether each agent slot is alive/dead as its own signal instead of confl
 ### Implementation checklist
 - [ ] Define the output structure update for `v*_game_status.json` (version or new keys).
 - [ ] Implement an alive/dead heuristic detector:
-  - [ ] Option A (fast): saturation/brightness stats + edge density + a “dead overlay” template on a sub-ROI.
+  - [ ] Option A (fast): saturation/brightness stats + edge density + a "dead overlay" template on a sub-ROI.
   - [ ] Option B (more robust): train a tiny binary classifier on slot crops (alive vs dead).
 - [ ] Keep the alive detector independent of agent ID (works even when agent is `unknown`).
 - [ ] Add confidence for alive/dead (ratio-based confidence or classifier probability).
@@ -165,148 +316,23 @@ Extract whether each agent slot is alive/dead as its own signal instead of confl
 
 ### Acceptance criteria
 - Adds `alive` (and optionally `alive_conf`) per slot per timestamp in `v*_game_status.json`.
-- On a labeled mini-set (manually labeled ~200 frames), achieves ≥90% alive/dead accuracy.
+- On a labeled mini-set (manually labeled ~200 frames), achieves >=90% alive/dead accuracy.
 
 ### Test plan
-- Unit: synthetic crops (blank, dark, bright) don’t crash; detector returns a boolean + confidence.
+- Unit: synthetic crops (blank, dark, bright) do not crash; detector returns a boolean + confidence.
 - Golden-video: manually label 2 short segments and compute alive/dead accuracy; log false positives/negatives.
 
 ### Risks / gotchas
 - HUD styles vary (spectator/recording overlays); heuristics may not generalize without training data.
-- Agent portraits can be partially occluded during UI animation; prefer temporal smoothing (Step 5).
+- Agent portraits can be partially occluded during UI animation; prefer temporal smoothing (Step 3).
 
-### “Prompt to implement this step”
-Implement Step 4 (alive/dead extraction). Add an `alive` signal per agent slot in `app/ability_cv.py` using a heuristic detector (or a small binary classifier) and update `app/session_data/*_game_status.json` schema to include `alive` separately from `ult_ready`, with confidence. Verify on a small labeled frame set that alive/dead accuracy is ≥90%.
+### "Prompt to implement this step"
+Implement Step 8 (alive/dead extraction). Add an `alive` signal per agent slot in `app/ability_cv.py` using a heuristic detector (or a small binary classifier) and update `app/session_data/*_game_status.json` schema to include `alive` separately from `ult_ready`, with confidence. Verify on a small labeled frame set that alive/dead accuracy is >=90%.
 
-## Step 5 — Temporal smoothing + state constraints
-
-### Objective
-Convert noisy per-frame detections into stable time series using smoothing and debouncing, while enforcing basic constraints (no rapid flips, no impossible jumps). “Better” looks like fewer 1-frame glitches and smoother coaching-relevant events.
-
-### Where to implement (files + functions)
-- `app/ability_cv.py`: main per-frame loop in `main()`, right after raw detections and before writing to dicts.
-- To locate: search for where `slot_matches[timestamp_str]` and `team_status_dict[timestamp_str]` are populated.
-
-### Inputs / Outputs
-- Inputs: per-timestamp raw detections + confidences (from Steps 1–4).
-- Outputs: smoothed detections written to JSON (plus optional anomaly flags).
-
-### Implementation checklist
-- [ ] Implement a small temporal filter utility:
-  - [ ] majority vote over a window (e.g., 3–5 samples) for categorical labels.
-  - [ ] median / hysteresis for boolean ult-ready / alive.
-  - [ ] debouncing: require `N` consecutive samples before changing a state.
-- [ ] Apply smoothing separately per signal:
-  - [ ] agent label per slot
-  - [ ] ult_ready per slot
-  - [ ] alive per slot
-  - [ ] ability charge class per ability
-- [ ] Add “impossible change” detection (e.g., charge jumps by >1 level in 1 second) and either clamp or mark as anomaly.
-- [ ] Propagate confidence through smoothing (e.g., average confidence for chosen label, or min over window).
-- [ ] Add a debug mode to print all state changes with timestamps and confidence.
-
-### Acceptance criteria
-- Reduces label flicker: count of state changes per minute drops by ≥30% on sample clips.
-- Charge time series contains ≤1% “impossible jumps” after smoothing (define clearly).
-- Adds optional anomaly flags without crashing downstream JSON consumers.
-
-### Test plan
-- Unit: feed synthetic time series and verify debouncing behavior (no change until N confirmations).
-- Golden-video: compute flip rates and impossible-jump rates pre/post.
-
-### Risks / gotchas
-- Over-smoothing can hide real quick events; keep window sizes configurable.
-- If your timebase is countdown and timestamps decrease, smoothing logic must handle reversed time order.
-
-### “Prompt to implement this step”
-Implement Step 5 (temporal smoothing). In `app/ability_cv.py`, add debouncing/majority filters for agent labels, alive, ult-ready, and ability charges using a configurable window. Add anomaly detection for impossible jumps and log/flag them. Verify flip rate and impossible-jump rate decrease on a sample clip.
-
-## Step 6 — Make charge decoding ability-aware (constrain impossible classes)
+## Step 9 - Make clock OCR stable (confidence + monotonic countdown)
 
 ### Objective
-Use known ability max charges to reject impossible CNN outputs (e.g., predicting `*-3` for a 1-charge ability). “Better” looks like higher charge classification accuracy without retraining, and fewer nonsensical charge states.
-
-### Where to implement (files + functions)
-- `app/img_preprocess.py`: `match_charge_cnn()` should expose softmax probabilities (not only argmax).
-- `app/ability_cv.py`: after mapping slot → ability name (see `save_to_json()` and slot conversion), apply constraints before finalizing charge outputs.
-- To locate: search for `agent_to_ability.json` usage and where charge strings like `2-2` are written.
-
-### Inputs / Outputs
-- Inputs: charge classifier probabilities; slot → ability mapping; a config mapping `ability_name -> max_charges`.
-- Outputs: constrained charge labels + confidence; optionally store both raw and constrained predictions for debugging.
-
-### Implementation checklist
-- [ ] Create `ability_max_charges.json` (or python dict) keyed by canonical ability name.
-- [ ] Update `match_charge_cnn()` to return `preds` or top-k labels with probabilities.
-- [ ] Implement `constrain_charge_prediction(ability_name, topk_preds)`:
-  - filters out labels incompatible with `max_charges`.
-  - chooses best remaining label; falls back to previous stable label if confidence low.
-- [ ] Integrate constraint step right before writing `slot_matches` / converted JSON.
-- [ ] Add logging for when constraints override the raw argmax.
-- [ ] Add a metric: override rate and accuracy change on a labeled validation set (if available).
-
-### Acceptance criteria
-- No constrained output violates `max_charges` constraints.
-- On a small labeled set, charge accuracy improves vs baseline (target: +3–5% absolute) or flicker decreases if labels are sparse.
-
-### Test plan
-- Unit: constraint function rejects impossible labels and picks best valid alternative.
-- Golden-video: track how often constraints override model predictions; inspect a few overrides visually.
-
-### Risks / gotchas
-- Ability max charges can change with patches; keep the mapping easy to update.
-- Naming mismatches between `agent_to_ability.json`, `ability_description.json`, and model class labels must be normalized (canonicalization).
-
-### “Prompt to implement this step”
-Implement Step 6 (ability-aware charge constraints). Update `app/img_preprocess.py` so `match_charge_cnn` returns probabilities/top-k. Add an `ability_max_charges` mapping and apply it in `app/ability_cv.py` when converting slot outputs to ability names, rejecting impossible charge classes and emitting constrained labels + confidence. Verify no outputs violate max charges and measure override rate on a sample clip.
-
-## Step 7 — Fix training split + augmentations (reduce leakage, mimic video)
-
-### Objective
-Improve generalization of the charge classifier by splitting train/val by video (not by frame) and using augmentations that match real capture artifacts. “Better” looks like stable validation accuracy that transfers to unseen videos and fewer misreads under compression/blur.
-
-### Where to implement (files + functions)
-- `model_setup/img_train.py`: dataset creation, augmentations, training loop.
-- `model_setup/img_script.py` / `model_setup/img_crop.py`: data collection pipeline (if you use them to generate crops).
-- To locate: search for `image_dataset_from_directory` and augmentation layers.
-
-### Inputs / Outputs
-- Inputs: cropped charge images organized by source (ideally per video ID).
-- Outputs: updated `assets/models/best_slot_classifier.h5` and `assets/models/class_names.json` (same consumer interface).
-
-### Implementation checklist
-- [ ] Restructure `data_crop/` to preserve video identity (e.g., `data_crop/by_video/<video_id>/<label>/*.png`) or store an index file with `video_id`.
-- [ ] Build train/val splits by `video_id` (no shared videos across splits).
-- [ ] Remove/avoid augmentations that break realism (e.g., `RandomFlip("horizontal")` for charge crops).
-- [ ] Add realistic augmentations:
-  - [ ] JPEG compression simulation (encode/decode in pipeline or offline aug)
-  - [ ] motion blur / gaussian blur
-  - [ ] downscale then upscale
-  - [ ] gamma/brightness shifts within capture-like bounds
-  - [ ] small ROI jitter (translation)
-- [ ] Add metrics: per-class accuracy, confusion matrix (reuse `model_setup/img_test.py` approach).
-- [ ] Export the trained model to `assets/models/` and update any paths used by `app/img_preprocess.py`.
-
-### Acceptance criteria
-- Validation set shares zero videos with training set (verify by listing split membership).
-- Confusion matrix improves on the most common confusions (define top-3 confusions and show reduction).
-- Model inference in `app/img_preprocess.py` remains compatible (same input size and class name mapping).
-
-### Test plan
-- Training: run `model_setup/img_train.py` and save artifacts; run `model_setup/img_test.py` to print accuracy/confusion matrix.
-- Inference: run extraction on a short video and confirm charge predictions look plausible (no widespread collapse).
-
-### Risks / gotchas
-- Data refactor can be time-consuming; do it incrementally and keep a backward-compatible loader if needed.
-- Augmentations that are too strong can hurt; add one at a time and measure.
-
-### “Prompt to implement this step”
-Implement Step 7 (training split + augmentations). Update `model_setup/img_train.py` to split train/val by video ID (no leakage) and replace unrealistic augmentations with capture-like ones (compression, blur, downscale/upscale, gamma, slight jitter). Retrain and export the best model to `assets/models/`, then verify with `model_setup/img_test.py` and a quick end-to-end extraction run.
-
-## Step 8 — Make clock OCR stable (confidence + monotonic countdown)
-
-### Objective
-Reduce OCR errors in the round clock by using OCR confidence and enforcing the clock’s monotonic countdown. “Better” looks like a clean seconds-remaining timeline with rare, corrected OCR glitches.
+Reduce OCR errors in the round clock by using OCR confidence and enforcing the clock's monotonic countdown. Better looks like a clean seconds-remaining timeline with rare, corrected OCR glitches.
 
 ### Where to implement (files + functions)
 - `app/ability_cv.py`: `time_capture()`, the initial time discovery loop in `main()` (search for `while not (len(m) == 1 and len(s) == 2)`), and timestamp progression logic.
@@ -327,7 +353,7 @@ Reduce OCR errors in the round clock by using OCR confidence and enforcing the c
 - [ ] Store a `time_conf` per timestamp (optional) for downstream uncertainty.
 
 ### Acceptance criteria
-- OCR produces a valid `mm:ss` (or seconds) for ≥95% of sampled timestamps on a sample clip (with interpolation allowed).
+- OCR produces a valid `mm:ss` (or seconds) for >=95% of sampled timestamps on a sample clip (with interpolation allowed).
 - Time series is strictly monotonic in the correct direction (countdown).
 - Initial timestamp alignment is consistent run-to-run (deterministic given same video).
 
@@ -339,43 +365,5 @@ Reduce OCR errors in the round clock by using OCR confidence and enforcing the c
 - Some recordings hide the clock in certain phases; handle missing clock gracefully.
 - Countdown vs elapsed can vary by mode/overlay; detect direction from first few reads.
 
-### “Prompt to implement this step”
-Implement Step 8 (stable clock OCR). Update `app/ability_cv.py` `time_capture()` to use `pytesseract.image_to_data` and return both parsed time and OCR confidence. Add monotonic countdown enforcement in `main()` so bad reads are rejected and missing reads are interpolated. Verify ≥95% valid timestamps and a strictly monotonic time series on a sample clip.
-
-## Step 9 — Sampling upgrade (pick sharpest frame per second)
-
-### Objective
-Reduce motion-blur and transitional HUD frames by sampling multiple frames around each second and selecting the sharpest. “Better” looks like higher-confidence detections without changing the overall 1Hz time resolution.
-
-### Where to implement (files + functions)
-- `app/ability_cv.py`: `extract_frames()` (or replace it), and the main loop that processes `frames`.
-- To locate: search for `extract_frames(video_path, interval=1)` and `frame_count % frame_interval == 0`.
-
-### Inputs / Outputs
-- Inputs: video stream frames (via OpenCV capture).
-- Outputs: a list of sampled frames per second (same length as before), but chosen by a sharpness metric; optionally also return frame indices/timestamps.
-
-### Implementation checklist
-- [ ] Change extraction to grab a short burst around each target second (e.g., ±2 frames or a 5-frame window).
-- [ ] Compute sharpness per candidate frame (variance of Laplacian on grayscale).
-- [ ] Choose the sharpest frame; keep the chosen frame’s original index for debugging.
-- [ ] Ensure sampling is deterministic (no randomness).
-- [ ] Handle edge cases: start/end of video, variable FPS, dropped frames.
-- [ ] Optionally: expose a knob for compute vs quality (window size).
-
-### Acceptance criteria
-- Average detection confidence increases vs baseline on a sample clip (define: mean agent template score margin and mean charge `p_max`).
-- The chosen-frame sharpness is higher than baseline sampled frame sharpness for ≥70% of seconds.
-- Runtime overhead stays acceptable (e.g., <2× extraction time at 1Hz sampling).
-
-### Test plan
-- Unit: verify the sharpness scorer and frame selection logic chooses the expected frame in a synthetic blurred-vs-sharp pair.
-- Golden-video: log sharpness per second for baseline vs upgraded sampling; compare confidence distributions.
-
-### Risks / gotchas
-- More decoding work increases CPU time; keep window small by default.
-- Some HUD elements animate; “sharpest” may not always be the most semantically stable—pair with smoothing (Step 5).
-
-### “Prompt to implement this step”
-Implement Step 9 (sharpest-frame sampling). Update `app/ability_cv.py` to sample a small window of frames around each 1-second tick and select the sharpest frame using variance-of-Laplacian. Keep output cadence the same, log chosen indices and sharpness, and verify higher average detection confidence without excessive runtime overhead.
-
+### "Prompt to implement this step"
+Implement Step 9 (stable clock OCR). Update `app/ability_cv.py` `time_capture()` to use `pytesseract.image_to_data` and return both parsed time and OCR confidence. Add monotonic countdown enforcement in `main()` so bad reads are rejected and missing reads are interpolated. Verify >=95% valid timestamps and a strictly monotonic time series on a sample clip.
