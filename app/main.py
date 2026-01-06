@@ -8,7 +8,7 @@ from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from pathlib import Path
-from ability_cv import main as process_video
+from ability_pipeline import main as process_video
 
 app = FastAPI()
 load_dotenv()
