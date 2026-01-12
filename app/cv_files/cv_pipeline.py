@@ -85,8 +85,8 @@ def main(file_name: str, visualize: bool = False, debug_dump_dir=None, use_edge_
 
     frames = extract_frames(video_path, interval=1)
 
-    if visualize:
-        show_video_frames(frames)
+    # if visualize:
+    #     show_video_frames(frames)
 
     spike_planted = spike_check(frames[0], spike_bbox, visualize)
     timestamp_str = initialize_timestamp(visualize, clock_bbox, frames, spike_planted)
@@ -199,6 +199,9 @@ def main(file_name: str, visualize: bool = False, debug_dump_dir=None, use_edge_
 
 
 if __name__ == "__main__":
-    video_paths = ["v720", "v720-2", "v1080", "v1440", "v1080-2", "v1440-2", "v1080-3", "v1440-3"]
+    video_paths = ["v720"]
     for video in video_paths:
-        main(f"videos/{video}.mp4", False)
+        main(f"videos/{video}.mp4", True)
+
+## python -m app.cv_files.cv_pipeline
+

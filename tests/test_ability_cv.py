@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cv_compare import compare_game_status, compare_slot_matches, safe_divide
+from tests.cv_compare_helpers import compare_game_status, compare_slot_matches, safe_divide
 
 TIMESTAMP_MIN = 1.00
 AGENT_NAME_MIN = 1.00

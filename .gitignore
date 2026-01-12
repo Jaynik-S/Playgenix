@@ -17,3 +17,4 @@ todo
 app/json_data/session/*
 videos/
 *.mp4
+assets/models/run4_minimap
