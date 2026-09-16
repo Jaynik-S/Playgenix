@@ -177,6 +177,32 @@ window.addEventListener('scroll', () => {
     }
 });
 
+// Animate elements on scroll
+const animateOnScroll = () => {
+    const elements = document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits');
+    
+    elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (elementPosition < screenPosition) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    });
+};
+
+// Set initial styles for animation
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.feature-card, .step, .section-header, .waitlist-form-container, .waitlist-benefits').forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    });
+    
+    // Run animation on load and scroll
+    animateOnScroll();
+    
 
 // Set initial styles for animation
 document.addEventListener('DOMContentLoaded', () => {
@@ -197,6 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('blur', function() {
                 this.style.borderColor = 'rgba(139, 92, 246, 0.3)';
                 this.style.boxShadow = 'none';
+            });
+        });
+    }
+});
+
+window.addEventListener('scroll', animateOnScroll);
             });        });
     }
 });

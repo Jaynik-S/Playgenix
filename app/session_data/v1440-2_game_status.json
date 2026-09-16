@@ -1,0 +1,265 @@
+{
+    "75": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Phoenix": false,
+            "Viper": false,
+            "Omen": false
+        }
+    },
+    "74": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Phoenix": false,
+            "Reyna": false,
+            "Omen": false
+        }
+    },
+    "73": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Phoenix": false,
+            "Reyna": false,
+            "Omen": false
+        }
+    },
+    "72": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Phoenix": false,
+            "Reyna": false,
+            "Omen": true
+        }
+    },
+    "71": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Phoenix": false,
+            "Reyna": false,
+            "Omen": false
+        }
+    },
+    "70": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Reyna": false,
+            "Omen": false
+        }
+    },
+    "69": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": false
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Omen": false
+        }
+    },
+    "68": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Reyna": false,
+            "Sova": false,
+            "Omen": false
+        }
+    },
+    "67": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Omen": false
+        }
+    },
+    "66": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": true,
+            "Sova": true,
+            "Omen": true
+        }
+    },
+    "65": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Sova": false,
+            "Omen": false
+        }
+    },
+    "64": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Omen": false
+        }
+    },
+    "63": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Omen": false
+        }
+    },
+    "62": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": false,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Omen": false
+        }
+    },
+    "61": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Raze": false,
+            "Omen": false
+        }
+    },
+    "60": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Omen": false
+        }
+    },
+    "59": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Brimstone": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Omen": false
+        }
+    },
+    "58": {
+        "team": {
+            "Sage": false,
+            "Reyna": false,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {
+            "Omen": false
+        }
+    },
+    "57": {
+        "team": {
+            "Sage": false,
+            "Reyna": true,
+            "Killjoy": false,
+            "Deadlock": true,
+            "Jett": true
+        },
+        "enemy": {}
+    }
+}

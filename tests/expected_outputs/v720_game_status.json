@@ -1,0 +1,63 @@
+{
+  "83": {
+    "team": {
+      "Clove": false,
+      "Jett": false,
+      "Killjoy": false,
+      "KAYO": false,
+      "Reyna": false
+    },
+    "enemy": {
+      "Omen": true,
+      "Killjoy": false,
+      "Phoenix": false,
+      "Jett": true,
+      "Sova": false
+    }
+  },
+  "82": {
+    "team": {
+      "Jett": false,
+      "Skye": false,
+      "KAYO": true,
+      "Harbor": false,
+      "Reyna": true
+    },
+    "enemy": {
+      "Omen": true,
+      "Killjoy": false,
+      "Phoenix": false,
+      "Jett": true
+    }
+  },
+  "81": {
+    "team": {
+      "Jett": false,
+      "Skye": false,
+      "KAYO": true,
+      "Harbor": false,
+      "Reyna": true
+    },
+    "enemy": {
+      "Omen": true,
+      "Killjoy": false,
+      "Phoenix": false,
+      "Jett": true
+    }
+  },
+  "80": {
+    "team": {
+      "Jett": false,
+      "Skye": false,
+      "KAYO": true,
+      "Harbor": false,
+      "Reyna": true
+    },
+    "enemy": {
+      "Omen": true,
+      "Killjoy": false,
+      "Phoenix": false,
+      "Jett": true
+    }
+  }
+}

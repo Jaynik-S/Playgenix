@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -7,6 +7,8 @@ import os
 from supabase import create_client
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
+from pathlib import Path
+from ability_pipeline import main as process_video
 
 app = FastAPI()
 load_dotenv()
@@ -22,6 +24,8 @@ key = os.environ.get("SUPABASE_KEY")
 supabase = create_client(url, key)
 if not supabase:
     raise Exception("Failed to initialize Supabase client.")
+
+UPLOAD_DIR = Path() / 'app' / 'static' / 'uploads'
 
 # Helper function to get user context
 async def get_current_user(request: Request):
@@ -121,6 +125,13 @@ async def contact(request: Request, name: str = Form(...), email: str = Form(...
 #             # If profile exists, use it. Otherwise use default values.
 #             profile_data = user_profile.data[0] if user_profile.data else {"videos_remaining": 5}
             
+            # Store user info in session
+            request.session["user"] = {
+                "name": user_data.user_metadata.get("full_name", "User"),
+                "email": user_data.email,
+                "videos_remaining": profile_data.get("videos_remaining", 5)
+            }
+    return RedirectResponse(url="/", status_code=303)
 #             # Store user info in session
 #             request.session["user"] = {
 #                 "name": user_data.user_metadata.get("full_name", "User"),
@@ -139,6 +150,32 @@ async def contact(request: Request, name: str = Form(...), email: str = Form(...
 # async def upload(request: Request):
 #     user = await get_current_user(request)
 #     return templates.TemplateResponse("upload.html", {"request": request, "user": user})
+
+@app.post("/contact", response_class=HTMLResponse)
+def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):
+    try:
+        response = supabase.table("contact").insert({
+            "name": name,
+            "email": email,
+            "subject": subject,
+            "message": message,
+        }).execute()
+        if response.get("status_code") != 200:
+            raise Exception(f"Supabase error: {response}")
+    except Exception as e:
+        print(f"Error inserting into Supabase: {e}")
+        return templates.TemplateResponse("contact.html", {"request": request, "error": "Failed to reach out."})
+
+@app.post("/upload")
+async def upload(request: Request, video_file: UploadFile = File(...)):
+    # user = await get_current_user(request)
+    data = await video_file.read()
+    video_path = UPLOAD_DIR / video_file.filename
+    with open(video_path, "wb") as f:
+        f.write(data)
+    # saved to app/static/uploads/video_file.filename
+    process_video(video_file.filename, visualize=False)
+    return {"filename:": video_file.filename, "content_type": video_file.content_type}
 
 @app.post("/contact", response_class=HTMLResponse)
 def contact(request: Request, name: str = Form(...), email: str = Form(...), subject: str = Form(...), message: str = Form(...)):

@@ -26,6 +26,20 @@
                         Upload your gameplay video and get instant AI-powered analysis.<br>Drag and drop your video file or browse to select.
                     </p>
                     
+                    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="upload-container">
+                        
+                        <!-- Error Message Container -->
+                        <div class="error-message" id="error-message">
+                            <div class="error-message-header">
+                                <svg class="error-message-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <h4 class="error-message-title">Upload Error</h4>
+                            </div>
+                            <p class="error-message-text" id="error-message-text"></p>
+                        </div>
+
                     <div class="upload-container" data-aos="fade-up" data-aos-delay="200">
                         <!-- File Upload Dropzone -->
                         <div class="upload-dropzone" id="upload-dropzone">
@@ -37,9 +51,9 @@
                             <h3>Drag and Drop files to upload</h3>
                             <div class="upload-divider">or</div>
                             <button type="button" class="btn btn-outline" id="browse-btn">Browse</button>
-                            <input type="file" id="file-input" accept="video/*" style="display: none;">
+                            <input type="file" id="file-input" name="video_file" accept="video/*" style="display: none;">
                             <div class="upload-file-types">
-                                Supported files: MP4, MOV, AVI, MKV (Max 500MB)
+                                Supported files: MP4, MOV, AVI (Max 500MB)
                             </div>
                         </div>
 
@@ -56,9 +70,11 @@
                             </button>
                         </div>
 
-                        <!-- Progress Bar -->
-                        <div class="progress-bar" id="progress-bar" style="display: none;">
-                            <div class="progress-fill" id="progress-fill"></div>
+                        <!-- Loading Animation -->
+                        <div class="upload-loading" id="upload-loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <h3>Processing Your Gameplay...</h3>
+                            <p>Please wait while we analyze your video. This may take a few moments.</p>
                         </div>
 
                             <button type="submit" class="btn btn-accent" id="submit-upload" disabled>
@@ -74,8 +90,8 @@
                                 </svg>
                             </div>
                             <h3>Upload Successful!</h3>
-                            <p>Your gameplay video is being analyzed. You'll receive your results shortly.</p>
-                            <a href="/dashboard" class="btn">View Dashboard</a>
+                            <p>Your gameplay video has been analyzed</p>
+                            <a href="/dashboard" class="btn" style="margin-top: -15px">View Dashboard</a>
                         </div>
                     </div>
                 </div>
@@ -100,11 +116,32 @@
     const removeFileBtn = document.getElementById('remove-file');
     const uploadForm = document.getElementById('upload-form');
     const submitBtn = document.getElementById('submit-upload');
-    const progressBar = document.getElementById('progress-bar');
-    const progressFill = document.getElementById('progress-fill');
+    const uploadLoading = document.getElementById('upload-loading');
     const uploadSuccess = document.getElementById('upload-success');
+    const errorMessage = document.getElementById('error-message');
+    const errorMessageText = document.getElementById('error-message-text');
 
     let selectedFile = null;
+
+    // Function to show error message
+    function showError(message) {
+        errorMessageText.textContent = message;
+        errorMessage.classList.add('show');
+        errorMessage.classList.remove('hiding');
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            hideError();
+        }, 5000);
+    }
+
+    // Function to hide error message
+    function hideError() {
+        errorMessage.classList.add('hiding');
+        setTimeout(() => {
+            errorMessage.classList.remove('show', 'hiding');
+        }, 300);
+    }
 
     // Browse button click
     browseBtn.addEventListener('click', () => {
@@ -139,27 +176,38 @@
         if (!file) return;
 
         // Validate file type
-        const validTypes = ['video/mp4', 'video/mov', 'video/avi', 'video/x-msvideo', 'video/quicktime', 'video/x-matroska'];
+        const validTypes = ['video/mp4', 'video/mov', 'video/avi'];
         if (!validTypes.includes(file.type)) {
-            alert('Please select a valid video file (MP4, MOV, AVI, MKV)');
+            showError('Please select a valid video file (MP4, MOV, AVI)');
             return;
         }
 
         // Validate file size (500MB max)
         const maxSize = 500 * 1024 * 1024; // 500MB in bytes
         if (file.size > maxSize) {
-            alert('File size must be less than 500MB');
+            showError('File size must be less than 500MB');
             return;
         }
 
-        selectedFile = file;
-        
-        // Show file preview
-        fileName.textContent = file.name;
-        fileSize.textContent = formatFileSize(file.size);
-        uploadPreview.style.display = 'flex';
-        dropzone.style.display = 'none';
-        submitBtn.disabled = false;
+        // Validate video duration (30s – 3 min)
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = URL.createObjectURL(file);
+        video.onloadedmetadata = () => {
+            URL.revokeObjectURL(video.src);
+            if (video.duration < 1 || video.duration > 180) { // 30sec to 3min
+                showError('Video length must be between 30 seconds and 3 minutes');
+                return;
+            }
+
+            selectedFile = file;
+            // Show file preview
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            uploadPreview.style.display = 'flex';
+            dropzone.style.display = 'none';
+            submitBtn.disabled = false;
+        };
     }
 
     // Remove file
@@ -169,8 +217,54 @@
         uploadPreview.style.display = 'none';
         dropzone.style.display = 'block';
         submitBtn.disabled = true;
-        progressBar.style.display = 'none';
-        progressFill.style.width = '0%';
+        uploadLoading.style.display = 'none';
+    });
+
+    // Form submission
+    uploadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        if (!selectedFile) {
+            alert('Please select a file to upload');
+            return;
+        }
+
+        // Show loading animation
+        uploadPreview.style.display = 'none';
+        uploadLoading.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('video_file', selectedFile);
+
+        // Send request with fetch for simpler handling
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                // If response is a redirect, follow it
+                window.location.href = response.url;
+            } else if (response.ok) {
+                // If successful but no redirect, show success message
+                uploadLoading.style.display = 'none';
+                submitBtn.style.display = 'none';
+                uploadSuccess.style.display = 'block';
+            } else {
+                throw new Error('Upload failed');
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            alert('Upload failed. Please try again.');
+            uploadLoading.style.display = 'none';
+            uploadPreview.style.display = 'flex';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Analyze My Gameplay';
+        });
     });
 
     // Format file size
@@ -182,49 +276,101 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    // Form submission
-    uploadForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        if (!selectedFile) {
-            alert('Please select a file to upload');
-            return;
-        }
-
-        // Show progress bar
-        progressBar.style.display = 'block';
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-
-        // Simulate upload progress
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                
-                // Show success message
-                setTimeout(() => {
-                    uploadForm.style.display = 'none';
-                    uploadPreview.style.display = 'none';
-                    progressBar.style.display = 'none';
-                    uploadSuccess.style.display = 'block';
-                }, 500);
-            }
-            progressFill.style.width = progress + '%';
-        }, 200);
-
-        // Here you would normally submit the form data to your server
-        // const formData = new FormData(uploadForm);
-        // formData.append('video_file', selectedFile);
-        // fetch('/upload', { method: 'POST', body: formData });
-    });
-
     AOS.init({
         duration: 800,
         easing: 'ease',
         once: true
     });
 </script>
+
+<style>
+.upload-loading {
+    text-align: center;
+    padding-top: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(139, 92, 246, 0.3);
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.upload-loading h3 {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.upload-loading p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Error Message Styles */
+.error-message {
+    display: none;         
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;     
+    text-align: center;  
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.error-message.show {
+    display: flex;
+}
+
+.error-message-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.error-message-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: #ef4444;
+}
+
+.error-message-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.error-message-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ef4444;
+    margin: 0;
+}
+
+.error-message-text {
+    font-size: 0.3rem;
+    margin-top: 0.5rem;
+    color: var(--light);
+    font-size: 0.875rem;
+    margin-bottom: -5px;
+}
+
+</style>
 </html>

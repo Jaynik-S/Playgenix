@@ -1,5 +1,7 @@
 .env
 venv
+.venv
+temp
 directory
 __pycache__/
 .vscode
@@ -8,3 +10,11 @@ __pycache__/
 .vercel
 node_modules/
 .DS_Store
+data
+data_crop
+app/static/uploads/*
+todo
+app/json_data/session/*
+videos/
+*.mp4
+assets/models/run4_minimap

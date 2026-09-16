@@ -1,0 +1,93 @@
+{
+    "90": {
+        "team": {
+            "Clove": false,
+            "KAYO": false,
+            "Brimstone": false,
+            "Sage": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Jett": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "89": {
+        "team": {
+            "Clove": false,
+            "KAYO": false,
+            "Brimstone": false,
+            "Sage": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Jett": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "88": {
+        "team": {
+            "Fade": false,
+            "KAYO": false,
+            "Reyna": false
+        },
+        "enemy": {
+            "Omen": true,
+            "Phoenix": true,
+            "Deadlock": true,
+            "Sage": false,
+            "Sova": false
+        }
+    },
+    "87": {
+        "team": {
+            "Fade": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Vyse": false,
+            "Jett": true
+        }
+    },
+    "86": {
+        "team": {
+            "Fade": false,
+            "Brimstone": false,
+            "Iso": false
+        },
+        "enemy": {
+            "Omen": false,
+            "Vyse": false,
+            "Deadlock": false,
+            "Viper": false
+        }
+    },
+    "85": {
+        "team": {
+            "Killjoy": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Vyse": false,
+            "Deadlock": true
+        }
+    },
+    "84": {
+        "team": {
+            "Neon": false,
+            "Reyna": false,
+            "Vyse": false
+        },
+        "enemy": {
+            "Vyse": true,
+            "Iso": false
+        }
+    }
+}

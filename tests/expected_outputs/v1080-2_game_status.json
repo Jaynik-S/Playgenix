@@ -1,0 +1,48 @@
+{
+  "99": {
+    "team": {
+      "Sage": false,
+      "Reyna": false,
+      "Chamber": false,
+      "Omen": false,
+      "Fade": false
+    },
+    "enemy": {
+      "Reyna": false,
+      "Fade": false,
+      "Omen": false,
+      "Chamber": false,
+      "Jett": false
+    }
+  },
+  "98": {
+    "team": {
+      "Sage": false,
+      "Reyna": false,
+      "Chamber": false,
+      "Omen": false,
+      "Fade": false
+    },
+    "enemy": {
+      "Reyna": false,
+      "Fade": false,
+      "Omen": false,
+      "Chamber": false
+    }
+  },
+  "97": {
+    "team": {
+      "Sage": false,
+      "Reyna": false,
+      "Chamber": false,
+      "Omen": false,
+      "Fade": false
+    },
+    "enemy": {
+      "Reyna": false,
+      "Fade": false,
+      "Omen": false,
+      "Chamber": false
+    }
+  }
+}

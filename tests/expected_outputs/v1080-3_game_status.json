@@ -1,0 +1,77 @@
+{
+  "87": {
+    "team": {
+      "Skye": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false
+    },
+    "enemy": {
+      "Jett": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false,
+      "Breach": false
+    }
+  },
+  "86": {
+    "team": {
+      "Skye": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false
+    },
+    "enemy": {
+      "Jett": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false,
+      "Breach": false
+    }
+  },
+  "85": {
+    "team": {
+      "Skye": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false
+    },
+    "enemy": {
+      "Jett": false,
+      "Sage": false,
+      "Reyna": false,
+      "Omen": false,
+      "Breach": false
+    }
+  },
+  "84": {
+    "team": {
+      "Skye": false,
+      "Omen": false
+    },
+    "enemy": {
+      "Sage": false,
+      "Reyna": false,
+      "Breach": false
+    }
+  },
+  "83": {
+    "team": {
+      "Skye": false,
+      "Omen": false
+    },
+    "enemy": {
+      "Sage": false,
+      "Reyna": false,
+      "Breach": false
+    }
+  },
+  "82": {
+    "team": {},
+    "enemy": {
+      "Sage": false,
+      "Reyna": false,
+      "Breach": false
+    }
+  }
+}
