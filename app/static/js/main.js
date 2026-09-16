@@ -203,6 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Run animation on load and scroll
     animateOnScroll();
     
+
+// Set initial styles for animation
+document.addEventListener('DOMContentLoaded', () => {
     // Initialize smooth scrolling
     setupSmoothScrolling();
     
@@ -226,3 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('scroll', animateOnScroll);
+            });        });
+    }
+});

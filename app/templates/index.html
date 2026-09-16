@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" type="image/png" href="/static/images/icon_logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
 
@@ -18,18 +19,17 @@
     <section class="hero">
         <div id="particles-js"></div>
         <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
+            <div class="hero-content">            <div class="hero-text" data-aos="fade-right" data-aos-delay="100">
                     <h1>Level Up Your <span>Gameplay</span> with AI Analysis</h1>
                     <p>
                         Upload your gameplay videos and get instant, AI-powered feedback with timestamped insights to improve your skills and dominate the competition.
                     </p>
                     <div class="hero-cta">
-                        <a href="{% if user %}/upload{% else %}/login{% endif %}" class="btn btn-accent">Get Started</a>
+                        <a href="/waitlist" class="btn btn-accent">Join Waitlist</a>
                         <a href="#how-it-works" class="btn btn-outline">How It Works</a>
                     </div>
                 </div>
-                <div class="hero-image">
+                <div class="hero-image" data-aos="fade-left" data-aos-delay="300">
                     <img src="/static/images/hero_img.png" alt="Playgenix dashboard showing video analysis with AI insights and performance metrics">
                 </div>
             </div>
@@ -38,13 +38,12 @@
 
     <!-- Features Section -->
     <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
+        <div class="container">            <div class="section-header" data-aos="fade-up">
                 <h2>Powerful Features</h2>
                 <p>Discover how Playgemix can transform your gaming experience with advanced analysis tools.</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -53,7 +52,7 @@
                     <h3>Advanced Video Analysis</h3>
                     <p>Our AI analyzes every frame of your gameplay to identify patterns, mistakes, and opportunities for improvement in real-time.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -62,7 +61,7 @@
                     <h3>Timestamped Feedback</h3>
                     <p>Get precise feedback at exact moments in your gameplay with interactive timestamps for quick review and targeted improvement.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -75,15 +74,14 @@
         </div>
     </section>
 
-    <!-- How It Works Section -->
-    <section class="how-it-works" id="how-it-works">
+    <!-- How It Works Section -->    <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2>How It Works</h2>
                 <p>Get started in just a few simple steps and begin improving your gameplay today.</p>
             </div>
             <div class="steps">
-                <div class="step">
+                <div class="step" data-aos="fade-right" data-aos-delay="100">
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>
@@ -94,8 +92,7 @@
                         </h3>
                         <p>Upload a video of your gameplay directly to our platform. No technical setup required, just drag and drop your file to get started.</p>
                     </div>
-                </div>
-                <div class="step">
+                </div>                <div class="step" data-aos="fade-right" data-aos-delay="200">
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>
@@ -107,7 +104,7 @@
                         <p>Our advanced AI analyzes your gameplay using machine learning models trained on thousands of pro matches, identifying key moments, mistakes, and opportunities for improvement in real-time.</p>
                     </div>
                 </div>
-                <div class="step">
+                <div class="step" data-aos="fade-right" data-aos-delay="300">
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>
@@ -119,7 +116,7 @@
                         <p>Get detailed feedback with interactive timestamps that let you jump directly to important moments in your gameplay. Each insight is categorized by importance and includes actionable advice.</p>
                     </div>
                 </div>
-                <div class="step">
+                <div class="step" data-aos="fade-right" data-aos-delay="400">
                     <div class="step-number">4</div>
                     <div class="step-content">
                         <h3>
@@ -133,15 +130,13 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Section -->
+    </section>    <!-- CTA Section -->
     <section class="cta">
         <div class="container">
-            <h2>Ready to Level Up Your Game?</h2>
-            <p>Be among the first to experience Playgenix's advanced gameplay analysis. Sign up now to get early access and help shape the future of gaming analytics!</p>
+            <h2 data-aos="fade-up">Ready to Level Up Your Game?</h2>
+            <p data-aos="fade-up" data-aos-delay="100">Be among the first to experience Playgenix's advanced gameplay analysis. Sign up now to get early access and help shape the future of gaming analytics!</p>
 
-            <div class="stats">
+            <div class="stats" data-aos="fade-up" data-aos-delay="200">
                 <div class="stat">
                     <div class="stat-number">Launching Soon</div>
                     <div class="stat-label">Join the Waitlist</div>
@@ -162,7 +157,15 @@
 {% include 'components/footer.html' %}
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script src="/static/js/main.js"></script>
+<script>
+    AOS.init({
+        duration: 950,
+        easing: 'ease',
+        once: false
+    });
+</script>
 
 </body>
 </html>

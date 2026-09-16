@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="icon" type="image/png" href="/static/images/icon_logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <!-- Extend header.html -->
@@ -18,14 +19,14 @@
         <div id="particles-js"></div>
         <div class="container">
             <div class="hero-content centered">
-                <div class="hero-text centered">
+                <div class="hero-text centered" data-aos="fade-up">
                     <h1>Join Our <span>Exclusive Waitlist</span></h1>
                     <p>
                         Be among the first to experience AI-powered game analysis when we launch. 
                         Sign up below to secure your spot and receive early access to our platform.
                     </p>
                     
-                    <div class="waitlist-form-container">
+                    <div class="waitlist-form-container" data-aos="fade-up" data-aos-delay="200">
                         <form id="waitlist-form" class="waitlist-form" method="POST" action="/waitlist">
                             <div class="form-group">
                                 <label for="name">Full Name</label>
@@ -59,7 +60,7 @@
                         </div>
                     </div>
                     
-                    <div class="waitlist-benefits">
+                    <div class="waitlist-benefits" data-aos="fade-up" data-aos-delay="300">
                         <div class="benefit">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -88,6 +89,7 @@
 {% include 'components/footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="/static/js/main.js"></script>
     <script>
         document.getElementById('waitlist-form').addEventListener('submit', function(e) {
@@ -95,5 +97,10 @@
         document.getElementById('form-success').style.display = 'block';
         });
         
+        AOS.init({
+            duration: 800,
+            easing: 'ease',
+            once: true
+        });
     </script>
 </html>
